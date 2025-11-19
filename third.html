@@ -35,7 +35,7 @@
     }
     button {
       padding: 8px 16px;
-      margin: 4px 0;
+      margin: 4px 4px 8px 0;
       cursor: pointer;
     }
   </style>
@@ -68,19 +68,15 @@
   </div>
 
   <div class="section">
-    <h2>附加資訊（示範 2 個位子，可自行擴充到 10 個）</h2>
-    <label>附加資訊 1：</label>
-    <textarea id="extra1"></textarea>
-    <label>附加資訊 2：</label>
-    <textarea id="extra2"></textarea>
+    <h2>附加資訊（最多 10 筆，每筆 ≤500字）</h2>
+    <div id="extraContainer"></div>
+    <button type="button" onclick="addExtra()">＋新增附加資訊</button>
   </div>
 
   <div class="section">
-    <h2>創作者事件（示範 2 個位子，可自行擴充到 20 個）</h2>
-    <label>創作者事件 1：</label>
-    <textarea id="event1"></textarea>
-    <label>創作者事件 2：</label>
-    <textarea id="event2"></textarea>
+    <h2>創作者事件（最多 20 筆，每筆 ≤2000字）</h2>
+    <div id="eventContainer"></div>
+    <button type="button" onclick="addEvent()">＋新增創作者事件</button>
   </div>
 
   <button onclick="generateMarkdown()">生成 Markdown</button>
@@ -89,12 +85,57 @@
   <div id="output"></div>
 
   <script>
+    const EXTRA_MAX = 10;
+    const EVENT_MAX = 20;
+    let extraCount = 0;
+    let eventCount = 0;
+
     function limitText(text, max) {
       text = text.trim();
       if (text.length > max) {
         return text.slice(0, max);
       }
       return text;
+    }
+
+    function addExtra() {
+      if (extraCount >= EXTRA_MAX) {
+        alert("附加資訊最多只能 10 筆喔～");
+        return;
+      }
+      extraCount++;
+      const container = document.getElementById("extraContainer");
+
+      const label = document.createElement("label");
+      label.textContent = `附加資訊 ${extraCount}：`;
+      label.style.display = "block";
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "extra-field";
+      textarea.setAttribute("data-index", extraCount);
+
+      container.appendChild(label);
+      container.appendChild(textarea);
+    }
+
+    function addEvent() {
+      if (eventCount >= EVENT_MAX) {
+        alert("創作者事件最多只能 20 筆喔～");
+        return;
+      }
+      eventCount++;
+      const container = document.getElementById("eventContainer");
+
+      const label = document.createElement("label");
+      label.textContent = `創作者事件 ${eventCount}：`;
+      label.style.display = "block";
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "event-field";
+      textarea.setAttribute("data-index", eventCount);
+
+      container.appendChild(label);
+      container.appendChild(textarea);
     }
 
     function generateMarkdown() {
@@ -105,46 +146,43 @@
       const personality = limitText(document.getElementById('personality').value, 700);
       const speech = limitText(document.getElementById('speechStyle').value, 700);
 
-      const extra1 = limitText(document.getElementById('extra1').value, 500);
-      const extra2 = limitText(document.getElementById('extra2').value, 500);
-
-      const event1 = limitText(document.getElementById('event1').value, 2000);
-      const event2 = limitText(document.getElementById('event2').value, 2000);
-
       let lines = [];
 
+      // 標頭
       lines.push(`## 🧩 卿卿我我角色設定：${name || '（未命名）'}`);
-      lines.push(`**角色代號：** \`${code}\``);
+      lines.push(`*角色代號：* \`${code}\``);
       lines.push("");
 
-      lines.push("### **一、基本資訊（高權重）**");
+      // 主欄一二三：照你原本的格式
+      lines.push("一、基本資訊");
       lines.push(basic || "_（尚未填寫）_");
       lines.push("");
 
-      lines.push("### **二、性格（高權重）**");
+      lines.push("二、性格");
       lines.push(personality || "_（尚未填寫）_");
       lines.push("");
 
-      lines.push("### **三、說話習慣與行為（高權重）**");
+      lines.push("三、說話習慣與行為");
       lines.push(speech || "_（尚未填寫）_");
       lines.push("");
 
       // 附加資訊
       lines.push("---");
-      lines.push("## 📌 附加資訊（次要，可讀可不讀）");
+      lines.push("📌 附加資訊");
       let anyExtra = false;
-      if (extra1) {
-        anyExtra = true;
-        lines.push("### 附加資訊 1");
-        lines.push(extra1);
-        lines.push("");
-      }
-      if (extra2) {
-        anyExtra = true;
-        lines.push("### 附加資訊 2");
-        lines.push(extra2);
-        lines.push("");
-      }
+
+      const extras = document.querySelectorAll(".extra-field");
+      extras.forEach((el, idx) => {
+        const txt = limitText(el.value, 500);
+        if (txt) {
+          anyExtra = true;
+          const num = idx + 1;
+          lines.push(`# 附加資訊 ${num}`);
+          lines.push(txt);
+          lines.push("");
+        }
+      });
+
       if (!anyExtra) {
         lines.push("_（尚未填寫附加資訊）_");
         lines.push("");
@@ -152,20 +190,21 @@
 
       // 創作者事件
       lines.push("---");
-      lines.push("## 📚 創作者事件（角色故事資料庫）");
+      lines.push("📚 創作者事件");
       let anyEvent = false;
-      if (event1) {
-        anyEvent = true;
-        lines.push("### 創作者事件 1");
-        lines.push(event1);
-        lines.push("");
-      }
-      if (event2) {
-        anyEvent = true;
-        lines.push("### 創作者事件 2");
-        lines.push(event2);
-        lines.push("");
-      }
+
+      const events = document.querySelectorAll(".event-field");
+      events.forEach((el, idx) => {
+        const txt = limitText(el.value, 2000);
+        if (txt) {
+          anyEvent = true;
+          const num = idx + 1;
+          lines.push(`# 創作者事件 ${num}`);
+          lines.push(txt);
+          lines.push("");
+        }
+      });
+
       if (!anyEvent) {
         lines.push("_（尚未填寫創作者事件）_");
         lines.push("");
