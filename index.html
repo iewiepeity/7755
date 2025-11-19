@@ -339,6 +339,33 @@
     ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。
   </p>
 
+  <!-- 角色存檔管理區 -->
+  <div class="section">
+    <h2>📂 角色存檔管理</h2>
+
+    <div class="label-row">
+      <label>分類篩選（作品名 / 世界觀等）：</label>
+      <select id="filterCategory" onchange="refreshCharListFromStorage()">
+        <option value="">全部分類</option>
+      </select>
+    </div>
+
+    <div class="label-row">
+      <label>搜尋角色名稱：</label>
+      <input id="searchName" type="search" placeholder="輸入部分名字即可" oninput="refreshCharListFromStorage()" />
+    </div>
+
+    <div id="charList" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+      <!-- JS 動態產生角色按鈕 -->
+    </div>
+
+    <div style="margin-top:10px;">
+      <button type="button" onclick="newCharacter()">➕ 新角色</button>
+      <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
+      <button type="button" class="button-secondary" onclick="deleteCurrentChar()">🗑 刪除目前角色</button>
+    </div>
+  </div>
+
   <div class="section">
     <h2>💁‍♀️ 角色資訊</h2>
 
@@ -347,6 +374,12 @@
       <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
     </div>
     <input id="charName" type="text" />
+
+    <div class="label-row">
+      <label>角色分類（選填，例如：作品名 / 世界觀）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charCategory')">清空</button>
+    </div>
+    <input id="charCategory" type="text" />
 
     <div class="label-row">
       <label>年齡（必填，15字）：</label>
@@ -472,7 +505,7 @@
     <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
     <button type="button"
             class="button-secondary"
-            onclick="document.getElementById('extraContainer').innerHTML=''; saveDraft();">
+            onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
       清空所有附加資訊
     </button>
   </div>
@@ -483,7 +516,7 @@
     <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
     <button type="button"
             class="button-secondary"
-            onclick="document.getElementById('eventContainer').innerHTML=''; saveDraft();">
+            onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
       清空所有創作者事件
     </button>
   </div>
@@ -502,14 +535,16 @@
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_draft_v1';
+    const STORAGE_KEY = 'qing_char_multi_v1';
 
+    /* ========= 主題切換 ========= */
     function changeTheme(theme) {
       const body = document.body;
       body.className = "";
       body.classList.add(`theme-${theme}`);
     }
 
+    /* ========= 工具 ========= */
     function limitText(text, max) {
       text = text.trim();
       if (text.length > max) {
@@ -518,6 +553,35 @@
       return text;
     }
 
+    function getStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { currentId: null, chars: {} };
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') {
+          return { currentId: null, chars: {} };
+        }
+        if (!parsed.chars) parsed.chars = {};
+        return parsed;
+      } catch (e) {
+        console.warn('讀取存檔失敗，重置 store：', e);
+        return { currentId: null, chars: {} };
+      }
+    }
+
+    function setStore(store) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch (e) {
+        console.warn('寫入存檔失敗：', e);
+      }
+    }
+
+    function newCharId() {
+      return 'char_' + Date.now();
+    }
+
+    /* ========= 動態欄位：附加資訊 & 事件 ========= */
     function renumberExtras() {
       const blocks = document.querySelectorAll(".extra-block");
       blocks.forEach((block, idx) => {
@@ -558,7 +622,7 @@
       delBtn.onclick = function () {
         block.remove();
         renumberExtras();
-        saveDraft();
+        saveCurrentChar();
       };
 
       labelRow.appendChild(label);
@@ -566,14 +630,14 @@
 
       const textarea = document.createElement("textarea");
       textarea.className = "extra-field";
-      textarea.addEventListener('input', saveDraft);
+      textarea.addEventListener('input', saveCurrentChar);
 
       block.appendChild(labelRow);
       block.appendChild(textarea);
       container.appendChild(block);
 
       renumberExtras();
-      saveDraft();
+      saveCurrentChar();
     }
 
     function addEvent() {
@@ -600,7 +664,7 @@
       delBtn.onclick = function () {
         block.remove();
         renumberEvents();
-        saveDraft();
+        saveCurrentChar();
       };
 
       labelRow.appendChild(label);
@@ -608,17 +672,234 @@
 
       const textarea = document.createElement("textarea");
       textarea.className = "event-field";
-      textarea.addEventListener('input', saveDraft);
+      textarea.addEventListener('input', saveCurrentChar);
 
       block.appendChild(labelRow);
       block.appendChild(textarea);
       container.appendChild(block);
 
       renumberEvents();
-      saveDraft();
+      saveCurrentChar();
     }
 
-    // 必填欄位檢查（只提醒，不阻止生成）
+    /* ========= 表單資料收集 & 填回 ========= */
+    function collectFormData() {
+      const fieldIds = [
+        'charName','charCategory','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday','gender'
+      ];
+
+      const data = { fields: {}, extras: [], events: [] };
+
+      fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT') {
+          data.fields[id] = el.value || "";
+        } else {
+          data.fields[id] = el.value || "";
+        }
+      });
+
+      document.querySelectorAll('.extra-field').forEach(el => {
+        data.extras.push(el.value || "");
+      });
+      document.querySelectorAll('.event-field').forEach(el => {
+        data.events.push(el.value || "");
+      });
+
+      return data;
+    }
+
+    function clearForm() {
+      const ids = [
+        'charName','charCategory','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+      const genderSel = document.getElementById('gender');
+      if (genderSel) genderSel.value = '未設置';
+
+      const extraContainer = document.getElementById('extraContainer');
+      const eventContainer = document.getElementById('eventContainer');
+      if (extraContainer) extraContainer.innerHTML = "";
+      if (eventContainer) eventContainer.innerHTML = "";
+    }
+
+    function fillFormFromData(data) {
+      clearForm();
+      if (!data || !data.fields) return;
+
+      Object.keys(data.fields).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = data.fields[id] || "";
+      });
+
+      if (Array.isArray(data.extras)) {
+        data.extras.forEach(txt => {
+          if (!txt) return;
+          addExtra();
+          const els = document.querySelectorAll('.extra-field');
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
+
+      if (Array.isArray(data.events)) {
+        data.events.forEach(txt => {
+          if (!txt) return;
+          addEvent();
+          const els = document.querySelectorAll('.event-field');
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
+    }
+
+    /* ========= 角色存檔邏輯：多角色 ========= */
+    function saveCurrentChar() {
+      const store = getStore();
+      let id = store.currentId;
+      if (!id) {
+        id = newCharId();
+        store.currentId = id;
+      }
+
+      const data = collectFormData();
+      const name = (document.getElementById('charName').value.trim() || "未命名角色");
+      const category = document.getElementById('charCategory').value.trim() || "";
+      const tagsArray = (document.getElementById('charTags').value.trim() || "")
+        .split(/[,，\s]+/).filter(Boolean);
+
+      store.chars[id] = {
+        meta: {
+          name,
+          category,
+          tags: tagsArray
+        },
+        data
+      };
+
+      setStore(store);
+      renderCharList(store);
+    }
+
+    function newCharacter() {
+      const store = getStore();
+      const id = newCharId();
+      store.currentId = id;
+      setStore(store);
+
+      clearForm();
+      document.getElementById('output').textContent = "";
+      saveCurrentChar();
+    }
+
+    function deleteCurrentChar() {
+      const store = getStore();
+      const id = store.currentId;
+      if (!id || !store.chars[id]) {
+        alert("目前沒有選中的角色可以刪除哦～");
+        return;
+      }
+      if (!confirm("確定要刪除這個角色嗎？刪除後無法復原！")) return;
+
+      delete store.chars[id];
+      const ids = Object.keys(store.chars);
+      store.currentId = ids.length ? ids[0] : null;
+      setStore(store);
+
+      if (store.currentId) {
+        const target = store.chars[store.currentId];
+        fillFormFromData(target.data);
+      } else {
+        clearForm();
+        document.getElementById('output').textContent = "";
+      }
+      renderCharList(store);
+    }
+
+    function loadChar(id) {
+      const store = getStore();
+      const item = store.chars[id];
+      if (!item) return;
+      store.currentId = id;
+      setStore(store);
+
+      fillFormFromData(item.data);
+      document.getElementById('output').textContent = "";
+      renderCharList(store);
+    }
+
+    function renderCharList(store) {
+      const listEl = document.getElementById('charList');
+      if (!listEl) return;
+
+      const filterCategory = document.getElementById('filterCategory').value;
+      const keyword = document.getElementById('searchName').value.trim().toLowerCase();
+
+      listEl.innerHTML = "";
+
+      const entries = Object.entries(store.chars);
+
+      // 收集分類
+      const categorySet = new Set();
+      entries.forEach(([id, item]) => {
+        if (item.meta && item.meta.category) {
+          categorySet.add(item.meta.category);
+        }
+      });
+
+      // 填分類選單
+      const filterSel = document.getElementById('filterCategory');
+      if (filterSel) {
+        const prev = filterSel.value;
+        filterSel.innerHTML = '<option value="">全部分類</option>';
+        [...categorySet].sort().forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          filterSel.appendChild(opt);
+        });
+        if (prev) filterSel.value = prev;
+      }
+
+      entries.forEach(([id, item]) => {
+        const name = item.meta?.name || "未命名角色";
+        const cat = item.meta?.category || "";
+
+        if (filterCategory && cat !== filterCategory) return;
+        if (keyword && !name.toLowerCase().includes(keyword)) return;
+
+        const btn = document.createElement('button');
+        btn.type = "button";
+        btn.className = "button-secondary";
+        btn.textContent = cat ? `${name}（${cat}）` : name;
+
+        if (store.currentId === id) {
+          btn.style.fontWeight = "bold";
+          btn.style.textDecoration = "underline";
+        }
+
+        btn.onclick = () => loadChar(id);
+
+        listEl.appendChild(btn);
+      });
+    }
+
+    function refreshCharListFromStorage() {
+      const store = getStore();
+      renderCharList(store);
+    }
+
+    /* ========= 必填欄位提醒（不阻止生成） ========= */
     function validateRequired() {
       const requiredFields = [
         { id: 'charName', label: '姓名' },
@@ -655,8 +936,10 @@
       return true;
     }
 
+    /* ========= Markdown 生成 ========= */
     function generateMarkdown() {
       validateRequired();
+      saveCurrentChar();
 
       const name = document.getElementById('charName').value.trim();
       const age = limitText(document.getElementById('charAge').value, 15);
@@ -666,6 +949,7 @@
       const tagsRaw = document.getElementById('charTags').value.trim();
       const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
       const gender = document.getElementById('gender').value.trim();
+      const category = limitText(document.getElementById('charCategory').value, 100);
 
       const basic = limitText(document.getElementById('basicInfo').value, 700);
       const personality = limitText(document.getElementById('personality').value, 700);
@@ -690,6 +974,7 @@
       // 角色資訊
       md.push(`# 角色資訊\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
+      if (category) md.push(`- 分類：${category}`);
       if (gender) md.push(`- 性別：${gender}`);
       if (age) md.push(`- 年齡：${age}`);
       if (job) md.push(`- 職業：${job}`);
@@ -781,31 +1066,9 @@
       }
 
       document.getElementById('output').textContent = md.join("\n");
-      saveDraft();
     }
 
-    function resetFormForImport() {
-      const ids = [
-        'charName','charAge','charJob','charQuote','charDesc',
-        'charTags','creatorNote','basicInfo','personality','speechStyle',
-        'firstScene','sampleDialogue','likes','dislikes','birthday'
-      ];
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
-      });
-
-      const genderSel = document.getElementById('gender');
-      if (genderSel) genderSel.value = '未設置';
-
-      const extraContainer = document.getElementById('extraContainer');
-      const eventContainer = document.getElementById('eventContainer');
-      if (extraContainer) extraContainer.innerHTML = "";
-      if (eventContainer) eventContainer.innerHTML = "";
-
-      saveDraft();
-    }
-
+    /* ========= Markdown 解析成表單 ========= */
     function readBlockUntilHeading(lines, startIndex) {
       let i = startIndex;
       const buf = [];
@@ -823,7 +1086,7 @@
     }
 
     function parseMarkdownToForm(md) {
-      resetFormForImport();
+      clearForm();
 
       const lines = md.split(/\r?\n/);
       const extrasTexts = [];
@@ -835,6 +1098,8 @@
 
         if (line.startsWith("- 名稱：")) {
           document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
+        } else if (line.startsWith("- 分類：")) {
+          document.getElementById('charCategory').value = line.replace("- 分類：", "").trim();
         } else if (line.startsWith("- 性別：")) {
           const v = line.replace("- 性別：", "").trim();
           const genderSel = document.getElementById('gender');
@@ -934,109 +1199,10 @@
         });
       }
 
-      saveDraft();
+      saveCurrentChar();
     }
 
-    function collectFormData() {
-      const fieldIds = [
-        'charName','charAge','charJob','charQuote','charDesc',
-        'charTags','creatorNote','basicInfo','personality','speechStyle',
-        'firstScene','sampleDialogue','likes','dislikes','birthday','gender'
-      ];
-
-      const data = { fields: {}, extras: [], events: [] };
-
-      fieldIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.tagName === 'SELECT') {
-          data.fields[id] = el.value || "";
-        } else {
-          data.fields[id] = el.value || "";
-        }
-      });
-
-      document.querySelectorAll('.extra-field').forEach(el => {
-        data.extras.push(el.value || "");
-      });
-      document.querySelectorAll('.event-field').forEach(el => {
-        data.events.push(el.value || "");
-      });
-
-      return data;
-    }
-
-    function saveDraft() {
-      try {
-        const data = collectFormData();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch (e) {
-        console.warn('無法儲存暫存資料：', e);
-      }
-    }
-
-    function loadDraft() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const data = JSON.parse(raw);
-
-        if (data.fields) {
-          Object.keys(data.fields).forEach(id => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.value = data.fields[id];
-          });
-        }
-
-        if (Array.isArray(data.extras) && data.extras.length > 0) {
-          data.extras.forEach(txt => {
-            addExtra();
-            const els = document.querySelectorAll('.extra-field');
-            const last = els[els.length - 1];
-            if (last) last.value = txt;
-          });
-        }
-
-        if (Array.isArray(data.events) && data.events.length > 0) {
-          data.events.forEach(txt => {
-            addEvent();
-            const els = document.querySelectorAll('.event-field');
-            const last = els[els.length - 1];
-            if (last) last.value = txt;
-          });
-        }
-      } catch (e) {
-        console.warn('讀取暫存資料失敗：', e);
-      }
-    }
-
-    function setupAutoSave() {
-      const els = document.querySelectorAll('input, textarea, select');
-      els.forEach(el => {
-        el.addEventListener('input', saveDraft);
-        el.addEventListener('change', saveDraft);
-      });
-    }
-
-    function clearOne(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.tagName === 'SELECT' && id === 'gender') {
-        el.value = '未設置';
-      } else {
-        el.value = '';
-      }
-      saveDraft();
-    }
-
-    function clearGender() {
-      const el = document.getElementById('gender');
-      if (!el) return;
-      el.value = '未設置';
-      saveDraft();
-    }
-
+    /* ========= 匯入 / 匯出 ========= */
     function importTxt() {
       const input = document.getElementById('txtFile');
       if (!input.files || !input.files[0]) {
@@ -1078,9 +1244,52 @@
       URL.revokeObjectURL(url);
     }
 
+    /* ========= 清空單欄 ========= */
+    function clearOne(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT' && id === 'gender') {
+        el.value = '未設置';
+      } else {
+        el.value = '';
+      }
+      saveCurrentChar();
+    }
+
+    function clearGender() {
+      const el = document.getElementById('gender');
+      if (!el) return;
+      el.value = '未設置';
+      saveCurrentChar();
+    }
+
+    /* ========= 自動暫存 ========= */
+    function setupAutoSave() {
+      const els = document.querySelectorAll('input, textarea, select');
+      els.forEach(el => {
+        el.addEventListener('input', saveCurrentChar);
+        el.addEventListener('change', saveCurrentChar);
+      });
+    }
+
+    function loadInitialFromStore() {
+      const store = getStore();
+      const ids = Object.keys(store.chars);
+      if (!store.currentId && ids.length) {
+        store.currentId = ids[0];
+        setStore(store);
+      }
+
+      if (store.currentId && store.chars[store.currentId]) {
+        fillFormFromData(store.chars[store.currentId].data);
+      }
+
+      renderCharList(store);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      loadDraft();
       setupAutoSave();
+      loadInitialFromStore();
     });
   </script>
 </body>
