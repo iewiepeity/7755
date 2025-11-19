@@ -199,7 +199,7 @@
 <body class="theme-pink">
   <div class="top-bar">
     <div>
-      <h1>💕 卿卿我我創角小幫手（網頁版）</h1>
+      <h1>💕 卿卿我我創角小幫手</h1>
       <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
     </div>
     <div class="theme-select">
@@ -213,16 +213,14 @@
   </div>
 
   <p class="sub-label">
-    ※ 提醒：各欄位內容可自行使用 Markdown（# 標題、- 清單、**粗體** 等）撰寫，工具不會改動你寫的格式。
+    ※ 提醒：各欄位內容可自行使用 Markdown（# 標題、- 內容或清單等）撰寫，工具不會改動你寫的格式。
+    ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。
   </p>
 
   <div class="section">
     <h2>💁‍♀️ 角色資訊</h2>
     <label>角色名稱（必填）：</label><br/>
     <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
-
-    <label>角色代號（例如 YUCHENG_BF_01，可空白）：</label><br/>
-    <input id="charCode" type="text" style="margin-bottom:8px;" /><br/>
 
     <label>年齡（必填，15字）：</label><br/>
     <input id="charAge" type="text" style="margin-bottom:8px;" /><br/>
@@ -244,7 +242,7 @@
 
     <button type="button"
             class="button-secondary"
-            onclick="clearFields(['charName','charCode','charAge','charJob','charQuote','charDesc','charTags','creatorNote'])">
+            onclick="clearFields(['charName','charAge','charJob','charQuote','charDesc','charTags','creatorNote'])">
       清空角色資訊
     </button>
   </div>
@@ -535,7 +533,6 @@
       validateRequired();
 
       const name = document.getElementById('charName').value.trim();
-      const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
 
       const age = limitText(document.getElementById('charAge').value, 15);
       const job = limitText(document.getElementById('charJob').value, 15);
@@ -568,7 +565,6 @@
       // # 角色資訊
       md.push(`# 角色資訊\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
-      md.push(`- 角色代號：\`${code}\``);
       if (gender) md.push(`- 性別：${gender}`);
       if (age) md.push(`- 年齡：${age}`);
       if (job) md.push(`- 職業：${job}`);
@@ -663,7 +659,7 @@
 
     function resetFormForImport() {
       const ids = [
-        'charName','charCode','charAge','charJob','charQuote','charDesc',
+        'charName','charAge','charJob','charQuote','charDesc',
         'charTags','creatorNote','basicInfo','personality','speechStyle',
         'firstScene','sampleDialogue','likes','dislikes','birthday'
       ];
@@ -715,10 +711,6 @@
         // 角色資訊區
         if (line.startsWith("- 名稱：")) {
           document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
-        } else if (line.startsWith("- 角色代號：")) {
-          const m = line.match(/`([^`]+)`/);
-          const v = m ? m[1] : line.replace("- 角色代號：", "").trim();
-          document.getElementById('charCode').value = v === "（未設定代號）" ? "" : v;
         } else if (line.startsWith("- 性別：")) {
           const v = line.replace("- 性別：", "").trim();
           const genderSel = document.getElementById('gender');
@@ -830,7 +822,7 @@
 
     function collectFormData() {
       const fieldIds = [
-        'charName','charCode','charAge','charJob','charQuote','charDesc',
+        'charName','charAge','charJob','charQuote','charDesc',
         'charTags','creatorNote','basicInfo','personality','speechStyle',
         'firstScene','sampleDialogue','likes','dislikes','birthday','gender'
       ];
