@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>卿卿我我創角小幫手✨</title>
+  <title>卿卿我我創角小幫手</title>
   <style>
     :root {
       --bg-pink: #ffe6f0;
@@ -68,6 +68,7 @@
 
     input[type="text"],
     input[type="search"],
+    input[type="date"],
     input:not([type]) {
       width: 100%;
       padding: 8px 10px;
@@ -188,14 +189,15 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body class="theme-pink">
   <div class="top-bar">
     <div>
-      <h1>卿卿我我創角小幫手</h1>
-      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給AI當角色卡。</div>
+      <h1>卿卿我我創角小幫手（網頁版）</h1>
+      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
     </div>
     <div class="theme-select">
       背景主題：
@@ -211,12 +213,28 @@
     <h2>角色資訊</h2>
     <label>角色名稱（顯示用，可空白）：</label><br/>
     <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
-    <label>角色代號（例如 TiTi_01，可空白，只是幫助整理角色順序）：</label><br/>
-    <input id="charCode" type="text" />
+
+    <label>年齡（15字）：</label><br/>
+    <input id="charAge" type="text" style="margin-bottom:8px;" /><br/>
+
+    <label>職業（15字）：</label><br/>
+    <input id="charJob" type="text" style="margin-bottom:8px;" /><br/>
+
+    <label>來自角色的一句話（80字）：</label><br/>
+    <textarea id="charQuote" style="min-height:60px;"></textarea>
+
+    <label>敘述（選擇性，700字）：</label><br/>
+    <textarea id="charDesc"></textarea>
+
+    <label>標籤（hashtag，可用空白或逗號分隔）：</label><br/>
+    <input id="charTags" type="text" style="margin-bottom:8px;" /><br/>
+
+    <label>創作者筆記（200字）：</label><br/>
+    <textarea id="creatorNote" style="min-height:70px;"></textarea>
   </div>
 
   <div class="section">
-    <h2>一、基本資訊 <span class="sub-label">（建議 ≤700字，角色背景、世界觀、關係等）</span></h2>
+    <h2>一、基本資訊 <span class="sub-label">（建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
     <textarea id="basicInfo"></textarea>
   </div>
 
@@ -226,18 +244,36 @@
   </div>
 
   <div class="section">
-    <h2>三、說話習慣與行為 <span class="sub-label">（建議 ≤700字，語氣、互動模式）</span></h2>
+    <h2>三、說話風格與習慣 <span class="sub-label">（建議 ≤700字，語氣、互動模式）</span></h2>
     <textarea id="speechStyle"></textarea>
+
+    <label>第一次聊天場景（800字）</label>
+    <div class="sub-label">
+      設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
+    </div>
+    <textarea id="firstScene"></textarea>
+
+    <label>角色對話（800字，示範該角色的說話方式）</label>
+    <textarea id="sampleDialogue"></textarea>
+
+    <label>角色喜歡的東西（50字）：</label>
+    <input id="likes" type="text" style="margin-bottom:8px;" />
+
+    <label>不喜歡的東西（50字）：</label>
+    <input id="dislikes" type="text" style="margin-bottom:8px;" />
+
+    <label>生日（西元日期）：</label>
+    <input id="birthday" type="date" style="max-width:220px;" />
   </div>
 
   <div class="section">
-    <h2>✨附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
+    <h2>附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
     <div id="extraContainer"></div>
     <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
   </div>
 
   <div class="section">
-    <h2>✨創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
+    <h2>創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
     <div id="eventContainer"></div>
     <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
   </div>
@@ -247,7 +283,7 @@
     <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
   </div>
 
-  <h2>✨輸出結果（Markdown，可直接複製）</h2>
+  <h2>輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
 
   <script>
@@ -368,83 +404,157 @@
       renumberEvents();
     }
 
-    function generateMarkdown() {
-      const name = document.getElementById('charName').value.trim();
-      const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
+function generateMarkdown() {
+  const name = document.getElementById('charName').value.trim();
+  const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
 
-      const basic = limitText(document.getElementById('basicInfo').value, 700);
-      const personality = limitText(document.getElementById('personality').value, 700);
-      const speech = limitText(document.getElementById('speechStyle').value, 700);
+  const age = limitText(document.getElementById('charAge').value, 15);
+  const job = limitText(document.getElementById('charJob').value, 15);
+  const quote = limitText(document.getElementById('charQuote').value, 80);
+  const desc = limitText(document.getElementById('charDesc').value, 700);
+  const tagsRaw = document.getElementById('charTags').value.trim();
+  const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
 
-      let lines = [];
+  const basic = limitText(document.getElementById('basicInfo').value, 700);
+  const personality = limitText(document.getElementById('personality').value, 700);
+  const speech = limitText(document.getElementById('speechStyle').value, 700);
 
-      // 標頭
-      lines.push(`🧩 卿卿我我角色設定：${name || '（未命名）'}`);
-      lines.push(`*角色代號：* \`${code}\``);
-      lines.push("");
+  const firstScene = limitText(document.getElementById('firstScene').value, 800);
+  const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
+  const likes = limitText(document.getElementById('likes').value, 50);
+  const dislikes = limitText(document.getElementById('dislikes').value, 50);
+  const birthdayRaw = document.getElementById('birthday').value;
 
-      // 一二三
-      lines.push("一、基本資訊");
-      lines.push(basic || "_（尚未填寫）_");
-      lines.push("");
+  let birthdayText = birthdayRaw ? birthdayRaw : "";
 
-      lines.push("二、性格");
-      lines.push(personality || "_（尚未填寫）_");
-      lines.push("");
+  let tagsFormatted = "";
+  if (tagsRaw) {
+    const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
+    tagsFormatted = parts.map(t => "#" + t).join(" ");
+  }
 
-      lines.push("三、說話習慣與行為");
-      lines.push(speech || "_（尚未填寫）_");
-      lines.push("");
+  // Helper: convert text block into multiline markdown list
+  const formatBlock = (text) => {
+    if (!text) return "- （未填寫）";
+    let lines = text.split("\n").map(l => "  " + l);
+    return "- >\n" + lines.join("\n");
+  };
 
-      // 附加資訊
-      lines.push("---");
-      lines.push("📌 附加資訊");
-      let anyExtra = false;
+  let md = [];
 
-      const extras = document.querySelectorAll(".extra-field");
-      extras.forEach((el, idx) => {
-        const txt = limitText(el.value, 500);
-        if (txt) {
-          anyExtra = true;
-          const num = idx + 1;
-          lines.push(`✨ 附加資訊 ${num}`);
-          lines.push(txt);
-          lines.push("");
-        }
-      });
+  // =====================
+  // # 角色資訊
+  // =====================
+  md.push(`# 角色資訊\n`);
+  md.push(`- 名稱：${name || "（未命名）"}`);
+  md.push(`- 角色代號：\`${code}\``);
 
-      if (!anyExtra) {
-        lines.push("_（尚未填寫附加資訊）_");
-        lines.push("");
-      }
+  if (age) md.push(`- 年齡：${age}`);
+  if (job) md.push(`- 職業：${job}`);
+  if (birthdayText) md.push(`- 生日：${birthdayText}`);
+  if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
 
-      // 創作者事件
-      lines.push("---");
-      lines.push("📚 創作者事件");
-      let anyEvent = false;
+  if (quote) {
+    md.push(`- 一句話：`);
+    md.push(`  > ${quote}`);
+  }
 
-      const events = document.querySelectorAll(".event-field");
-      events.forEach((el, idx) => {
-        const txt = limitText(el.value, 2000);
-        if (txt) {
-          anyEvent = true;
-          const num = idx + 1;
-          lines.push(`✨ 創作者事件 ${num}`);
-          lines.push(txt);
-          lines.push("");
-        }
-      });
+  if (desc) {
+    md.push(`- 敘述：`);
+    md.push(`  > ${desc.replace(/\n/g, "\n    ")}`);
+  }
 
-      if (!anyEvent) {
-        lines.push("_（尚未填寫創作者事件）_");
-        lines.push("");
-      }
+  if (creatorNote) {
+    md.push(`- 創作者筆記：`);
+    md.push(`  > ${creatorNote.replace(/\n/g, "\n    ")}`);
+  }
 
-      document.getElementById('output').textContent = lines.join("\n");
-    }
+  md.push("");
+
+  // =====================
+  // ## 一、基本資訊
+  // =====================
+  md.push(`## 一、基本資訊`);
+  md.push(formatBlock(basic));
+  md.push("");
+
+  // =====================
+  // ## 二、性格
+  // =====================
+  md.push(`## 二、性格`);
+  md.push(formatBlock(personality));
+  md.push("");
+
+  // =====================
+  // ## 三、說話風格與習慣
+  // =====================
+  md.push(`## 三、說話風格與習慣`);
+  md.push(formatBlock(speech));
+  md.push("");
+
+  // 第一次聊天場景
+  if (firstScene) {
+    md.push(`### 第一次聊天場景`);
+    md.push(formatBlock(firstScene));
+    md.push("");
+  }
+
+  // 角色對話
+  if (sampleDialogue) {
+    md.push(`### 角色對話（示範）`);
+    md.push(formatBlock(sampleDialogue));
+    md.push("");
+  }
+
+  // 喜好
+  if (likes || dislikes) {
+    md.push(`### 喜好`);
+    if (likes) md.push(`- 喜歡：${likes}`);
+    if (dislikes) md.push(`- 不喜歡：${dislikes}`);
+    md.push("");
+  }
+
+  // =====================
+  // # 附加資訊
+  // =====================
+  md.push(`# 📌 附加資訊`);
+
+  const extras = document.querySelectorAll(".extra-field");
+  if (extras.length === 0) {
+    md.push("- （尚未填寫）\n");
+  } else {
+    extras.forEach((el, idx) => {
+      const txt = limitText(el.value, 500);
+      if (!txt) return;
+      md.push(`## 附加資訊 ${idx + 1}`);
+      md.push(formatBlock(txt));
+      md.push("");
+    });
+  }
+
+  // =====================
+  // # 創作者事件
+  // =====================
+  md.push(`# 📚 創作者事件`);
+
+  const events = document.querySelectorAll(".event-field");
+  if (events.length === 0) {
+    md.push("- （尚未填寫）\n");
+  } else {
+    events.forEach((el, idx) => {
+      const txt = limitText(el.value, 2000);
+      if (!txt) return;
+      md.push(`## 創作者事件 ${idx + 1}`);
+      md.push(formatBlock(txt));
+      md.push("");
+    });
+  }
+
+  document.getElementById('output').textContent = md.join("\n");
+}
 
     function downloadTxt() {
-      // 確保已經有內容，沒有的話先幫你生一份
+      // 沒內容就先幫你生一份
       if (!document.getElementById('output').textContent.trim()) {
         generateMarkdown();
       }
