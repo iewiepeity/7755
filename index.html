@@ -5,14 +5,43 @@
   <title>卿卿我我創角小幫手</title>
   <style>
     :root {
+      /* 背景色 */
       --bg-pink: #ffe6f0;
       --bg-cream: #fff7ea;
       --bg-mint: #e8fff5;
-      --card-bg: #ffffff;
-      --card-border: #f3c6d8;
-      --accent: #ff6fa8;
-      --accent-dark: #e3548e;
+      --bg-lavender: #f4e8ff;
+      --bg-sky: #e6f5ff;
+      --bg-lemon: #fffde6;
+      --bg-grey: #f2f2f2;
+      --bg-black: #1a1a1a;
+
+      /* 文字主色 */
       --text-main: #3d2b3b;
+
+      /* 按鈕主題色 */
+      --btn-pink: #ff6fa8;
+      --btn-pink-dark: #e3548e;
+
+      --btn-cream: #ff9c4a;
+      --btn-cream-dark: #d47829;
+
+      --btn-mint: #42c79a;
+      --btn-mint-dark: #2b9470;
+
+      --btn-lavender: #b48cff;
+      --btn-lavender-dark: #8c5ee0;
+
+      --btn-sky: #58a9ff;
+      --btn-sky-dark: #357dd6;
+
+      --btn-lemon: #ffd93b;
+      --btn-lemon-dark: #c7a400;
+
+      --btn-grey: #b0b0b0;
+      --btn-grey-dark: #8f8f8f;
+
+      --btn-black: #444;
+      --btn-black-dark: #222;
     }
 
     body {
@@ -22,20 +51,17 @@
       line-height: 1.6;
       color: var(--text-main);
       padding: 0 12px;
-      transition: background-color 0.25s ease;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    body.theme-pink {
-      background-color: var(--bg-pink);
-    }
-
-    body.theme-cream {
-      background-color: var(--bg-cream);
-    }
-
-    body.theme-mint {
-      background-color: var(--bg-mint);
-    }
+    body.theme-pink { background-color: var(--bg-pink); }
+    body.theme-cream { background-color: var(--bg-cream); }
+    body.theme-mint { background-color: var(--bg-mint); }
+    body.theme-lavender { background-color: var(--bg-lavender); }
+    body.theme-sky { background-color: var(--bg-sky); }
+    body.theme-lemon { background-color: var(--bg-lemon); }
+    body.theme-grey { background-color: var(--bg-grey); }
+    body.theme-black { background-color: var(--bg-black); color: #f5f5f5; }
 
     h1 {
       margin-bottom: 0.25rem;
@@ -64,6 +90,7 @@
       font-size: 0.9rem;
       box-sizing: border-box;
       resize: vertical;
+      background: #fff;
     }
 
     input[type="text"],
@@ -77,6 +104,7 @@
       box-sizing: border-box;
       font-family: inherit;
       font-size: 0.9rem;
+      background: #fff;
     }
 
     select {
@@ -91,12 +119,18 @@
     }
 
     .section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #ffffff;
+      border: 1px solid #f3c6d8;
       padding: 12px 14px;
       margin-bottom: 14px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(255, 160, 195, 0.18);
+    }
+
+    body.theme-black .section {
+      background: #242424;
+      border-color: #555;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
 
     #output {
@@ -116,40 +150,119 @@
       cursor: pointer;
       border-radius: 999px;
       border: none;
-      background: var(--accent);
       color: #fff;
       font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      box-shadow: 0 2px 4px rgba(224, 111, 156, 0.4);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
       transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
     }
 
+    /* 按鈕主題顏色跟著 body class 走 */
+    body.theme-pink button {
+      background: var(--btn-pink);
+    }
+    body.theme-pink button:hover {
+      background: var(--btn-pink-dark);
+    }
+
+    body.theme-cream button {
+      background: var(--btn-cream);
+    }
+    body.theme-cream button:hover {
+      background: var(--btn-cream-dark);
+    }
+
+    body.theme-mint button {
+      background: var(--btn-mint);
+    }
+    body.theme-mint button:hover {
+      background: var(--btn-mint-dark);
+    }
+
+    body.theme-lavender button {
+      background: var(--btn-lavender);
+    }
+    body.theme-lavender button:hover {
+      background: var(--btn-lavender-dark);
+    }
+
+    body.theme-sky button {
+      background: var(--btn-sky);
+    }
+    body.theme-sky button:hover {
+      background: var(--btn-sky-dark);
+    }
+
+    body.theme-lemon button {
+      background: var(--btn-lemon);
+    }
+    body.theme-lemon button:hover {
+      background: var(--btn-lemon-dark);
+    }
+
+    body.theme-grey button {
+      background: var(--btn-grey);
+    }
+    body.theme-grey button:hover {
+      background: var(--btn-grey-dark);
+    }
+
+    body.theme-black button {
+      background: var(--btn-black);
+      color: #fff;
+    }
+    body.theme-black button:hover {
+      background: var(--btn-black-dark);
+    }
+
     button:hover {
-      background: var(--accent-dark);
       transform: translateY(-1px);
-      box-shadow: 0 3px 6px rgba(224, 111, 156, 0.5);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
     }
 
     button:active {
       transform: translateY(0);
-      box-shadow: 0 1px 3px rgba(224, 111, 156, 0.3);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
     .button-secondary {
       background: #fff;
-      color: var(--accent-dark);
-      border: 1px solid var(--accent-dark);
+      color: inherit;
+      border: 1px solid rgba(0,0,0,0.25);
       box-shadow: none;
       padding: 4px 10px;
       font-size: 0.8rem;
     }
 
     .button-secondary:hover {
-      background: var(--accent-dark);
-      color: #fff;
-      box-shadow: 0 2px 4px rgba(224, 111, 156, 0.4);
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .button-mini {
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      margin: 0;
+      box-shadow: none;
+      background: #ffffff;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+
+    .button-mini:hover {
+      background: #f3f3f3;
+    }
+
+    body.theme-black .button-mini {
+      background: #333;
+      color: #ddd;
+      border-color: #666;
+    }
+
+    body.theme-black .button-mini:hover {
+      background: #444;
     }
 
     .tagline {
@@ -172,7 +285,7 @@
 
     .sub-label {
       font-size: 0.8rem;
-      opacity: 0.8;
+      opacity: 0.9;
     }
 
     .extra-block,
@@ -185,6 +298,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 4px;
     }
 
     .actions-row {
@@ -199,7 +314,7 @@
 <body class="theme-pink">
   <div class="top-bar">
     <div>
-      <h1>💕 卿卿我我創角小幫手</h1>
+      <h1>💕 卿卿我我創角小幫手（網頁版）</h1>
       <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
     </div>
     <div class="theme-select">
@@ -208,129 +323,147 @@
         <option value="pink" selected>淡粉紅</option>
         <option value="cream">奶油白</option>
         <option value="mint">薄荷綠</option>
+        <option value="lavender">薰衣草紫</option>
+        <option value="sky">天空藍</option>
+        <option value="lemon">淡檸檬黃</option>
+        <option value="grey">淺灰</option>
+        <option value="black">深夜黑</option>
       </select>
     </div>
   </div>
 
   <p class="sub-label">
     ※ 提醒：各欄位內容可自行使用 Markdown（# 標題、- 內容或清單等）撰寫，工具不會改動你寫的格式。
+  </p>
+  <p class="sub-label">
     ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。
   </p>
 
   <div class="section">
     <h2>💁‍♀️ 角色資訊</h2>
-    <label>角色名稱（必填）：</label><br/>
-    <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
 
-    <label>年齡（必填，15字）：</label><br/>
-    <input id="charAge" type="text" style="margin-bottom:8px;" /><br/>
+    <div class="label-row">
+      <label>角色名稱（必填）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
+    </div>
+    <input id="charName" type="text" />
 
-    <label>職業（必填，15字）：</label><br/>
-    <input id="charJob" type="text" style="margin-bottom:8px;" /><br/>
+    <div class="label-row">
+      <label>年齡（必填，15字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charAge')">清空</button>
+    </div>
+    <input id="charAge" type="text" />
 
-    <label>來自角色的一句話（必填，80字）：</label><br/>
+    <div class="label-row">
+      <label>職業（必填，15字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charJob')">清空</button>
+    </div>
+    <input id="charJob" type="text" />
+
+    <div class="label-row">
+      <label>來自角色的一句話（必填，80字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
+    </div>
     <textarea id="charQuote" style="min-height:60px;"></textarea>
 
-    <label>敘述（選填，700字）：</label><br/>
+    <div class="label-row">
+      <label>敘述（選填，700字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
+    </div>
     <textarea id="charDesc"></textarea>
 
-    <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label><br/>
-    <input id="charTags" type="text" style="margin-bottom:8px;" /><br/>
+    <div class="label-row">
+      <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('charTags')">清空</button>
+    </div>
+    <input id="charTags" type="text" />
 
-    <label>創作者筆記（選填，200字）：</label><br/>
+    <div class="label-row">
+      <label>創作者筆記（選填，200字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
+    </div>
     <textarea id="creatorNote" style="min-height:70px;"></textarea>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['charName','charAge','charJob','charQuote','charDesc','charTags','creatorNote'])">
-      清空角色資訊
-    </button>
   </div>
 
   <div class="section">
     <h2>🚻 性別</h2>
-    <label>性別（必填）：</label><br/>
+    <div class="label-row">
+      <label>性別（必填）：</label>
+      <button type="button" class="button-mini" onclick="clearGender()">清空</button>
+    </div>
     <select id="gender">
       <option value="未設置" selected>未設置</option>
       <option value="男性">男性</option>
       <option value="女性">女性</option>
     </select>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['gender'])">
-      清空性別
-    </button>
   </div>
 
   <div class="section">
     <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
+    <div class="label-row">
+      <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
+      <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
+    </div>
     <textarea id="basicInfo"></textarea>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['basicInfo'])">
-      清空基本資訊
-    </button>
   </div>
 
   <div class="section">
     <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
+    <div class="label-row">
+      <span class="sub-label">建議分段描述：對所有人、只對玩家、隱藏面。</span>
+      <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
+    </div>
     <textarea id="personality"></textarea>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['personality'])">
-      清空性格
-    </button>
   </div>
 
   <div class="section">
     <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
+    <div class="label-row">
+      <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
+      <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
+    </div>
     <textarea id="speechStyle"></textarea>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['speechStyle'])">
-      清空說話風格與習慣
-    </button>
   </div>
 
   <div class="section">
     <h2>🎬 第一次聊天場景與角色對話</h2>
 
-    <label>第一次聊天場景（選填，800字）</label>
+    <div class="label-row">
+      <label>第一次聊天場景（選填，800字）</label>
+      <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
+    </div>
     <div class="sub-label">
       設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
     </div>
     <textarea id="firstScene"></textarea>
 
-    <label>角色對話（選填，800字，示範該角色的說話方式）</label>
+    <div class="label-row">
+      <label>角色對話（選填，800字，示範該角色的說話方式）</label>
+      <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
+    </div>
     <textarea id="sampleDialogue"></textarea>
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['firstScene','sampleDialogue'])">
-      清空場景與對話
-    </button>
   </div>
 
   <div class="section">
     <h2>🎀 喜好與生日</h2>
-    <label>角色喜歡的東西（選填，50字）：</label>
-    <input id="likes" type="text" style="margin-bottom:8px;" />
 
-    <label>不喜歡的東西（選填，50字）：</label>
-    <input id="dislikes" type="text" style="margin-bottom:8px;" />
+    <div class="label-row">
+      <label>角色喜歡的東西（選填，50字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
+    </div>
+    <input id="likes" type="text" />
 
-    <label>生日（選填，西元日期）：</label>
+    <div class="label-row">
+      <label>不喜歡的東西（選填，50字）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
+    </div>
+    <input id="dislikes" type="text" />
+
+    <div class="label-row">
+      <label>生日（選填，西元日期）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('birthday')">清空</button>
+    </div>
     <input id="birthday" type="date" style="max-width:220px;" />
-
-    <button type="button"
-            class="button-secondary"
-            onclick="clearFields(['likes','dislikes','birthday'])">
-      清空喜好與生日
-    </button>
   </div>
 
   <div class="section">
@@ -359,7 +492,6 @@
     <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
     <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
 
-    <!-- 匯入 txt 功能 -->
     <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
     <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
   </div>
@@ -374,14 +506,8 @@
 
     function changeTheme(theme) {
       const body = document.body;
-      body.classList.remove("theme-pink", "theme-cream", "theme-mint");
-      if (theme === "cream") {
-        body.classList.add("theme-cream");
-      } else if (theme === "mint") {
-        body.classList.add("theme-mint");
-      } else {
-        body.classList.add("theme-pink");
-      }
+      body.className = "";
+      body.classList.add(`theme-${theme}`);
     }
 
     function limitText(text, max) {
@@ -427,7 +553,7 @@
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
-      delBtn.className = "button-secondary";
+      delBtn.className = "button-mini";
       delBtn.textContent = "刪除此項";
       delBtn.onclick = function () {
         block.remove();
@@ -469,7 +595,7 @@
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
-      delBtn.className = "button-secondary";
+      delBtn.className = "button-mini";
       delBtn.textContent = "刪除此項";
       delBtn.onclick = function () {
         block.remove();
@@ -522,18 +648,17 @@
       });
 
       if (missing.length > 0) {
-        alert("以下欄位為必填，目前尚未填寫：\n" + missing.join("、") + "\n\n仍然會幫你生成 Markdown，但建議補完再用喔～");
+        alert("以下欄位為必填，目前尚未填寫：\n" +
+              missing.join("、") +
+              "\n\n仍然會幫你生成 Markdown，但建議補完再用喔～");
       }
-      // 不阻止後續流程
       return true;
     }
 
     function generateMarkdown() {
-      // 只提醒，不中止
       validateRequired();
 
       const name = document.getElementById('charName').value.trim();
-
       const age = limitText(document.getElementById('charAge').value, 15);
       const job = limitText(document.getElementById('charJob').value, 15);
       const quote = limitText(document.getElementById('charQuote').value, 80);
@@ -562,7 +687,7 @@
 
       let md = [];
 
-      // # 角色資訊
+      // 角色資訊
       md.push(`# 角色資訊\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (gender) md.push(`- 性別：${gender}`);
@@ -588,34 +713,36 @@
 
       md.push("");
 
-      // ## 一、基本資訊
+      // 一、基本資訊
       md.push(`## 一、基本資訊`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
-      // ## 二、性格
+      // 二、性格
       md.push(`## 二、性格`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
-      // ## 三、說話風格與習慣
+      // 三、說話風格與習慣
       md.push(`## 三、說話風格與習慣`);
       md.push(speech || "（尚未填寫）");
       md.push("");
 
-      // 第一次聊天場景與角色對話（選填）
+      // 第一次聊天場景
       if (firstScene) {
         md.push(`### 第一次聊天場景`);
         md.push(firstScene);
         md.push("");
       }
 
+      // 角色對話
       if (sampleDialogue) {
         md.push(`### 角色對話（示範）`);
         md.push(sampleDialogue);
         md.push("");
       }
 
+      // 喜好
       if (likes || dislikes) {
         md.push(`### 喜好`);
         if (likes) md.push(`- 喜歡：${likes}`);
@@ -623,7 +750,7 @@
         md.push("");
       }
 
-      // # 附加資訊
+      // 附加資訊
       md.push(`# 附加資訊`);
       const extras = document.querySelectorAll(".extra-field");
       if (extras.length === 0) {
@@ -638,7 +765,7 @@
         });
       }
 
-      // # 創作者事件
+      // 創作者事件
       md.push(`# 創作者事件`);
       const events = document.querySelectorAll(".event-field");
       if (events.length === 0) {
@@ -679,7 +806,6 @@
       saveDraft();
     }
 
-    // 讀取某區塊：從 startIndex 開始，一直到下一個 # 開頭標題為止
     function readBlockUntilHeading(lines, startIndex) {
       let i = startIndex;
       const buf = [];
@@ -690,7 +816,6 @@
         buf.push(t);
         i++;
       }
-      // 去掉尾端多餘空行
       while (buf.length && buf[buf.length - 1].trim() === "") {
         buf.pop();
       }
@@ -708,7 +833,6 @@
         const raw = lines[i];
         const line = raw.trim();
 
-        // 角色資訊區
         if (line.startsWith("- 名稱：")) {
           document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
         } else if (line.startsWith("- 性別：")) {
@@ -729,7 +853,6 @@
             document.getElementById('charTags').value = parts.join(" ");
           }
         } else if (line.startsWith("- 一句話：")) {
-          // 下一行開始到遇到標題為止
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('charQuote').value = res.text;
           i = res.nextIndex;
@@ -743,7 +866,6 @@
           i = res.nextIndex;
         }
 
-        // 區塊：一、二、三
         else if (line === "## 一、基本資訊") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
@@ -758,7 +880,6 @@
           i = res.nextIndex;
         }
 
-        // 第一次聊天場景 / 角色對話
         else if (line === "### 第一次聊天場景") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
@@ -769,7 +890,6 @@
           i = res.nextIndex;
         }
 
-        // 喜好
         else if (line === "### 喜好") {
           let j = i + 1;
           while (j < lines.length) {
@@ -785,7 +905,6 @@
           i = j - 1;
         }
 
-        // 附加資訊 / 創作者事件
         else if (line.startsWith("## 附加資訊 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
@@ -797,7 +916,6 @@
         }
       }
 
-      // 填回附加資訊
       if (extrasTexts.length > 0) {
         extrasTexts.forEach(txt => {
           addExtra();
@@ -807,7 +925,6 @@
         });
       }
 
-      // 填回創作者事件
       if (eventsTexts.length > 0) {
         eventsTexts.forEach(txt => {
           addEvent();
@@ -902,16 +1019,21 @@
       });
     }
 
-    function clearFields(ids) {
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.tagName === 'SELECT' && id === 'gender') {
-          el.value = '未設置';
-        } else {
-          el.value = '';
-        }
-      });
+    function clearOne(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT' && id === 'gender') {
+        el.value = '未設置';
+      } else {
+        el.value = '';
+      }
+      saveDraft();
+    }
+
+    function clearGender() {
+      const el = document.getElementById('gender');
+      if (!el) return;
+      el.value = '未設置';
       saveDraft();
     }
 
