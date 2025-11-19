@@ -992,7 +992,7 @@ label {
       let md = [];
 
       // 角色資訊
-      md.push(`# 角色資訊\n`);
+      md.push(`✨角色資訊\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (category) md.push(`- 分類：${category}`);
       if (gender) md.push(`- 性別：${gender}`);
@@ -1019,44 +1019,44 @@ label {
       md.push("");
 
       // 一、基本資訊
-      md.push(`## 一、基本資訊`);
+      md.push(`✨ 一、基本資訊`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
       // 二、性格
-      md.push(`## 二、性格`);
+      md.push(`✨ 二、性格`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
       // 三、說話風格與習慣
-      md.push(`## 三、說話風格與習慣`);
+      md.push(`✨ 三、說話風格與習慣`);
       md.push(speech || "（尚未填寫）");
       md.push("");
 
       // 第一次聊天場景
       if (firstScene) {
-        md.push(`### 第一次聊天場景`);
+        md.push(`✨ 第一次聊天場景`);
         md.push(firstScene);
         md.push("");
       }
 
       // 角色對話
       if (sampleDialogue) {
-        md.push(`### 角色對話（示範）`);
+        md.push(`✨ 角色對話`);
         md.push(sampleDialogue);
         md.push("");
       }
 
       // 喜好
       if (likes || dislikes) {
-        md.push(`### 喜好`);
+        md.push(`✨ 喜好`);
         if (likes) md.push(`- 喜歡：${likes}`);
         if (dislikes) md.push(`- 不喜歡：${dislikes}`);
         md.push("");
       }
 
       // 附加資訊
-      md.push(`# 附加資訊`);
+      md.push(`✨ 附加資訊`);
       const extras = document.querySelectorAll(".extra-field");
       if (extras.length === 0) {
         md.push("- （尚未填寫）\n");
@@ -1064,14 +1064,14 @@ label {
         extras.forEach((el, idx) => {
           const txt = limitText(el.value, 500);
           if (!txt) return;
-          md.push(`## 附加資訊 ${idx + 1}`);
+          md.push(`✨ 附加資訊 ${idx + 1}`);
           md.push(txt);
           md.push("");
         });
       }
 
       // 創作者事件
-      md.push(`# 創作者事件`);
+      md.push(`✨ 創作者事件`);
       const events = document.querySelectorAll(".event-field");
       if (events.length === 0) {
         md.push("- （尚未填寫）\n");
@@ -1079,7 +1079,7 @@ label {
         events.forEach((el, idx) => {
           const txt = limitText(el.value, 2000);
           if (!txt) return;
-          md.push(`## 創作者事件 ${idx + 1}`);
+          md.push(`✨ 創作者事件 ${idx + 1}`);
           md.push(txt);
           md.push("");
         });
@@ -1151,31 +1151,31 @@ label {
           i = res.nextIndex;
         }
 
-        else if (line === "## 一、基本資訊") {
+        else if (line === "✨ 一、基本資訊") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
           i = res.nextIndex;
-        } else if (line === "## 二、性格") {
+        } else if (line === "✨ 二、性格") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('personality').value = res.text === "（尚未填寫）" ? "" : res.text;
           i = res.nextIndex;
-        } else if (line === "## 三、說話風格與習慣") {
+        } else if (line === "✨ 三、說話風格與習慣") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('speechStyle').value = res.text === "（尚未填寫）" ? "" : res.text;
           i = res.nextIndex;
         }
 
-        else if (line === "### 第一次聊天場景") {
+        else if (line === "✨ 第一次聊天場景") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
           i = res.nextIndex;
-        } else if (line.startsWith("### 角色對話")) {
+        } else if (line.startsWith("✨ 角色對話")) {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('sampleDialogue').value = res.text;
           i = res.nextIndex;
         }
 
-        else if (line === "### 喜好") {
+        else if (line === "✨ 喜好") {
           let j = i + 1;
           while (j < lines.length) {
             const t = lines[j].trim();
@@ -1190,11 +1190,11 @@ label {
           i = j - 1;
         }
 
-        else if (line.startsWith("## 附加資訊 ")) {
+        else if (line.startsWith("✨ 附加資訊 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
           i = res.nextIndex;
-        } else if (line.startsWith("## 創作者事件 ")) {
+        } else if (line.startsWith("✨ 創作者事件 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
           i = res.nextIndex;
