@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>卿卿我我創角小幫手</title>
+  <title>卿卿我我創角小幫手✨</title>
   <style>
     :root {
       --bg-pink: #ffe6f0;
@@ -95,7 +95,7 @@
       border-radius: 8px;
       font-family: "SF Mono", Consolas, monospace;
       font-size: 0.9rem;
-      margin-bottom: 40px;
+      margin-bottom: 16px;
     }
 
     button {
@@ -123,6 +123,21 @@
     button:active {
       transform: translateY(0);
       box-shadow: 0 1px 3px rgba(224, 111, 156, 0.3);
+    }
+
+    .button-secondary {
+      background: #fff;
+      color: var(--accent-dark);
+      border: 1px solid var(--accent-dark);
+      box-shadow: none;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+
+    .button-secondary:hover {
+      background: var(--accent-dark);
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(224, 111, 156, 0.4);
     }
 
     .tagline {
@@ -155,13 +170,32 @@
       font-size: 0.8rem;
       opacity: 0.8;
     }
+
+    .extra-block,
+    .event-block {
+      margin-bottom: 8px;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body class="theme-pink">
   <div class="top-bar">
     <div>
-      <h1>卿卿我我創角小幫手（網頁版）</h1>
-      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
+      <h1>卿卿我我創角小幫手</h1>
+      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給AI當角色卡。</div>
     </div>
     <div class="theme-select">
       背景主題：
@@ -177,7 +211,7 @@
     <h2>角色資訊</h2>
     <label>角色名稱（顯示用，可空白）：</label><br/>
     <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
-    <label>角色代號（例如 YUCHENG_BF_01，可空白）：</label><br/>
+    <label>角色代號（例如 TiTi_01，可空白，只是幫助整理角色順序）：</label><br/>
     <input id="charCode" type="text" />
   </div>
 
@@ -197,27 +231,28 @@
   </div>
 
   <div class="section">
-    <h2>附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
+    <h2>✨附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
     <div id="extraContainer"></div>
     <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
   </div>
 
   <div class="section">
-    <h2>創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
+    <h2>✨創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
     <div id="eventContainer"></div>
     <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
   </div>
 
-  <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
+  <div class="actions-row">
+    <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
+    <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
+  </div>
 
-  <h2>輸出結果（Markdown，可直接複製）</h2>
+  <h2>✨輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
 
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    let extraCount = 0;
-    let eventCount = 0;
 
     function changeTheme(theme) {
       const body = document.body;
@@ -239,44 +274,98 @@
       return text;
     }
 
+    function renumberExtras() {
+      const blocks = document.querySelectorAll(".extra-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `附加資訊 ${idx + 1}：`;
+      });
+    }
+
+    function renumberEvents() {
+      const blocks = document.querySelectorAll(".event-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `創作者事件 ${idx + 1}：`;
+      });
+    }
+
     function addExtra() {
-      if (extraCount >= EXTRA_MAX) {
+      const current = document.querySelectorAll(".extra-block").length;
+      if (current >= EXTRA_MAX) {
         alert("附加資訊最多只能 10 筆喔～");
         return;
       }
-      extraCount++;
       const container = document.getElementById("extraContainer");
 
+      const block = document.createElement("div");
+      block.className = "extra-block";
+
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
       const label = document.createElement("label");
-      label.textContent = `附加資訊 ${extraCount}：`;
-      label.style.display = "block";
+      label.textContent = "附加資訊 ：";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-secondary";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberExtras();
+      };
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
 
       const textarea = document.createElement("textarea");
       textarea.className = "extra-field";
-      textarea.setAttribute("data-index", extraCount);
 
-      container.appendChild(label);
-      container.appendChild(textarea);
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberExtras();
     }
 
     function addEvent() {
-      if (eventCount >= EVENT_MAX) {
+      const current = document.querySelectorAll(".event-block").length;
+      if (current >= EVENT_MAX) {
         alert("創作者事件最多只能 20 筆喔～");
         return;
       }
-      eventCount++;
       const container = document.getElementById("eventContainer");
 
+      const block = document.createElement("div");
+      block.className = "event-block";
+
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
       const label = document.createElement("label");
-      label.textContent = `創作者事件 ${eventCount}：`;
-      label.style.display = "block";
+      label.textContent = "創作者事件 ：";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-secondary";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberEvents();
+      };
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
 
       const textarea = document.createElement("textarea");
       textarea.className = "event-field";
-      textarea.setAttribute("data-index", eventCount);
 
-      container.appendChild(label);
-      container.appendChild(textarea);
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberEvents();
     }
 
     function generateMarkdown() {
@@ -290,7 +379,7 @@
       let lines = [];
 
       // 標頭
-      lines.push(`## 🧩 卿卿我我角色設定：${name || '（未命名）'}`);
+      lines.push(`🧩 卿卿我我角色設定：${name || '（未命名）'}`);
       lines.push(`*角色代號：* \`${code}\``);
       lines.push("");
 
@@ -318,7 +407,7 @@
         if (txt) {
           anyExtra = true;
           const num = idx + 1;
-          lines.push(`# 附加資訊 ${num}`);
+          lines.push(`✨ 附加資訊 ${num}`);
           lines.push(txt);
           lines.push("");
         }
@@ -340,7 +429,7 @@
         if (txt) {
           anyEvent = true;
           const num = idx + 1;
-          lines.push(`# 創作者事件 ${num}`);
+          lines.push(`✨ 創作者事件 ${num}`);
           lines.push(txt);
           lines.push("");
         }
@@ -352,6 +441,32 @@
       }
 
       document.getElementById('output').textContent = lines.join("\n");
+    }
+
+    function downloadTxt() {
+      // 確保已經有內容，沒有的話先幫你生一份
+      if (!document.getElementById('output').textContent.trim()) {
+        generateMarkdown();
+      }
+      const text = document.getElementById('output').textContent;
+      if (!text.trim()) {
+        alert("目前還沒有可以下載的內容喔～先填一點再按生成吧！");
+        return;
+      }
+
+      const name = document.getElementById('charName').value.trim() || "character";
+      const filename = `${name}_prompt.txt`;
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
