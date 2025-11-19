@@ -237,6 +237,12 @@
 
     <label>創作者筆記（選填，200字）：</label><br/>
     <textarea id="creatorNote" style="min-height:70px;"></textarea>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['charName','charCode','charAge','charJob','charQuote','charDesc','charTags','creatorNote'])">
+      清空角色資訊
+    </button>
   </div>
 
   <div class="section">
@@ -247,21 +253,45 @@
       <option value="男性">男性</option>
       <option value="女性">女性</option>
     </select>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['gender'])">
+      清空性別
+    </button>
   </div>
 
   <div class="section">
     <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
     <textarea id="basicInfo"></textarea>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['basicInfo'])">
+      清空基本資訊
+    </button>
   </div>
 
   <div class="section">
     <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
     <textarea id="personality"></textarea>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['personality'])">
+      清空性格
+    </button>
   </div>
 
   <div class="section">
     <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
     <textarea id="speechStyle"></textarea>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['speechStyle'])">
+      清空說話風格與習慣
+    </button>
   </div>
 
   <div class="section">
@@ -275,6 +305,12 @@
 
     <label>角色對話（選填，800字，示範該角色的說話方式）</label>
     <textarea id="sampleDialogue"></textarea>
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['firstScene','sampleDialogue'])">
+      清空場景與對話
+    </button>
   </div>
 
   <div class="section">
@@ -287,18 +323,34 @@
 
     <label>生日（選填，西元日期）：</label>
     <input id="birthday" type="date" style="max-width:220px;" />
+
+    <button type="button"
+            class="button-secondary"
+            onclick="clearFields(['likes','dislikes','birthday'])">
+      清空喜好與生日
+    </button>
   </div>
 
   <div class="section">
     <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
     <div id="extraContainer"></div>
     <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+    <button type="button"
+            class="button-secondary"
+            onclick="document.getElementById('extraContainer').innerHTML=''; saveDraft();">
+      清空所有附加資訊
+    </button>
   </div>
 
   <div class="section">
     <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
     <div id="eventContainer"></div>
     <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+    <button type="button"
+            class="button-secondary"
+            onclick="document.getElementById('eventContainer').innerHTML=''; saveDraft();">
+      清空所有創作者事件
+    </button>
   </div>
 
   <div class="actions-row">
@@ -313,554 +365,668 @@
   <h2>📝 輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
 
-<script>
-  const EXTRA_MAX = 10;
-  const EVENT_MAX = 20;
+  <script>
+    const EXTRA_MAX = 10;
+    const EVENT_MAX = 20;
+    const STORAGE_KEY = 'qing_char_draft_v1';
 
-  function changeTheme(theme) {
-    const body = document.body;
-    body.classList.remove("theme-pink", "theme-cream", "theme-mint");
-    if (theme === "cream") {
-      body.classList.add("theme-cream");
-    } else if (theme === "mint") {
-      body.classList.add("theme-mint");
-    } else {
-      body.classList.add("theme-pink");
-    }
-  }
-
-  function limitText(text, max) {
-    text = text.trim();
-    if (text.length > max) {
-      return text.slice(0, max);
-    }
-    return text;
-  }
-
-  function renumberExtras() {
-    const blocks = document.querySelectorAll(".extra-block");
-    blocks.forEach((block, idx) => {
-      const label = block.querySelector("label");
-      label.textContent = `附加資訊 ${idx + 1}：`;
-    });
-  }
-
-  function renumberEvents() {
-    const blocks = document.querySelectorAll(".event-block");
-    blocks.forEach((block, idx) => {
-      const label = block.querySelector("label");
-      label.textContent = `創作者事件 ${idx + 1}：`;
-    });
-  }
-
-  function addExtra() {
-    const current = document.querySelectorAll(".extra-block").length;
-    if (current >= EXTRA_MAX) {
-      alert("附加資訊最多只能 10 筆喔～");
-      return;
-    }
-    const container = document.getElementById("extraContainer");
-
-    const block = document.createElement("div");
-    block.className = "extra-block";
-
-    const labelRow = document.createElement("div");
-    labelRow.className = "label-row";
-
-    const label = document.createElement("label");
-    label.textContent = "附加資訊 ：";
-
-    const delBtn = document.createElement("button");
-    delBtn.type = "button";
-    delBtn.className = "button-secondary";
-    delBtn.textContent = "刪除此項";
-    delBtn.onclick = function () {
-      block.remove();
-      renumberExtras();
-    };
-
-    labelRow.appendChild(label);
-    labelRow.appendChild(delBtn);
-
-    const textarea = document.createElement("textarea");
-    textarea.className = "extra-field";
-
-    block.appendChild(labelRow);
-    block.appendChild(textarea);
-    container.appendChild(block);
-
-    renumberExtras();
-  }
-
-  function addEvent() {
-    const current = document.querySelectorAll(".event-block").length;
-    if (current >= EVENT_MAX) {
-      alert("創作者事件最多只能 20 筆喔～");
-      return;
-    }
-    const container = document.getElementById("eventContainer");
-
-    const block = document.createElement("div");
-    block.className = "event-block";
-
-    const labelRow = document.createElement("div");
-    labelRow.className = "label-row";
-
-    const label = document.createElement("label");
-    label.textContent = "創作者事件 ：";
-
-    const delBtn = document.createElement("button");
-    delBtn.type = "button";
-    delBtn.className = "button-secondary";
-    delBtn.textContent = "刪除此項";
-    delBtn.onclick = function () {
-      block.remove();
-      renumberEvents();
-    };
-
-    labelRow.appendChild(label);
-    labelRow.appendChild(delBtn);
-
-    const textarea = document.createElement("textarea");
-    textarea.className = "event-field";
-
-    block.appendChild(labelRow);
-    block.appendChild(textarea);
-    container.appendChild(block);
-
-    renumberEvents();
-  }
-
-  // 必填欄位檢查
-  function validateRequired() {
-    const requiredFields = [
-      { id: 'charName', label: '姓名' },
-      { id: 'charAge', label: '年齡' },
-      { id: 'charJob', label: '職業' },
-      { id: 'charQuote', label: '來自角色的一句話' },
-      { id: 'gender', label: '性別' },
-      { id: 'basicInfo', label: '一、基本資訊' },
-      { id: 'personality', label: '二、性格' },
-      { id: 'speechStyle', label: '三、說話風格與習慣' }
-    ];
-
-    const missing = [];
-
-    requiredFields.forEach(f => {
-      const el = document.getElementById(f.id);
-      if (!el) return;
-      let value = '';
-      if (el.tagName === 'SELECT') {
-        value = el.value.trim();
+    function changeTheme(theme) {
+      const body = document.body;
+      body.classList.remove("theme-pink", "theme-cream", "theme-mint");
+      if (theme === "cream") {
+        body.classList.add("theme-cream");
+      } else if (theme === "mint") {
+        body.classList.add("theme-mint");
       } else {
-        value = el.value.trim();
+        body.classList.add("theme-pink");
       }
-      if (!value) {
-        missing.push(f.label);
+    }
+
+    function limitText(text, max) {
+      text = text.trim();
+      if (text.length > max) {
+        return text.slice(0, max);
       }
-    });
-
-    if (missing.length > 0) {
-      alert("以下欄位為必填，請先補完喔：\n" + missing.join("、"));
-      return false;
-    }
-    return true;
-  }
-
-  function generateMarkdown() {
-    if (!validateRequired()) return;
-
-    const name = document.getElementById('charName').value.trim();
-    const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
-
-    const age = limitText(document.getElementById('charAge').value, 15);
-    const job = limitText(document.getElementById('charJob').value, 15);
-    const quote = limitText(document.getElementById('charQuote').value, 80);
-    const desc = limitText(document.getElementById('charDesc').value, 700);
-    const tagsRaw = document.getElementById('charTags').value.trim();
-    const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
-    const gender = document.getElementById('gender').value.trim();
-
-    const basic = limitText(document.getElementById('basicInfo').value, 700);
-    const personality = limitText(document.getElementById('personality').value, 700);
-    const speech = limitText(document.getElementById('speechStyle').value, 700);
-
-    const firstScene = limitText(document.getElementById('firstScene').value, 800);
-    const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
-    const likes = limitText(document.getElementById('likes').value, 50);
-    const dislikes = limitText(document.getElementById('dislikes').value, 50);
-    const birthdayRaw = document.getElementById('birthday').value;
-
-    let birthdayText = birthdayRaw ? birthdayRaw : "";
-
-    let tagsFormatted = "";
-    if (tagsRaw) {
-      const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
-      tagsFormatted = parts.map(t => "#" + t).join(" ");
+      return text;
     }
 
-    const formatBlock = (text) => {
-      if (!text) return "- （未填寫）";
-      let lines = text.split("\n").map(l => "  " + l);
-      return "- >\n" + lines.join("\n");
-    };
-
-    let md = [];
-
-    // # 角色資訊
-    md.push(`# 角色資訊\n`);
-    md.push(`- 名稱：${name || "（未命名）"}`);
-    md.push(`- 角色代號：\`${code}\``);
-    if (gender) md.push(`- 性別：${gender}`);
-    if (age) md.push(`- 年齡：${age}`);
-    if (job) md.push(`- 職業：${job}`);
-    if (birthdayText) md.push(`- 生日：${birthdayText}`);
-    if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
-
-    if (quote) {
-      md.push(`- 一句話：`);
-      md.push(`  > ${quote}`);
-    }
-
-    if (desc) {
-      md.push(`- 敘述：`);
-      md.push(`  > ${desc.replace(/\n/g, "\n    ")}`);
-    }
-
-    if (creatorNote) {
-      md.push(`- 創作者筆記：`);
-      md.push(`  > ${creatorNote.replace(/\n/g, "\n    ")}`);
-    }
-
-    md.push("");
-
-    // ## 一、基本資訊
-    md.push(`## 一、基本資訊`);
-    md.push(formatBlock(basic));
-    md.push("");
-
-    // ## 二、性格
-    md.push(`## 二、性格`);
-    md.push(formatBlock(personality));
-    md.push("");
-
-    // ## 三、說話風格與習慣
-    md.push(`## 三、說話風格與習慣`);
-    md.push(formatBlock(speech));
-    md.push("");
-
-    // 第一次聊天場景與角色對話（選填）
-    if (firstScene) {
-      md.push(`### 第一次聊天場景`);
-      md.push(formatBlock(firstScene));
-      md.push("");
-    }
-
-    if (sampleDialogue) {
-      md.push(`### 角色對話（示範）`);
-      md.push(formatBlock(sampleDialogue));
-      md.push("");
-    }
-
-    if (likes || dislikes) {
-      md.push(`### 喜好`);
-      if (likes) md.push(`- 喜歡：${likes}`);
-      if (dislikes) md.push(`- 不喜歡：${dislikes}`);
-      md.push("");
-    }
-
-    // # 附加資訊
-    md.push(`# 附加資訊`);
-    const extras = document.querySelectorAll(".extra-field");
-    if (extras.length === 0) {
-      md.push("- （尚未填寫）\n");
-    } else {
-      extras.forEach((el, idx) => {
-        const txt = limitText(el.value, 500);
-        if (!txt) return;
-        md.push(`## 附加資訊 ${idx + 1}`);
-        md.push(formatBlock(txt));
-        md.push("");
+    function renumberExtras() {
+      const blocks = document.querySelectorAll(".extra-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `附加資訊 ${idx + 1}：`;
       });
     }
 
-    // # 創作者事件
-    md.push(`# 創作者事件`);
-    const events = document.querySelectorAll(".event-field");
-    if (events.length === 0) {
-      md.push("- （尚未填寫）\n");
-    } else {
-      events.forEach((el, idx) => {
-        const txt = limitText(el.value, 2000);
-        if (!txt) return;
-        md.push(`## 創作者事件 ${idx + 1}`);
-        md.push(formatBlock(txt));
-        md.push("");
+    function renumberEvents() {
+      const blocks = document.querySelectorAll(".event-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `創作者事件 ${idx + 1}：`;
       });
     }
 
-    document.getElementById('output').textContent = md.join("\n");
-  }
+    function addExtra() {
+      const current = document.querySelectorAll(".extra-block").length;
+      if (current >= EXTRA_MAX) {
+        alert("附加資訊最多只能 10 筆喔～");
+        return;
+      }
+      const container = document.getElementById("extraContainer");
 
-  function resetFormForImport() {
-    const ids = [
-      'charName','charCode','charAge','charJob','charQuote','charDesc',
-      'charTags','creatorNote','basicInfo','personality','speechStyle',
-      'firstScene','sampleDialogue','likes','dislikes','birthday'
-    ];
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = "";
-    });
+      const block = document.createElement("div");
+      block.className = "extra-block";
 
-    const genderSel = document.getElementById('gender');
-    if (genderSel) genderSel.value = '未設置';
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
 
-    const extraContainer = document.getElementById('extraContainer');
-    const eventContainer = document.getElementById('eventContainer');
-    if (extraContainer) extraContainer.innerHTML = "";
-    if (eventContainer) eventContainer.innerHTML = "";
-  }
+      const label = document.createElement("label");
+      label.textContent = "附加資訊 ：";
 
-  function readIndentedBlock(lines, startIndex) {
-    let i = startIndex;
-    while (i < lines.length && lines[i].trim() === "") i++;
-    if (i >= lines.length) return { text: "", nextIndex: i - 1 };
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-secondary";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberExtras();
+        saveDraft();
+      };
 
-    const first = lines[i].trim();
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
 
-    if (first.startsWith("- >")) {
-      i++;
+      const textarea = document.createElement("textarea");
+      textarea.className = "extra-field";
+      textarea.addEventListener('input', saveDraft);
+
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberExtras();
+      saveDraft();
+    }
+
+    function addEvent() {
+      const current = document.querySelectorAll(".event-block").length;
+      if (current >= EVENT_MAX) {
+        alert("創作者事件最多只能 20 筆喔～");
+        return;
+      }
+      const container = document.getElementById("eventContainer");
+
+      const block = document.createElement("div");
+      block.className = "event-block";
+
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
+      const label = document.createElement("label");
+      label.textContent = "創作者事件 ：";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-secondary";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberEvents();
+        saveDraft();
+      };
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "event-field";
+      textarea.addEventListener('input', saveDraft);
+
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberEvents();
+      saveDraft();
+    }
+
+    // 必填欄位檢查
+    function validateRequired() {
+      const requiredFields = [
+        { id: 'charName', label: '姓名' },
+        { id: 'charAge', label: '年齡' },
+        { id: 'charJob', label: '職業' },
+        { id: 'charQuote', label: '來自角色的一句話' },
+        { id: 'gender', label: '性別' },
+        { id: 'basicInfo', label: '一、基本資訊' },
+        { id: 'personality', label: '二、性格' },
+        { id: 'speechStyle', label: '三、說話風格與習慣' }
+      ];
+
+      const missing = [];
+
+      requiredFields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        let value = '';
+        if (el.tagName === 'SELECT') {
+          value = el.value.trim();
+        } else {
+          value = el.value.trim();
+        }
+        if (!value) {
+          missing.push(f.label);
+        }
+      });
+
+      if (missing.length > 0) {
+        alert("以下欄位為必填，請先補完喔：\n" + missing.join("、"));
+        return false;
+      }
+      return true;
+    }
+
+    function generateMarkdown() {
+      if (!validateRequired()) return;
+
+      const name = document.getElementById('charName').value.trim();
+      const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
+
+      const age = limitText(document.getElementById('charAge').value, 15);
+      const job = limitText(document.getElementById('charJob').value, 15);
+      const quote = limitText(document.getElementById('charQuote').value, 80);
+      const desc = limitText(document.getElementById('charDesc').value, 700);
+      const tagsRaw = document.getElementById('charTags').value.trim();
+      const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
+      const gender = document.getElementById('gender').value.trim();
+
+      const basic = limitText(document.getElementById('basicInfo').value, 700);
+      const personality = limitText(document.getElementById('personality').value, 700);
+      const speech = limitText(document.getElementById('speechStyle').value, 700);
+
+      const firstScene = limitText(document.getElementById('firstScene').value, 800);
+      const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
+      const likes = limitText(document.getElementById('likes').value, 50);
+      const dislikes = limitText(document.getElementById('dislikes').value, 50);
+      const birthdayRaw = document.getElementById('birthday').value;
+
+      let birthdayText = birthdayRaw ? birthdayRaw : "";
+
+      let tagsFormatted = "";
+      if (tagsRaw) {
+        const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
+        tagsFormatted = parts.map(t => "#" + t).join(" ");
+      }
+
+      const formatBlock = (text) => {
+        if (!text) return "- （未填寫）";
+        let lines = text.split("\n").map(l => "  " + l);
+        return "- >\n" + lines.join("\n");
+      };
+
+      let md = [];
+
+      // # 角色資訊
+      md.push(`# 角色資訊\n`);
+      md.push(`- 名稱：${name || "（未命名）"}`);
+      md.push(`- 角色代號：\`${code}\``);
+      if (gender) md.push(`- 性別：${gender}`);
+      if (age) md.push(`- 年齡：${age}`);
+      if (job) md.push(`- 職業：${job}`);
+      if (birthdayText) md.push(`- 生日：${birthdayText}`);
+      if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
+
+      if (quote) {
+        md.push(`- 一句話：`);
+        md.push(`  > ${quote}`);
+      }
+
+      if (desc) {
+        md.push(`- 敘述：`);
+        md.push(`  > ${desc.replace(/\n/g, "\n    ")}`);
+      }
+
+      if (creatorNote) {
+        md.push(`- 創作者筆記：`);
+        md.push(`  > ${creatorNote.replace(/\n/g, "\n    ")}`);
+      }
+
+      md.push("");
+
+      // ## 一、基本資訊
+      md.push(`## 一、基本資訊`);
+      md.push(formatBlock(basic));
+      md.push("");
+
+      // ## 二、性格
+      md.push(`## 二、性格`);
+      md.push(formatBlock(personality));
+      md.push("");
+
+      // ## 三、說話風格與習慣
+      md.push(`## 三、說話風格與習慣`);
+      md.push(formatBlock(speech));
+      md.push("");
+
+      // 第一次聊天場景與角色對話（選填）
+      if (firstScene) {
+        md.push(`### 第一次聊天場景`);
+        md.push(formatBlock(firstScene));
+        md.push("");
+      }
+
+      if (sampleDialogue) {
+        md.push(`### 角色對話（示範）`);
+        md.push(formatBlock(sampleDialogue));
+        md.push("");
+      }
+
+      if (likes || dislikes) {
+        md.push(`### 喜好`);
+        if (likes) md.push(`- 喜歡：${likes}`);
+        if (dislikes) md.push(`- 不喜歡：${dislikes}`);
+        md.push("");
+      }
+
+      // # 附加資訊
+      md.push(`# 附加資訊`);
+      const extras = document.querySelectorAll(".extra-field");
+      if (extras.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        extras.forEach((el, idx) => {
+          const txt = limitText(el.value, 500);
+          if (!txt) return;
+          md.push(`## 附加資訊 ${idx + 1}`);
+          md.push(formatBlock(txt));
+          md.push("");
+        });
+      }
+
+      // # 創作者事件
+      md.push(`# 創作者事件`);
+      const events = document.querySelectorAll(".event-field");
+      if (events.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        events.forEach((el, idx) => {
+          const txt = limitText(el.value, 2000);
+          if (!txt) return;
+          md.push(`## 創作者事件 ${idx + 1}`);
+          md.push(formatBlock(txt));
+          md.push("");
+        });
+      }
+
+      document.getElementById('output').textContent = md.join("\n");
+      saveDraft();
+    }
+
+    function resetFormForImport() {
+      const ids = [
+        'charName','charCode','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+      const genderSel = document.getElementById('gender');
+      if (genderSel) genderSel.value = '未設置';
+
+      const extraContainer = document.getElementById('extraContainer');
+      const eventContainer = document.getElementById('eventContainer');
+      if (extraContainer) extraContainer.innerHTML = "";
+      if (eventContainer) eventContainer.innerHTML = "";
+
+      saveDraft();
+    }
+
+    function readIndentedBlock(lines, startIndex) {
+      let i = startIndex;
+      while (i < lines.length && lines[i].trim() === "") i++;
+      if (i >= lines.length) return { text: "", nextIndex: i - 1 };
+
+      const first = lines[i].trim();
+
+      if (first.startsWith("- >")) {
+        i++;
+        const buf = [];
+        while (i < lines.length) {
+          const line = lines[i];
+          if (line.startsWith("  ")) {
+            buf.push(line.slice(2));
+            i++;
+          } else if (line.trim() === "") {
+            buf.push("");
+            i++;
+          } else {
+            break;
+          }
+        }
+        return { text: buf.join("\n").trim(), nextIndex: i - 1 };
+      }
+
+      if (first.startsWith("- （尚未填寫")) {
+        return { text: "", nextIndex: i };
+      }
+
       const buf = [];
       while (i < lines.length) {
-        const line = lines[i];
-        if (line.startsWith("  ")) {
-          buf.push(line.slice(2));
-          i++;
-        } else if (line.trim() === "") {
-          buf.push("");
-          i++;
-        } else {
-          break;
-        }
+        const t = lines[i].trim();
+        if (t === "" || t.startsWith("#")) break;
+        buf.push(lines[i]);
+        i++;
       }
       return { text: buf.join("\n").trim(), nextIndex: i - 1 };
     }
 
-    if (first.startsWith("- （尚未填寫")) {
-      return { text: "", nextIndex: i };
+    function parseMarkdownToForm(md) {
+      resetFormForImport();
+
+      const lines = md.split(/\r?\n/);
+      const extrasTexts = [];
+      const eventsTexts = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const line = raw.trim();
+
+        if (line.startsWith("- 名稱：")) {
+          document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
+        } else if (line.startsWith("- 角色代號：")) {
+          const m = line.match(/`([^`]+)`/);
+          const v = m ? m[1] : line.replace("- 角色代號：", "").trim();
+          document.getElementById('charCode').value = v === "（未設定代號）" ? "" : v;
+        } else if (line.startsWith("- 性別：")) {
+          const v = line.replace("- 性別：", "").trim();
+          const genderSel = document.getElementById('gender');
+          if (genderSel && v) genderSel.value = v;
+        } else if (line.startsWith("- 年齡：")) {
+          document.getElementById('charAge').value = line.replace("- 年齡：", "").trim();
+        } else if (line.startsWith("- 職業：")) {
+          document.getElementById('charJob').value = line.replace("- 職業：", "").trim();
+        } else if (line.startsWith("- 生日：")) {
+          const v = line.replace("- 生日：", "").trim();
+          document.getElementById('birthday').value = v;
+        } else if (line.startsWith("- 標籤：")) {
+          const t = line.replace("- 標籤：", "").trim();
+          if (t) {
+            const parts = t.split(/\s+/).map(x => x.replace(/^#/, "")).filter(Boolean);
+            document.getElementById('charTags').value = parts.join(" ");
+          }
+        } else if (line.startsWith("- 一句話：")) {
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('charQuote').value = buf.join("\n").trim();
+          i = j - 1;
+        } else if (line.startsWith("- 敘述：")) {
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('charDesc').value = buf.join("\n").trim();
+          i = j - 1;
+        } else if (line.startsWith("- 創作者筆記：")) {
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('creatorNote').value = buf.join("\n").trim();
+          i = j - 1;
+        }
+
+        else if (line === "## 一、基本資訊") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('basicInfo').value = res.text;
+          i = res.nextIndex;
+        } else if (line === "## 二、性格") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('personality').value = res.text;
+          i = res.nextIndex;
+        } else if (line === "## 三、說話風格與習慣") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('speechStyle').value = res.text;
+          i = res.nextIndex;
+        }
+
+        else if (line === "### 第一次聊天場景") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('firstScene').value = res.text;
+          i = res.nextIndex;
+        } else if (line.startsWith("### 角色對話")) {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('sampleDialogue').value = res.text;
+          i = res.nextIndex;
+        }
+
+        else if (line === "### 喜好") {
+          let j = i + 1;
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t === "" || t.startsWith("#")) break;
+            if (t.startsWith("- 喜歡：")) {
+              document.getElementById('likes').value = t.replace("- 喜歡：", "").trim();
+            } else if (t.startsWith("- 不喜歡：")) {
+              document.getElementById('dislikes').value = t.replace("- 不喜歡：", "").trim();
+            }
+            j++;
+          }
+          i = j - 1;
+        }
+
+        else if (line.startsWith("## 附加資訊 ")) {
+          const res = readIndentedBlock(lines, i + 1);
+          if (res.text) extrasTexts.push(res.text);
+          i = res.nextIndex;
+        }
+
+        else if (line.startsWith("## 創作者事件 ")) {
+          const res = readIndentedBlock(lines, i + 1);
+          if (res.text) eventsTexts.push(res.text);
+          i = res.nextIndex;
+        }
+      }
+
+      if (extrasTexts.length > 0) {
+        extrasTexts.forEach(txt => {
+          addExtra();
+          const els = document.querySelectorAll(".extra-field");
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
+
+      if (eventsTexts.length > 0) {
+        eventsTexts.forEach(txt => {
+          addEvent();
+          const els = document.querySelectorAll(".event-field");
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
+
+      saveDraft();
     }
 
-    const buf = [];
-    while (i < lines.length) {
-      const t = lines[i].trim();
-      if (t === "" || t.startsWith("#")) break;
-      buf.push(lines[i]);
-      i++;
+    function collectFormData() {
+      const fieldIds = [
+        'charName','charCode','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday','gender'
+      ];
+
+      const data = { fields: {}, extras: [], events: [] };
+
+      fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT') {
+          data.fields[id] = el.value || "";
+        } else {
+          data.fields[id] = el.value || "";
+        }
+      });
+
+      document.querySelectorAll('.extra-field').forEach(el => {
+        data.extras.push(el.value || "");
+      });
+      document.querySelectorAll('.event-field').forEach(el => {
+        data.events.push(el.value || "");
+      });
+
+      return data;
     }
-    return { text: buf.join("\n").trim(), nextIndex: i - 1 };
-  }
 
-  function parseMarkdownToForm(md) {
-    resetFormForImport();
-
-    const lines = md.split(/\r?\n/);
-    const extrasTexts = [];
-    const eventsTexts = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const raw = lines[i];
-      const line = raw.trim();
-
-      if (line.startsWith("- 名稱：")) {
-        document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
-      } else if (line.startsWith("- 角色代號：")) {
-        const m = line.match(/`([^`]+)`/);
-        const v = m ? m[1] : line.replace("- 角色代號：", "").trim();
-        document.getElementById('charCode').value = v === "（未設定代號）" ? "" : v;
-      } else if (line.startsWith("- 性別：")) {
-        const v = line.replace("- 性別：", "").trim();
-        const genderSel = document.getElementById('gender');
-        if (genderSel && v) genderSel.value = v;
-      } else if (line.startsWith("- 年齡：")) {
-        document.getElementById('charAge').value = line.replace("- 年齡：", "").trim();
-      } else if (line.startsWith("- 職業：")) {
-        document.getElementById('charJob').value = line.replace("- 職業：", "").trim();
-      } else if (line.startsWith("- 生日：")) {
-        const v = line.replace("- 生日：", "").trim();
-        document.getElementById('birthday').value = v;
-      } else if (line.startsWith("- 標籤：")) {
-        const t = line.replace("- 標籤：", "").trim();
-        if (t) {
-          const parts = t.split(/\s+/).map(x => x.replace(/^#/, "")).filter(Boolean);
-          document.getElementById('charTags').value = parts.join(" ");
-        }
-      } else if (line.startsWith("- 一句話：")) {
-        let j = i + 1;
-        const buf = [];
-        while (j < lines.length) {
-          const t = lines[j].trim();
-          if (t.startsWith(">")) {
-            buf.push(t.slice(1).trim());
-            j++;
-          } else if (t === "") {
-            buf.push("");
-            j++;
-          } else {
-            break;
-          }
-        }
-        document.getElementById('charQuote').value = buf.join("\n").trim();
-        i = j - 1;
-      } else if (line.startsWith("- 敘述：")) {
-        let j = i + 1;
-        const buf = [];
-        while (j < lines.length) {
-          const t = lines[j].trim();
-          if (t.startsWith(">")) {
-            buf.push(t.slice(1).trim());
-            j++;
-          } else if (t === "") {
-            buf.push("");
-            j++;
-          } else {
-            break;
-          }
-        }
-        document.getElementById('charDesc').value = buf.join("\n").trim();
-        i = j - 1;
-      } else if (line.startsWith("- 創作者筆記：")) {
-        let j = i + 1;
-        const buf = [];
-        while (j < lines.length) {
-          const t = lines[j].trim();
-          if (t.startsWith(">")) {
-            buf.push(t.slice(1).trim());
-            j++;
-          } else if (t === "") {
-            buf.push("");
-            j++;
-          } else {
-            break;
-          }
-        }
-        document.getElementById('creatorNote').value = buf.join("\n").trim();
-        i = j - 1;
-      }
-
-      else if (line === "## 一、基本資訊") {
-        const res = readIndentedBlock(lines, i + 1);
-        document.getElementById('basicInfo').value = res.text;
-        i = res.nextIndex;
-      } else if (line === "## 二、性格") {
-        const res = readIndentedBlock(lines, i + 1);
-        document.getElementById('personality').value = res.text;
-        i = res.nextIndex;
-      } else if (line === "## 三、說話風格與習慣") {
-        const res = readIndentedBlock(lines, i + 1);
-        document.getElementById('speechStyle').value = res.text;
-        i = res.nextIndex;
-      }
-
-      else if (line === "### 第一次聊天場景") {
-        const res = readIndentedBlock(lines, i + 1);
-        document.getElementById('firstScene').value = res.text;
-        i = res.nextIndex;
-      } else if (line.startsWith("### 角色對話")) {
-        const res = readIndentedBlock(lines, i + 1);
-        document.getElementById('sampleDialogue').value = res.text;
-        i = res.nextIndex;
-      }
-
-      else if (line === "### 喜好") {
-        let j = i + 1;
-        while (j < lines.length) {
-          const t = lines[j].trim();
-          if (t === "" || t.startsWith("#")) break;
-          if (t.startsWith("- 喜歡：")) {
-            document.getElementById('likes').value = t.replace("- 喜歡：", "").trim();
-          } else if (t.startsWith("- 不喜歡：")) {
-            document.getElementById('dislikes').value = t.replace("- 不喜歡：", "").trim();
-          }
-          j++;
-        }
-        i = j - 1;
-      }
-
-      else if (line.startsWith("## 附加資訊 ")) {
-        const res = readIndentedBlock(lines, i + 1);
-        if (res.text) extrasTexts.push(res.text);
-        i = res.nextIndex;
-      }
-
-      else if (line.startsWith("## 創作者事件 ")) {
-        const res = readIndentedBlock(lines, i + 1);
-        if (res.text) eventsTexts.push(res.text);
-        i = res.nextIndex;
+    function saveDraft() {
+      try {
+        const data = collectFormData();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.warn('無法儲存暫存資料：', e);
       }
     }
 
-    if (extrasTexts.length > 0) {
-      for (let k = 0; k < extrasTexts.length; k++) {
-        addExtra();
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+
+        if (data.fields) {
+          Object.keys(data.fields).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.tagName === 'SELECT') {
+              el.value = data.fields[id];
+            } else {
+              el.value = data.fields[id];
+            }
+          });
+        }
+
+        if (Array.isArray(data.extras) && data.extras.length > 0) {
+          data.extras.forEach(txt => {
+            addExtra();
+            const els = document.querySelectorAll('.extra-field');
+            const last = els[els.length - 1];
+            if (last) last.value = txt;
+          });
+        }
+
+        if (Array.isArray(data.events) && data.events.length > 0) {
+          data.events.forEach(txt => {
+            addEvent();
+            const els = document.querySelectorAll('.event-field');
+            const last = els[els.length - 1];
+            if (last) last.value = txt;
+          });
+        }
+      } catch (e) {
+        console.warn('讀取暫存資料失敗：', e);
       }
-      const extraEls = document.querySelectorAll(".extra-field");
-      extrasTexts.forEach((txt, idx) => {
-        if (extraEls[idx]) extraEls[idx].value = txt;
+    }
+
+    function setupAutoSave() {
+      const els = document.querySelectorAll('input, textarea, select');
+      els.forEach(el => {
+        el.addEventListener('input', saveDraft);
+        el.addEventListener('change', saveDraft);
       });
     }
 
-    if (eventsTexts.length > 0) {
-      for (let k = 0; k < eventsTexts.length; k++) {
-        addEvent();
-      }
-      const eventEls = document.querySelectorAll(".event-field");
-      eventsTexts.forEach((txt, idx) => {
-        if (eventEls[idx]) eventEls[idx].value = txt;
+    function clearFields(ids) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT' && id === 'gender') {
+          el.value = '未設置';
+        } else {
+          el.value = '';
+        }
       });
-    }
-  }
-
-  function importTxt() {
-    const input = document.getElementById('txtFile');
-    if (!input.files || !input.files[0]) {
-      alert("請先選擇一個 txt 檔案喔～");
-      return;
+      saveDraft();
     }
 
-    const file = input.files[0];
-    const reader = new FileReader();
+    function importTxt() {
+      const input = document.getElementById('txtFile');
+      if (!input.files || !input.files[0]) {
+        alert("請先選擇一個 txt 檔案喔～");
+        return;
+      }
 
-    reader.onload = function (e) {
-      const content = e.target.result || "";
-      document.getElementById('output').textContent = content;
-      parseMarkdownToForm(content);
-    };
+      const file = input.files[0];
+      const reader = new FileReader();
 
-    reader.readAsText(file, "utf-8");
-  }
+      reader.onload = function (e) {
+        const content = e.target.result || "";
+        document.getElementById('output').textContent = content;
+        parseMarkdownToForm(content);
+      };
 
-  function downloadTxt() {
-    if (!document.getElementById('output').textContent.trim()) {
-      generateMarkdown();
+      reader.readAsText(file, "utf-8");
     }
-    const text = document.getElementById('output').textContent;
-    if (!text.trim()) return;
 
-    const name = document.getElementById('charName').value.trim() || "character";
-    const filename = `${name}_prompt.txt`;
+    function downloadTxt() {
+      if (!document.getElementById('output').textContent.trim()) {
+        generateMarkdown();
+      }
+      const text = document.getElementById('output').textContent;
+      if (!text.trim()) return;
 
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+      const name = document.getElementById('charName').value.trim() || "character";
+      const filename = `${name}_prompt.txt`;
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-</script>
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDraft();
+      setupAutoSave();
+    });
+  </script>
 </body>
 </html>
