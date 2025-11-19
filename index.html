@@ -79,6 +79,17 @@
       font-size: 0.9rem;
     }
 
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #e5c3d6;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #fff;
+    }
+
     .section {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -159,14 +170,6 @@
       font-size: 0.85rem;
     }
 
-    select {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #e5c3d6;
-      font-size: 0.85rem;
-      background: #fff;
-    }
-
     .sub-label {
       font-size: 0.8rem;
       opacity: 0.8;
@@ -196,7 +199,7 @@
 <body class="theme-pink">
   <div class="top-bar">
     <div>
-      <h1>卿卿我我創角小幫手（網頁版）</h1>
+      <h1>💕 卿卿我我創角小幫手（網頁版）</h1>
       <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
     </div>
     <div class="theme-select">
@@ -210,70 +213,90 @@
   </div>
 
   <div class="section">
-    <h2>角色資訊</h2>
-    <label>角色名稱（顯示用，可空白）：</label><br/>
+    <h2>💁‍♀️ 角色資訊</h2>
+    <label>角色名稱（必填）：</label><br/>
     <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
 
-    <label>年齡（15字）：</label><br/>
+    <label>角色代號（例如 YUCHENG_BF_01，可空白）：</label><br/>
+    <input id="charCode" type="text" style="margin-bottom:8px;" /><br/>
+
+    <label>年齡（必填，15字）：</label><br/>
     <input id="charAge" type="text" style="margin-bottom:8px;" /><br/>
 
-    <label>職業（15字）：</label><br/>
+    <label>職業（必填，15字）：</label><br/>
     <input id="charJob" type="text" style="margin-bottom:8px;" /><br/>
 
-    <label>來自角色的一句話（80字）：</label><br/>
+    <label>來自角色的一句話（必填，80字）：</label><br/>
     <textarea id="charQuote" style="min-height:60px;"></textarea>
 
-    <label>敘述（選擇性，700字）：</label><br/>
+    <label>敘述（選填，700字）：</label><br/>
     <textarea id="charDesc"></textarea>
 
-    <label>標籤（hashtag，可用空白或逗號分隔）：</label><br/>
+    <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label><br/>
     <input id="charTags" type="text" style="margin-bottom:8px;" /><br/>
 
-    <label>創作者筆記（200字）：</label><br/>
+    <label>創作者筆記（選填，200字）：</label><br/>
     <textarea id="creatorNote" style="min-height:70px;"></textarea>
   </div>
 
   <div class="section">
-    <h2>一、基本資訊 <span class="sub-label">（建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
+    <h2>🚻 性別</h2>
+    <label>性別（必填）：</label><br/>
+    <select id="gender">
+      <option value="未設置" selected>未設置</option>
+      <option value="男性">男性</option>
+      <option value="女性">女性</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
     <textarea id="basicInfo"></textarea>
   </div>
 
   <div class="section">
-    <h2>二、性格 <span class="sub-label">（建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
+    <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
     <textarea id="personality"></textarea>
   </div>
 
   <div class="section">
-    <h2>三、說話風格與習慣 <span class="sub-label">（建議 ≤700字，語氣、互動模式）</span></h2>
+    <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
     <textarea id="speechStyle"></textarea>
+  </div>
 
-    <label>第一次聊天場景（800字）</label>
+  <div class="section">
+    <h2>🎬 第一次聊天場景與角色對話</h2>
+
+    <label>第一次聊天場景（選填，800字）</label>
     <div class="sub-label">
       設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
     </div>
     <textarea id="firstScene"></textarea>
 
-    <label>角色對話（800字，示範該角色的說話方式）</label>
+    <label>角色對話（選填，800字，示範該角色的說話方式）</label>
     <textarea id="sampleDialogue"></textarea>
+  </div>
 
-    <label>角色喜歡的東西（50字）：</label>
+  <div class="section">
+    <h2>🎀 喜好與生日</h2>
+    <label>角色喜歡的東西（選填，50字）：</label>
     <input id="likes" type="text" style="margin-bottom:8px;" />
 
-    <label>不喜歡的東西（50字）：</label>
+    <label>不喜歡的東西（選填，50字）：</label>
     <input id="dislikes" type="text" style="margin-bottom:8px;" />
 
-    <label>生日（西元日期）：</label>
+    <label>生日（選填，西元日期）：</label>
     <input id="birthday" type="date" style="max-width:220px;" />
   </div>
 
   <div class="section">
-    <h2>附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
+    <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
     <div id="extraContainer"></div>
     <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
   </div>
 
   <div class="section">
-    <h2>創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
+    <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
     <div id="eventContainer"></div>
     <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
   </div>
@@ -281,9 +304,13 @@
   <div class="actions-row">
     <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
     <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
+
+    <!-- 匯入 txt 功能 -->
+    <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
+    <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
   </div>
 
-  <h2>輸出結果（Markdown，可直接複製）</h2>
+  <h2>📝 輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
 
   <script>
@@ -404,164 +431,441 @@
       renumberEvents();
     }
 
-function generateMarkdown() {
-  const name = document.getElementById('charName').value.trim();
-  const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
+    // 必填欄位檢查
+    function validateRequired() {
+      const requiredFields = [
+        { id: 'charName', label: '姓名' },
+        { id: 'charAge', label: '年齡' },
+        { id: 'charJob', label: '職業' },
+        { id: 'charQuote', label: '來自角色的一句話' },
+        { id: 'gender', label: '性別' },
+        { id: 'basicInfo', label: '一、基本資訊' },
+        { id: 'personality', label: '二、性格' },
+        { id: 'speechStyle', label: '三、說話風格與習慣' }
+      ];
 
-  const age = limitText(document.getElementById('charAge').value, 15);
-  const job = limitText(document.getElementById('charJob').value, 15);
-  const quote = limitText(document.getElementById('charQuote').value, 80);
-  const desc = limitText(document.getElementById('charDesc').value, 700);
-  const tagsRaw = document.getElementById('charTags').value.trim();
-  const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
+      const missing = [];
 
-  const basic = limitText(document.getElementById('basicInfo').value, 700);
-  const personality = limitText(document.getElementById('personality').value, 700);
-  const speech = limitText(document.getElementById('speechStyle').value, 700);
+      requiredFields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        let value = '';
+        if (el.tagName === 'SELECT') {
+          value = el.value.trim();
+        } else {
+          value = el.value.trim();
+        }
+        if (!value) {
+          missing.push(f.label);
+        }
+      });
 
-  const firstScene = limitText(document.getElementById('firstScene').value, 800);
-  const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
-  const likes = limitText(document.getElementById('likes').value, 50);
-  const dislikes = limitText(document.getElementById('dislikes').value, 50);
-  const birthdayRaw = document.getElementById('birthday').value;
+      if (missing.length > 0) {
+        alert("以下欄位為必填，請先補完喔：\n" + missing.join("、"));
+        return false;
+      }
+      return true;
+    }
 
-  let birthdayText = birthdayRaw ? birthdayRaw : "";
+    function generateMarkdown() {
+      if (!validateRequired()) return;
 
-  let tagsFormatted = "";
-  if (tagsRaw) {
-    const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
-    tagsFormatted = parts.map(t => "#" + t).join(" ");
-  }
+      const name = document.getElementById('charName').value.trim();
+      const code = document.getElementById('charCode').value.trim() || '（未設定代號）';
 
-  // Helper: convert text block into multiline markdown list
-  const formatBlock = (text) => {
-    if (!text) return "- （未填寫）";
-    let lines = text.split("\n").map(l => "  " + l);
-    return "- >\n" + lines.join("\n");
-  };
+      const age = limitText(document.getElementById('charAge').value, 15);
+      const job = limitText(document.getElementById('charJob').value, 15);
+      const quote = limitText(document.getElementById('charQuote').value, 80);
+      const desc = limitText(document.getElementById('charDesc').value, 700);
+      const tagsRaw = document.getElementById('charTags').value.trim();
+      const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
+      const gender = document.getElementById('gender').value.trim();
 
-  let md = [];
+      const basic = limitText(document.getElementById('basicInfo').value, 700);
+      const personality = limitText(document.getElementById('personality').value, 700);
+      const speech = limitText(document.getElementById('speechStyle').value, 700);
 
-  // =====================
-  // # 角色資訊
-  // =====================
-  md.push(`# 角色資訊\n`);
-  md.push(`- 名稱：${name || "（未命名）"}`);
-  md.push(`- 角色代號：\`${code}\``);
+      const firstScene = limitText(document.getElementById('firstScene').value, 800);
+      const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
+      const likes = limitText(document.getElementById('likes').value, 50);
+      const dislikes = limitText(document.getElementById('dislikes').value, 50);
+      const birthdayRaw = document.getElementById('birthday').value;
 
-  if (age) md.push(`- 年齡：${age}`);
-  if (job) md.push(`- 職業：${job}`);
-  if (birthdayText) md.push(`- 生日：${birthdayText}`);
-  if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
+      let birthdayText = birthdayRaw ? birthdayRaw : "";
 
-  if (quote) {
-    md.push(`- 一句話：`);
-    md.push(`  > ${quote}`);
-  }
+      let tagsFormatted = "";
+      if (tagsRaw) {
+        const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
+        tagsFormatted = parts.map(t => "#" + t).join(" ");
+      }
 
-  if (desc) {
-    md.push(`- 敘述：`);
-    md.push(`  > ${desc.replace(/\n/g, "\n    ")}`);
-  }
+      const formatBlock = (text) => {
+        if (!text) return "- （未填寫）";
+        let lines = text.split("\n").map(l => "  " + l);
+        return "- >\n" + lines.join("\n");
+      };
 
-  if (creatorNote) {
-    md.push(`- 創作者筆記：`);
-    md.push(`  > ${creatorNote.replace(/\n/g, "\n    ")}`);
-  }
+      let md = [];
 
-  md.push("");
+      // # 角色資訊
+      md.push(`# 角色資訊\n`);
+      md.push(`- 名稱：${name || "（未命名）"}`);
+      md.push(`- 角色代號：\`${code}\``);
+      if (gender) md.push(`- 性別：${gender}`);
+      if (age) md.push(`- 年齡：${age}`);
+      if (job) md.push(`- 職業：${job}`);
+      if (birthdayText) md.push(`- 生日：${birthdayText}`);
+      if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
 
-  // =====================
-  // ## 一、基本資訊
-  // =====================
-  md.push(`## 一、基本資訊`);
-  md.push(formatBlock(basic));
-  md.push("");
+      if (quote) {
+        md.push(`- 一句話：`);
+        md.push(`  > ${quote}`);
+      }
 
-  // =====================
-  // ## 二、性格
-  // =====================
-  md.push(`## 二、性格`);
-  md.push(formatBlock(personality));
-  md.push("");
+      if (desc) {
+        md.push(`- 敘述：`);
+        md.push(`  > ${desc.replace(/\n/g, "\n    ")}`);
+      }
 
-  // =====================
-  // ## 三、說話風格與習慣
-  // =====================
-  md.push(`## 三、說話風格與習慣`);
-  md.push(formatBlock(speech));
-  md.push("");
+      if (creatorNote) {
+        md.push(`- 創作者筆記：`);
+        md.push(`  > ${creatorNote.replace(/\n/g, "\n    ")}`);
+      }
 
-  // 第一次聊天場景
-  if (firstScene) {
-    md.push(`### 第一次聊天場景`);
-    md.push(formatBlock(firstScene));
-    md.push("");
-  }
-
-  // 角色對話
-  if (sampleDialogue) {
-    md.push(`### 角色對話（示範）`);
-    md.push(formatBlock(sampleDialogue));
-    md.push("");
-  }
-
-  // 喜好
-  if (likes || dislikes) {
-    md.push(`### 喜好`);
-    if (likes) md.push(`- 喜歡：${likes}`);
-    if (dislikes) md.push(`- 不喜歡：${dislikes}`);
-    md.push("");
-  }
-
-  // =====================
-  // # 附加資訊
-  // =====================
-  md.push(`# 📌 附加資訊`);
-
-  const extras = document.querySelectorAll(".extra-field");
-  if (extras.length === 0) {
-    md.push("- （尚未填寫）\n");
-  } else {
-    extras.forEach((el, idx) => {
-      const txt = limitText(el.value, 500);
-      if (!txt) return;
-      md.push(`## 附加資訊 ${idx + 1}`);
-      md.push(formatBlock(txt));
       md.push("");
-    });
-  }
 
-  // =====================
-  // # 創作者事件
-  // =====================
-  md.push(`# 📚 創作者事件`);
-
-  const events = document.querySelectorAll(".event-field");
-  if (events.length === 0) {
-    md.push("- （尚未填寫）\n");
-  } else {
-    events.forEach((el, idx) => {
-      const txt = limitText(el.value, 2000);
-      if (!txt) return;
-      md.push(`## 創作者事件 ${idx + 1}`);
-      md.push(formatBlock(txt));
+      // ## 一、基本資訊
+      md.push(`## 一、基本資訊`);
+      md.push(formatBlock(basic));
       md.push("");
-    });
-  }
 
-  document.getElementById('output').textContent = md.join("\n");
-}
+      // ## 二、性格
+      md.push(`## 二、性格`);
+      md.push(formatBlock(personality));
+      md.push("");
 
+      // ## 三、說話風格與習慣
+      md.push(`## 三、說話風格與習慣`);
+      md.push(formatBlock(speech));
+      md.push("");
+
+      // 第一次聊天場景與角色對話（選填）
+      if (firstScene) {
+        md.push(`### 第一次聊天場景`);
+        md.push(formatBlock(firstScene));
+        md.push("");
+      }
+
+      if (sampleDialogue) {
+        md.push(`### 角色對話（示範）`);
+        md.push(formatBlock(sampleDialogue));
+        md.push("");
+      }
+
+      if (likes || dislikes) {
+        md.push(`### 喜好`);
+        if (likes) md.push(`- 喜歡：${likes}`);
+        if (dislikes) md.push(`- 不喜歡：${dislikes}`);
+        md.push("");
+      }
+
+      // # 附加資訊
+      md.push(`# 附加資訊`);
+      const extras = document.querySelectorAll(".extra-field");
+      if (extras.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        extras.forEach((el, idx) => {
+          const txt = limitText(el.value, 500);
+          if (!txt) return;
+          md.push(`## 附加資訊 ${idx + 1}`);
+          md.push(formatBlock(txt));
+          md.push("");
+        });
+      }
+
+      // # 創作者事件
+      md.push(`# 創作者事件`);
+      const events = document.querySelectorAll(".event-field");
+      if (events.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        events.forEach((el, idx) => {
+          const txt = limitText(el.value, 2000);
+          if (!txt) return;
+          md.push(`## 創作者事件 ${idx + 1}`);
+          md.push(formatBlock(txt));
+          md.push("");
+        });
+      }
+
+      document.getElementById('output').textContent = md.join("\n");
+    }
+    function resetFormForImport() {
+      const ids = [
+        'charName','charCode','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+      const genderSel = document.getElementById('gender');
+      if (genderSel) genderSel.value = '未設置';
+
+      // 清空動態欄位
+      const extraContainer = document.getElementById('extraContainer');
+      const eventContainer = document.getElementById('eventContainer');
+      if (extraContainer) extraContainer.innerHTML = "";
+      if (eventContainer) eventContainer.innerHTML = "";
+    }
+        function readIndentedBlock(lines, startIndex) {
+      let i = startIndex;
+
+      // 跳過空行
+      while (i < lines.length && lines[i].trim() === "") i++;
+      if (i >= lines.length) return { text: "", nextIndex: i - 1 };
+
+      const first = lines[i].trim();
+
+      // 標準格式：- > + 多行前面兩個空白
+      if (first.startsWith("- >")) {
+        i++;
+        const buf = [];
+        while (i < lines.length) {
+          const line = lines[i];
+          // 兩個空白開頭是內容，保留空行
+          if (line.startsWith("  ")) {
+            buf.push(line.slice(2));
+            i++;
+          } else if (line.trim() === "") {
+            buf.push("");
+            i++;
+          } else {
+            break;
+          }
+        }
+        return { text: buf.join("\n").trim(), nextIndex: i - 1 };
+      }
+
+      // 若是「- （未填寫）」的情況
+      if (first.startsWith("- （尚未填寫")) {
+        return { text: "", nextIndex: i };
+      }
+
+      // fallback：收集到空行或下一個標題
+      const buf = [];
+      while (i < lines.length) {
+        const t = lines[i].trim();
+        if (t === "" || t.startsWith("#")) break;
+        buf.push(lines[i]);
+        i++;
+      }
+      return { text: buf.join("\n").trim(), nextIndex: i - 1 };
+    }
+        function parseMarkdownToForm(md) {
+      resetFormForImport();
+
+      const lines = md.split(/\r?\n/);
+      const extrasTexts = [];
+      const eventsTexts = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const line = raw.trim();
+
+        // --- 角色資訊區 ---
+        if (line.startsWith("- 名稱：")) {
+          document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
+        } else if (line.startsWith("- 角色代號：")) {
+          // 可能是 `code`
+          const m = line.match(/`([^`]+)`/);
+          const v = m ? m[1] : line.replace("- 角色代號：", "").trim();
+          document.getElementById('charCode').value = v === "（未設定代號）" ? "" : v;
+        } else if (line.startsWith("- 性別：")) {
+          const v = line.replace("- 性別：", "").trim();
+          const genderSel = document.getElementById('gender');
+          if (genderSel && v) genderSel.value = v;
+        } else if (line.startsWith("- 年齡：")) {
+          document.getElementById('charAge').value = line.replace("- 年齡：", "").trim();
+        } else if (line.startsWith("- 職業：")) {
+          document.getElementById('charJob').value = line.replace("- 職業：", "").trim();
+        } else if (line.startsWith("- 生日：")) {
+          const v = line.replace("- 生日：", "").trim();
+          document.getElementById('birthday').value = v;
+        } else if (line.startsWith("- 標籤：")) {
+          const t = line.replace("- 標籤：", "").trim();
+          if (t) {
+            // #tag1 #tag2 → tag1 tag2
+            const parts = t.split(/\s+/).map(x => x.replace(/^#/, "")).filter(Boolean);
+            document.getElementById('charTags').value = parts.join(" ");
+          }
+        } else if (line.startsWith("- 一句話：")) {
+          // 下一行開始是  > ...
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              // 空行就當做內容中的空行
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('charQuote').value = buf.join("\n").trim();
+          i = j - 1;
+        } else if (line.startsWith("- 敘述：")) {
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('charDesc').value = buf.join("\n").trim();
+          i = j - 1;
+        } else if (line.startsWith("- 創作者筆記：")) {
+          let j = i + 1;
+          const buf = [];
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith(">")) {
+              buf.push(t.slice(1).trim());
+              j++;
+            } else if (t === "") {
+              buf.push("");
+              j++;
+            } else {
+              break;
+            }
+          }
+          document.getElementById('creatorNote').value = buf.join("\n").trim();
+          i = j - 1;
+        }
+
+        // --- 區塊：一、二、三 ---
+        else if (line === "## 一、基本資訊") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('basicInfo').value = res.text;
+          i = res.nextIndex;
+        } else if (line === "## 二、性格") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('personality').value = res.text;
+          i = res.nextIndex;
+        } else if (line === "## 三、說話風格與習慣") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('speechStyle').value = res.text;
+          i = res.nextIndex;
+        }
+
+        // --- 第一次聊天場景 / 角色對話 ---
+        else if (line === "### 第一次聊天場景") {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('firstScene').value = res.text;
+          i = res.nextIndex;
+        } else if (line.startsWith("### 角色對話")) {
+          const res = readIndentedBlock(lines, i + 1);
+          document.getElementById('sampleDialogue').value = res.text;
+          i = res.nextIndex;
+        }
+
+        // --- 喜好 ---
+        else if (line === "### 喜好") {
+          let j = i + 1;
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t === "" || t.startsWith("#")) break;
+            if (t.startsWith("- 喜歡：")) {
+              document.getElementById('likes').value = t.replace("- 喜歡：", "").trim();
+            } else if (t.startsWith("- 不喜歡：")) {
+              document.getElementById('dislikes').value = t.replace("- 不喜歡：", "").trim();
+            }
+            j++;
+          }
+          i = j - 1;
+        }
+
+        // --- 附加資訊 ---
+        else if (line.startsWith("## 附加資訊 ")) {
+          const res = readIndentedBlock(lines, i + 1);
+          if (res.text) extrasTexts.push(res.text);
+          i = res.nextIndex;
+        }
+
+        // --- 創作者事件 ---
+        else if (line.startsWith("## 創作者事件 ")) {
+          const res = readIndentedBlock(lines, i + 1);
+          if (res.text) eventsTexts.push(res.text);
+          i = res.nextIndex;
+        }
+      }
+
+      // 把 extrasTexts 填進動態欄位
+      if (extrasTexts.length > 0) {
+        for (let k = 0; k < extrasTexts.length; k++) {
+          addExtra();
+        }
+        const extraEls = document.querySelectorAll(".extra-field");
+        extrasTexts.forEach((txt, idx) => {
+          if (extraEls[idx]) extraEls[idx].value = txt;
+        });
+      }
+
+      // 把 eventsTexts 填進動態欄位
+      if (eventsTexts.length > 0) {
+        for (let k = 0; k < eventsTexts.length; k++) {
+          addEvent();
+        }
+        const eventEls = document.querySelectorAll(".event-field");
+        eventsTexts.forEach((txt, idx) => {
+          if (eventEls[idx]) eventEls[idx].value = txt;
+        });
+      }
+    }
+        function importTxt() {
+      const input = document.getElementById('txtFile');
+      if (!input.files || !input.files[0]) {
+        alert("請先選擇一個 txt 檔案喔～");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const content = e.target.result || "";
+
+        // 把原始文字顯示在輸出區（方便你對照）
+        document.getElementById('output').textContent = content;
+
+        // 解析並填回每個欄位
+        parseMarkdownToForm(content);
+      };
+
+      reader.readAsText(file, "utf-8");
+    }
     function downloadTxt() {
-      // 沒內容就先幫你生一份
       if (!document.getElementById('output').textContent.trim()) {
+        // 先嘗試生成一次（會檢查必填）
         generateMarkdown();
       }
       const text = document.getElementById('output').textContent;
       if (!text.trim()) {
-        alert("目前還沒有可以下載的內容喔～先填一點再按生成吧！");
-        return;
+        return; // 沒東西就不下載
       }
 
       const name = document.getElementById('charName').value.trim() || "character";
@@ -577,6 +881,29 @@ function generateMarkdown() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    }
+      function importTxt() {
+      const input = document.getElementById('txtFile');
+      if (!input.files || !input.files[0]) {
+        alert("請先選擇一個 txt 檔案喔～");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const content = e.target.result || "";
+
+        // 簡單版：直接丟到輸出區
+        document.getElementById('output').textContent = content;
+
+        // 如果之後想做「從 txt 解析回欄位」
+        // 可以在這裡呼叫 parseMarkdownToForm(content);
+      };
+
+      // 預設用 UTF-8 讀
+      reader.readAsText(file, "utf-8");
     }
   </script>
 </body>
