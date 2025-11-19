@@ -4,82 +4,211 @@
   <meta charset="UTF-8" />
   <title>卿卿我我創角小幫手</title>
   <style>
+    :root {
+      --bg-pink: #ffe6f0;
+      --bg-cream: #fff7ea;
+      --bg-mint: #e8fff5;
+      --card-bg: #ffffff;
+      --card-border: #f3c6d8;
+      --accent: #ff6fa8;
+      --accent-dark: #e3548e;
+      --text-main: #3d2b3b;
+    }
+
     body {
-      max-width: 900px;
-      margin: 20px auto;
+      max-width: 960px;
+      margin: 24px auto 40px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
+      color: var(--text-main);
+      padding: 0 12px;
+      transition: background-color 0.25s ease;
     }
-    h1, h2 {
+
+    body.theme-pink {
+      background-color: var(--bg-pink);
+    }
+
+    body.theme-cream {
+      background-color: var(--bg-cream);
+    }
+
+    body.theme-mint {
+      background-color: var(--bg-mint);
+    }
+
+    h1 {
+      margin-bottom: 0.25rem;
+      font-size: 1.8rem;
+    }
+
+    h2 {
       margin-bottom: 0.3rem;
+      font-size: 1.1rem;
     }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
     textarea {
       width: 100%;
-      min-height: 80px;
+      min-height: 90px;
       margin-bottom: 0.5rem;
-    }
-    .section {
-      border: 1px solid #ccc;
-      padding: 10px 12px;
-      margin-bottom: 12px;
+      padding: 8px 10px;
       border-radius: 6px;
+      border: 1px solid #e5c3d6;
+      font-family: inherit;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      resize: vertical;
     }
+
+    input[type="text"],
+    input[type="search"],
+    input:not([type]) {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #e5c3d6;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(255, 160, 195, 0.18);
+    }
+
     #output {
       white-space: pre-wrap;
       background: #111;
       color: #eee;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-family: "SF Mono", Consolas, monospace;
       font-size: 0.9rem;
+      margin-bottom: 40px;
     }
+
     button {
-      padding: 8px 16px;
+      padding: 7px 14px;
       margin: 4px 4px 8px 0;
       cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 4px rgba(224, 111, 156, 0.4);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(224, 111, 156, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px rgba(224, 111, 156, 0.3);
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .theme-select {
+      font-size: 0.85rem;
+    }
+
+    select {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #e5c3d6;
+      font-size: 0.85rem;
+      background: #fff;
+    }
+
+    .sub-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
     }
   </style>
 </head>
-<body>
-  <h1>卿卿我我創角小幫手（網頁版）</h1>
-  <p>填完後按「生成 Markdown」，下方會出現可以直接丟給 AI 的角色卡。</p>
+<body class="theme-pink">
+  <div class="top-bar">
+    <div>
+      <h1>卿卿我我創角小幫手（網頁版）</h1>
+      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
+    </div>
+    <div class="theme-select">
+      背景主題：
+      <select onchange="changeTheme(this.value)">
+        <option value="pink" selected>淡粉紅</option>
+        <option value="cream">奶油白</option>
+        <option value="mint">薄荷綠</option>
+      </select>
+    </div>
+  </div>
 
   <div class="section">
     <h2>角色資訊</h2>
     <label>角色名稱（顯示用，可空白）：</label><br/>
-    <input id="charName" style="width:100%; margin-bottom:8px;" /><br/>
+    <input id="charName" type="text" style="margin-bottom:8px;" /><br/>
     <label>角色代號（例如 YUCHENG_BF_01，可空白）：</label><br/>
-    <input id="charCode" style="width:100%;" />
+    <input id="charCode" type="text" />
   </div>
 
   <div class="section">
-    <h2>一、基本資訊（建議 ≤700字）</h2>
+    <h2>一、基本資訊 <span class="sub-label">（建議 ≤700字，角色背景、世界觀、關係等）</span></h2>
     <textarea id="basicInfo"></textarea>
   </div>
 
   <div class="section">
-    <h2>二、性格（建議 ≤700字）</h2>
+    <h2>二、性格 <span class="sub-label">（建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
     <textarea id="personality"></textarea>
   </div>
 
   <div class="section">
-    <h2>三、說話習慣與行為（建議 ≤700字）</h2>
+    <h2>三、說話習慣與行為 <span class="sub-label">（建議 ≤700字，語氣、互動模式）</span></h2>
     <textarea id="speechStyle"></textarea>
   </div>
 
   <div class="section">
-    <h2>附加資訊（最多 10 筆，每筆 ≤500字）</h2>
+    <h2>附加資訊 <span class="sub-label">（最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
     <div id="extraContainer"></div>
-    <button type="button" onclick="addExtra()">＋新增附加資訊</button>
+    <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
   </div>
 
   <div class="section">
-    <h2>創作者事件（最多 20 筆，每筆 ≤2000字）</h2>
+    <h2>創作者事件 <span class="sub-label">（最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
     <div id="eventContainer"></div>
-    <button type="button" onclick="addEvent()">＋新增創作者事件</button>
+    <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
   </div>
 
-  <button onclick="generateMarkdown()">生成 Markdown</button>
+  <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
 
   <h2>輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
@@ -89,6 +218,18 @@
     const EVENT_MAX = 20;
     let extraCount = 0;
     let eventCount = 0;
+
+    function changeTheme(theme) {
+      const body = document.body;
+      body.classList.remove("theme-pink", "theme-cream", "theme-mint");
+      if (theme === "cream") {
+        body.classList.add("theme-cream");
+      } else if (theme === "mint") {
+        body.classList.add("theme-mint");
+      } else {
+        body.classList.add("theme-pink");
+      }
+    }
 
     function limitText(text, max) {
       text = text.trim();
@@ -153,7 +294,7 @@
       lines.push(`*角色代號：* \`${code}\``);
       lines.push("");
 
-      // 主欄一二三：照你原本的格式
+      // 一二三
       lines.push("一、基本資訊");
       lines.push(basic || "_（尚未填寫）_");
       lines.push("");
