@@ -715,13 +715,22 @@
 </div>
 
 
-  <div class="actions-row">
-    <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
-    <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
+<div class="actions-row">
+  <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
+  <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
 
-    <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
-    <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
-  </div>
+  <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
+  <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
+</div>
+
+<!-- 在這裡下面多加一塊「整包備份」 -->
+<div class="actions-row">
+  <button class="button-secondary" type="button" onclick="exportAllData()">📦 匯出全部設定（JSON）</button>
+
+  <input id="allFile" type="file" accept=".json" style="max-width:220px;" />
+  <button class="button-secondary" type="button" onclick="importAllData()">📥 匯入全部設定（覆蓋）</button>
+</div>
+
 
   <h2>📝 輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
@@ -1999,6 +2008,68 @@ if (eventsData.length > 0) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
+function exportAllData() {
+  const store = getStore();   // 把 currentId + chars + templates 全抓出來
+
+  const text = JSON.stringify(store, null, 2);  // 美化縮排方便自己看
+  const filename = `qing_all_${new Date().toISOString().slice(0,10)}.json`;
+
+  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function importAllData() {
+  const input = document.getElementById('allFile');
+  if (!input.files || !input.files[0]) {
+    alert("請先選擇一個 JSON 檔案喔～");
+    return;
+  }
+
+  const file = input.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    try {
+      const content = e.target.result || "";
+      const parsed = JSON.parse(content);
+
+      // 簡單檢查一下格式，避免亂檔案炸掉 localStorage
+      if (!parsed || typeof parsed !== 'object') {
+        alert("匯入失敗：檔案內容不是有效的 JSON 物件 QQ");
+        return;
+      }
+      if (!parsed.chars || typeof parsed.chars !== 'object') {
+        alert("匯入失敗：看起來缺少 chars 欄位 QQ");
+        return;
+      }
+      if (!parsed.templates) {
+        parsed.templates = initEmptyTemplates();
+      } else {
+        ensureTemplateTypes(parsed.templates);
+      }
+
+      // 覆蓋原本 localStorage
+      setStore(parsed);
+
+      // 重新載入畫面上的欄位 & 角色列表
+      loadInitialFromStore();
+
+      alert("匯入完成！已載入全部角色與模板～");
+    } catch (err) {
+      console.error(err);
+      alert("匯入失敗：無法解析這個 JSON 檔案 QQ");
+    }
+  };
+
+  reader.readAsText(file, "utf-8");
+}
 
     /* ========= 清空單欄 ========= */
     function clearOne(id) {
