@@ -512,28 +512,82 @@
     <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
     <div class="label-row">
       <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
-      <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
+      <div>
+        <!-- 套用模板 -->
+        <select data-template-type="basicInfo"
+                onchange="applyTemplateSingle('basicInfo','basicInfo',this)"
+                class="tpl-select button-mini">
+          <option value="">套用模板…</option>
+        </select>
+        <!-- 存為模板 -->
+        <button type="button"
+                class="button-mini"
+                onclick="saveTemplateFromField('basicInfo','basicInfo')">
+          存為模板
+        </button>
+        <!-- 清空 -->
+        <button type="button"
+                class="button-mini"
+                onclick="clearOne('basicInfo')">
+          清空
+        </button>
+      </div>
     </div>
     <textarea id="basicInfo" data-maxlength="700"></textarea>
   </div>
+
 
   <div class="section">
     <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
     <div class="label-row">
       <span class="sub-label">可描述角色性格。</span>
-      <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
+      <div>
+        <select data-template-type="personality"
+                onchange="applyTemplateSingle('personality','personality',this)"
+                class="tpl-select button-mini">
+          <option value="">套用模板…</option>
+        </select>
+        <button type="button"
+                class="button-mini"
+                onclick="saveTemplateFromField('personality','personality')">
+          存為模板
+        </button>
+        <button type="button"
+                class="button-mini"
+                onclick="clearOne('personality')">
+          清空
+        </button>
+      </div>
     </div>
     <textarea id="personality" data-maxlength="700"></textarea>
   </div>
+
 
   <div class="section">
     <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
     <div class="label-row">
       <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
-      <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
+      <div>
+        <select data-template-type="speechStyle"
+                onchange="applyTemplateSingle('speechStyle','speechStyle',this)"
+                class="tpl-select button-mini">
+          <option value="">套用模板…</option>
+        </select>
+        <button type="button"
+                class="button-mini"
+                onclick="saveTemplateFromField('speechStyle','speechStyle')">
+          存為模板
+        </button>
+        <button type="button"
+                class="button-mini"
+                onclick="clearOne('speechStyle')">
+          清空
+        </button>
+      </div>
     </div>
     <textarea id="speechStyle" data-maxlength="700"></textarea>
   </div>
+
 
   <!-- 新增：模型與 Prompt 設定 -->
   <div class="section">
@@ -607,27 +661,59 @@
     <input id="birthday" type="date" style="max-width:220px;" />
   </div>
 
-  <div class="section">
-    <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
-    <div id="extraContainer"></div>
-    <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+<div class="section">
+  <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
+
+  <div style="margin-bottom:6px;">
+    <select data-template-type="extra"
+            onchange="/* 此下拉選單不會直接套用，因為要指定欄位，僅作為模板管理入口 */"
+            class="tpl-select button-mini">
+      <option value="">（模板列表顯示在新增欄位中）</option>
+    </select>
     <button type="button"
-            class="button-secondary"
-            onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
-      清空所有附加資訊
+            class="button-mini"
+            onclick="alert('模板須在「新增後的每一筆附加資訊欄位」中套用');">
+      如何套用模板？
     </button>
   </div>
 
-  <div class="section">
-    <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
-    <div id="eventContainer"></div>
-    <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+  <div id="extraContainer"></div>
+
+  <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+  <button type="button"
+          class="button-secondary"
+          onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
+    清空所有附加資訊
+  </button>
+</div>
+
+
+<div class="section">
+  <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
+
+  <div style="margin-bottom:6px;">
+    <select data-template-type="event"
+            onchange=""
+            class="tpl-select button-mini">
+      <option value="">（模板列表會在事件欄位內顯示）</option>
+    </select>
     <button type="button"
-            class="button-secondary"
-            onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
-      清空所有創作者事件
+            class="button-mini"
+            onclick="alert('模板需在事件欄位內套用喔～');">
+      如何套用模板？
     </button>
   </div>
+
+  <div id="eventContainer"></div>
+
+  <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+  <button type="button"
+          class="button-secondary"
+          onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
+    清空所有創作者事件
+  </button>
+</div>
+
 
   <div class="actions-row">
     <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
