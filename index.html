@@ -927,165 +927,219 @@
     }
 
     /* ========= 動態欄位：附加資訊 & 事件 ========= */
-    function renumberExtras() {
-      const blocks = document.querySelectorAll(".extra-block");
-      blocks.forEach((block, idx) => {
-        const label = block.querySelector("label");
-        label.textContent = `附加資訊 ${idx + 1}：`;
-      });
+function renumberExtras() {
+  const blocks = document.querySelectorAll(".extra-block");
+  blocks.forEach((block, idx) => {
+    const labels = block.querySelectorAll("label");
+    // labels[0] 是「標題（選填）」，labels[1] 才是「附加資訊」
+    if (labels.length >= 2) {
+      labels[1].textContent = `附加資訊 ${idx + 1}：`;
     }
+  });
+}
 
-    function renumberEvents() {
-      const blocks = document.querySelectorAll(".event-block");
-      blocks.forEach((block, idx) => {
-        const label = block.querySelector("label");
-        label.textContent = `創作者事件 ${idx + 1}：`;
-      });
+function renumberEvents() {
+  const blocks = document.querySelectorAll(".event-block");
+  blocks.forEach((block, idx) => {
+    const labels = block.querySelectorAll("label");
+    // labels[0] 是「標題（選填）」，labels[1] 才是「創作者事件」
+    if (labels.length >= 2) {
+      labels[1].textContent = `創作者事件 ${idx + 1}：`;
     }
+  });
+}
 
-    function addExtra() {
-      const current = document.querySelectorAll(".extra-block").length;
-      if (current >= EXTRA_MAX) {
-        alert("附加資訊最多只能 10 筆喔～");
-        return;
-      }
-      const container = document.getElementById("extraContainer");
 
-      const block = document.createElement("div");
-      block.className = "extra-block";
+function addExtra() {
+  const current = document.querySelectorAll(".extra-block").length;
+  if (current >= EXTRA_MAX) {
+    alert("附加資訊最多只能 10 筆喔～");
+    return;
+  }
+  const container = document.getElementById("extraContainer");
 
-      const labelRow = document.createElement("div");
-      labelRow.className = "label-row";
+  const block = document.createElement("div");
+  block.className = "extra-block";
 
-      const label = document.createElement("label");
-      label.textContent = "附加資訊 ：";
+  // 第一行：標題列
+  const titleRow = document.createElement("div");
+  titleRow.className = "label-row";
 
-      const controls = document.createElement("div");
-      controls.className = "label-controls";
+  const titleLabel = document.createElement("label");
+  titleLabel.textContent = "標題（選填）：";
 
-      const tplSelect = document.createElement("select");
-      tplSelect.className = "tpl-select";
-      tplSelect.dataset.templateType = "extra";
-      tplSelect.innerHTML = '<option value="">套用模板…</option>';
-      tplSelect.addEventListener('change', function () {
-        applyTemplateDynamic('extra', this);
-      });
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.className = "extra-title-field";
+  titleInput.dataset.maxlength = "50";
+  titleInput.style.flex = "1";
+  titleInput.addEventListener('input', () => {
+    saveCurrentChar();
+    updateFieldCounter(titleInput);
+  });
 
-      const saveTplBtn = document.createElement("button");
-      saveTplBtn.type = "button";
-      saveTplBtn.className = "button-mini";
-      saveTplBtn.textContent = "存為模板";
-      saveTplBtn.onclick = function () {
-        saveTemplateFromDynamicBlock('extra', block);
-      };
+  titleRow.appendChild(titleLabel);
+  titleRow.appendChild(titleInput);
 
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "button-mini";
-      delBtn.textContent = "刪除此項";
-      delBtn.onclick = function () {
-        block.remove();
-        renumberExtras();
-        saveCurrentChar();
-        updateAllFieldCounters();
-      };
+  // 第二行：內容標籤 + 模板/刪除
+  const labelRow = document.createElement("div");
+  labelRow.className = "label-row";
 
-      controls.appendChild(tplSelect);
-      controls.appendChild(saveTplBtn);
-      controls.appendChild(delBtn);
+  const label = document.createElement("label");
+  label.textContent = "附加資訊 ：";
 
-      labelRow.appendChild(label);
-      labelRow.appendChild(controls);
+  const controls = document.createElement("div");
+  controls.className = "label-controls";
 
-      const textarea = document.createElement("textarea");
-      textarea.className = "extra-field";
-      textarea.dataset.maxlength = "500";
-      textarea.addEventListener('input', () => {
-        saveCurrentChar();
-        updateFieldCounter(textarea);
-      });
+  const tplSelect = document.createElement("select");
+  tplSelect.className = "tpl-select";
+  tplSelect.dataset.templateType = "extra";
+  tplSelect.innerHTML = '<option value="">套用模板…</option>';
+  tplSelect.addEventListener('change', function () {
+    applyTemplateDynamic('extra', this);
+  });
 
-      block.appendChild(labelRow);
-      block.appendChild(textarea);
-      container.appendChild(block);
+  const saveTplBtn = document.createElement("button");
+  saveTplBtn.type = "button";
+  saveTplBtn.className = "button-mini";
+  saveTplBtn.textContent = "存為模板";
+  saveTplBtn.onclick = function () {
+    saveTemplateFromDynamicBlock('extra', block);
+  };
 
-      renumberExtras();
-      saveCurrentChar();
-      refreshTemplateSelect('extra');
-      setupFieldUtils(); // 給新欄位加上字數＆複製
-    }
+  const delBtn = document.createElement("button");
+  delBtn.type = "button";
+  delBtn.className = "button-mini";
+  delBtn.textContent = "刪除此項";
+  delBtn.onclick = function () {
+    block.remove();
+    renumberExtras();
+    saveCurrentChar();
+    updateAllFieldCounters();
+  };
 
-    function addEvent() {
-      const current = document.querySelectorAll(".event-block").length;
-      if (current >= EVENT_MAX) {
-        alert("創作者事件最多只能 20 筆喔～");
-        return;
-      }
-      const container = document.getElementById("eventContainer");
+  controls.appendChild(tplSelect);
+  controls.appendChild(saveTplBtn);
+  controls.appendChild(delBtn);
 
-      const block = document.createElement("div");
-      block.className = "event-block";
+  labelRow.appendChild(label);
+  labelRow.appendChild(controls);
 
-      const labelRow = document.createElement("div");
-      labelRow.className = "label-row";
+  // 內容欄位
+  const textarea = document.createElement("textarea");
+  textarea.className = "extra-field";
+  textarea.dataset.maxlength = "500";
+  textarea.addEventListener('input', () => {
+    saveCurrentChar();
+    updateFieldCounter(textarea);
+  });
 
-      const label = document.createElement("label");
-      label.textContent = "創作者事件 ：";
+  block.appendChild(titleRow);
+  block.appendChild(labelRow);
+  block.appendChild(textarea);
+  container.appendChild(block);
 
-      const controls = document.createElement("div");
-      controls.className = "label-controls";
+  renumberExtras();
+  saveCurrentChar();
+  refreshTemplateSelect('extra');
+  setupFieldUtils(); // 給新欄位加上字數＆複製
+}
 
-      const tplSelect = document.createElement("select");
-      tplSelect.className = "tpl-select";
-      tplSelect.dataset.templateType = "event";
-      tplSelect.innerHTML = '<option value="">套用模板…</option>';
-      tplSelect.addEventListener('change', function () {
-        applyTemplateDynamic('event', this);
-      });
 
-      const saveTplBtn = document.createElement("button");
-      saveTplBtn.type = "button";
-      saveTplBtn.className = "button-mini";
-      saveTplBtn.textContent = "存為模板";
-      saveTplBtn.onclick = function () {
-        saveTemplateFromDynamicBlock('event', block);
-      };
+function addEvent() {
+  const current = document.querySelectorAll(".event-block").length;
+  if (current >= EVENT_MAX) {
+    alert("創作者事件最多只能 20 筆喔～");
+    return;
+  }
+  const container = document.getElementById("eventContainer");
 
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "button-mini";
-      delBtn.textContent = "刪除此項";
-      delBtn.onclick = function () {
-        block.remove();
-        renumberEvents();
-        saveCurrentChar();
-        updateAllFieldCounters();
-      };
+  const block = document.createElement("div");
+  block.className = "event-block";
 
-      controls.appendChild(tplSelect);
-      controls.appendChild(saveTplBtn);
-      controls.appendChild(delBtn);
+  // 第一行：標題列
+  const titleRow = document.createElement("div");
+  titleRow.className = "label-row";
 
-      labelRow.appendChild(label);
-      labelRow.appendChild(controls);
+  const titleLabel = document.createElement("label");
+  titleLabel.textContent = "標題（選填）：";
 
-      const textarea = document.createElement("textarea");
-      textarea.className = "event-field";
-      textarea.dataset.maxlength = "2000";
-      textarea.addEventListener('input', () => {
-        saveCurrentChar();
-        updateFieldCounter(textarea);
-      });
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.className = "event-title-field";
+  titleInput.dataset.maxlength = "50";
+  titleInput.style.flex = "1";
+  titleInput.addEventListener('input', () => {
+    saveCurrentChar();
+    updateFieldCounter(titleInput);
+  });
 
-      block.appendChild(labelRow);
-      block.appendChild(textarea);
-      container.appendChild(block);
+  titleRow.appendChild(titleLabel);
+  titleRow.appendChild(titleInput);
 
-      renumberEvents();
-      saveCurrentChar();
-      refreshTemplateSelect('event');
-      setupFieldUtils();
-    }
+  // 第二行：內容標籤 + 模板/刪除
+  const labelRow = document.createElement("div");
+  labelRow.className = "label-row";
+
+  const label = document.createElement("label");
+  label.textContent = "創作者事件 ：";
+
+  const controls = document.createElement("div");
+  controls.className = "label-controls";
+
+  const tplSelect = document.createElement("select");
+  tplSelect.className = "tpl-select";
+  tplSelect.dataset.templateType = "event";
+  tplSelect.innerHTML = '<option value="">套用模板…</option>';
+  tplSelect.addEventListener('change', function () {
+    applyTemplateDynamic('event', this);
+  });
+
+  const saveTplBtn = document.createElement("button");
+  saveTplBtn.type = "button";
+  saveTplBtn.className = "button-mini";
+  saveTplBtn.textContent = "存為模板";
+  saveTplBtn.onclick = function () {
+    saveTemplateFromDynamicBlock('event', block);
+  };
+
+  const delBtn = document.createElement("button");
+  delBtn.type = "button";
+  delBtn.className = "button-mini";
+  delBtn.textContent = "刪除此項";
+  delBtn.onclick = function () {
+    block.remove();
+    renumberEvents();
+    saveCurrentChar();
+    updateAllFieldCounters();
+  };
+
+  controls.appendChild(tplSelect);
+  controls.appendChild(saveTplBtn);
+  controls.appendChild(delBtn);
+
+  labelRow.appendChild(label);
+  labelRow.appendChild(controls);
+
+  // 內容欄位
+  const textarea = document.createElement("textarea");
+  textarea.className = "event-field";
+  textarea.dataset.maxlength = "2000";
+  textarea.addEventListener('input', () => {
+    saveCurrentChar();
+    updateFieldCounter(textarea);
+  });
+
+  block.appendChild(titleRow);
+  block.appendChild(labelRow);
+  block.appendChild(textarea);
+  container.appendChild(block);
+
+  renumberEvents();
+  saveCurrentChar();
+  refreshTemplateSelect('event');
+  setupFieldUtils();
+}
 
     /* ========= 每個欄位：字數顯示 + 複製 ========= */
     function copyFieldText(id) {
@@ -1193,12 +1247,28 @@
         }
       });
 
-      document.querySelectorAll('.extra-field').forEach(el => {
-        data.extras.push(el.value || "");
-      });
-      document.querySelectorAll('.event-field').forEach(el => {
-        data.events.push(el.value || "");
-      });
+data.extras = [];
+document.querySelectorAll('.extra-block').forEach(block => {
+  const titleEl = block.querySelector('.extra-title-field');
+  const textEl = block.querySelector('.extra-field');
+  const title = titleEl ? (titleEl.value || "") : "";
+  const text = textEl ? (textEl.value || "") : "";
+  if (title || text) {
+    data.extras.push({ title, text });
+  }
+});
+
+data.events = [];
+document.querySelectorAll('.event-block').forEach(block => {
+  const titleEl = block.querySelector('.event-title-field');
+  const textEl = block.querySelector('.event-field');
+  const title = titleEl ? (titleEl.value || "") : "";
+  const text = textEl ? (textEl.value || "") : "";
+  if (title || text) {
+    data.events.push({ title, text });
+  }
+});
+
 
       return data;
     }
@@ -1240,25 +1310,53 @@
         el.value = data.fields[id] || "";
       });
 
-      if (Array.isArray(data.extras)) {
-        data.extras.forEach(txt => {
-          if (!txt) return;
-          addExtra();
-          const els = document.querySelectorAll('.extra-field');
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
-        });
-      }
+if (Array.isArray(data.extras)) {
+  data.extras.forEach(item => {
+    // 兼容舊版：只有文字
+    let title = "";
+    let text = "";
+    if (typeof item === "string") {
+      text = item;
+    } else if (item && typeof item === "object") {
+      title = item.title || "";
+      text = item.text || "";
+    }
+    if (!title && !text) return;
 
-      if (Array.isArray(data.events)) {
-        data.events.forEach(txt => {
-          if (!txt) return;
-          addEvent();
-          const els = document.querySelectorAll('.event-field');
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
-        });
-      }
+    addExtra();
+    const blocks = document.querySelectorAll(".extra-block");
+    const lastBlock = blocks[blocks.length - 1];
+    if (!lastBlock) return;
+    const titleEl = lastBlock.querySelector(".extra-title-field");
+    const textEl = lastBlock.querySelector(".extra-field");
+    if (titleEl) titleEl.value = title;
+    if (textEl) textEl.value = text;
+  });
+}
+
+if (Array.isArray(data.events)) {
+  data.events.forEach(item => {
+    let title = "";
+    let text = "";
+    if (typeof item === "string") {
+      text = item;
+    } else if (item && typeof item === "object") {
+      title = item.title || "";
+      text = item.text || "";
+    }
+    if (!title && !text) return;
+
+    addEvent();
+    const blocks = document.querySelectorAll(".event-block");
+    const lastBlock = blocks[blocks.length - 1];
+    if (!lastBlock) return;
+    const titleEl = lastBlock.querySelector(".event-title-field");
+    const textEl = lastBlock.querySelector(".event-field");
+    if (titleEl) titleEl.value = title;
+    if (textEl) textEl.value = text;
+  });
+}
+
 
       updatePromptTokenInfo();
       refreshAllTemplateSelects();
@@ -1602,33 +1700,54 @@
         md.push("");
       }
 
-      md.push(`【附加資訊】`);
-      const extras = document.querySelectorAll(".extra-field");
-      if (extras.length === 0) {
-        md.push("- （尚未填寫）\n");
-      } else {
-        extras.forEach((el, idx) => {
-          const txt = limitText(el.value, 500);
-          if (!txt) return;
-          md.push(`［附加資訊 ${idx + 1}］`);
-          md.push(txt);
-          md.push("");
-        });
-      }
+// 附加資訊
+md.push(`【附加資訊】`);
+const extraBlocks = document.querySelectorAll(".extra-block");
+if (extraBlocks.length === 0) {
+  md.push("- （尚未填寫）\n");
+} else {
+  extraBlocks.forEach((block, idx) => {
+    const titleEl = block.querySelector(".extra-title-field");
+    const textEl = block.querySelector(".extra-field");
+    const title = titleEl ? limitText(titleEl.value, 50) : "";
+    const txt = textEl ? limitText(textEl.value, 500) : "";
+    if (!title && !txt) return;
 
-      md.push(`【創作者事件】`);
-      const events = document.querySelectorAll(".event-field");
-      if (events.length === 0) {
-        md.push("- （尚未填寫）\n");
-      } else {
-        events.forEach((el, idx) => {
-          const txt = limitText(el.value, 2000);
-          if (!txt) return;
-          md.push(`［創作者事件 ${idx + 1}］`);
-          md.push(txt);
-          md.push("");
-        });
-      }
+    md.push(`［附加資訊 ${idx + 1}］`);
+    if (title) {
+      md.push(`- 標題：${title}`);
+    }
+    if (txt) {
+      md.push(txt);
+    }
+    md.push("");
+  });
+}
+
+// 創作者事件
+md.push(`【創作者事件】`);
+const eventBlocks = document.querySelectorAll(".event-block");
+if (eventBlocks.length === 0) {
+  md.push("- （尚未填寫）\n");
+} else {
+  eventBlocks.forEach((block, idx) => {
+    const titleEl = block.querySelector(".event-title-field");
+    const textEl = block.querySelector(".event-field");
+    const title = titleEl ? limitText(titleEl.value, 50) : "";
+    const txt = textEl ? limitText(textEl.value, 2000) : "";
+    if (!title && !txt) return;
+
+    md.push(`［創作者事件 ${idx + 1}］`);
+    if (title) {
+      md.push(`- 標題：${title}`);
+    }
+    if (txt) {
+      md.push(txt);
+    }
+    md.push("");
+  });
+}
+
 
       document.getElementById('output').textContent = md.join("\n");
     }
@@ -1654,8 +1773,9 @@
       clearForm();
 
       const lines = md.split(/\r?\n/);
-      const extrasTexts = [];
-      const eventsTexts = [];
+const extrasData = [];
+const eventsData = [];
+
 
       for (let i = 0; i < lines.length; i++) {
         const raw = lines[i];
@@ -1767,34 +1887,70 @@
           i = j - 1;
         }
 
-        else if (line.startsWith("［附加資訊 ")) {
-          const res = readBlockUntilHeading(lines, i + 1);
-          if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
-          i = res.nextIndex;
-        } else if (line.startsWith("［創作者事件 ")) {
-          const res = readBlockUntilHeading(lines, i + 1);
-          if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
-          i = res.nextIndex;
-        }
+    else if (line.startsWith("［附加資訊 ")) {
+  const res = readBlockUntilHeading(lines, i + 1);
+  if (res.text && res.text !== "（尚未填寫）") {
+    let title = "";
+    let body = res.text;
+
+    const parts = res.text.split(/\r?\n/);
+    if (parts.length > 0) {
+      const first = parts[0].trim();
+      if (first.startsWith("- 標題：")) {
+        title = first.replace("- 標題：", "").trim();
+        body = parts.slice(1).join("\n").trim();
+      }
+    }
+    extrasData.push({ title, text: body });
+  }
+  i = res.nextIndex;
+} else if (line.startsWith("［創作者事件 ")) {
+  const res = readBlockUntilHeading(lines, i + 1);
+  if (res.text && res.text !== "（尚未填寫）") {
+    let title = "";
+    let body = res.text;
+
+    const parts = res.text.split(/\r?\n/);
+    if (parts.length > 0) {
+      const first = parts[0].trim();
+      if (first.startsWith("- 標題：")) {
+        title = first.replace("- 標題：", "").trim();
+        body = parts.slice(1).join("\n").trim();
+      }
+    }
+    eventsData.push({ title, text: body });
+  }
+  i = res.nextIndex;
+}
+
       }
 
-      if (extrasTexts.length > 0) {
-        extrasTexts.forEach(txt => {
-          addExtra();
-          const els = document.querySelectorAll(".extra-field");
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
-        });
-      }
+  if (extrasData.length > 0) {
+  extrasData.forEach(item => {
+    addExtra();
+    const blocks = document.querySelectorAll(".extra-block");
+    const lastBlock = blocks[blocks.length - 1];
+    if (!lastBlock) return;
+    const titleEl = lastBlock.querySelector(".extra-title-field");
+    const textEl = lastBlock.querySelector(".extra-field");
+    if (titleEl) titleEl.value = item.title || "";
+    if (textEl) textEl.value = item.text || "";
+  });
+}
 
-      if (eventsTexts.length > 0) {
-        eventsTexts.forEach(txt => {
-          addEvent();
-          const els = document.querySelectorAll(".event-field");
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
-        });
-      }
+if (eventsData.length > 0) {
+  eventsData.forEach(item => {
+    addEvent();
+    const blocks = document.querySelectorAll(".event-block");
+    const lastBlock = blocks[blocks.length - 1];
+    if (!lastBlock) return;
+    const titleEl = lastBlock.querySelector(".event-title-field");
+    const textEl = lastBlock.querySelector(".event-field");
+    if (titleEl) titleEl.value = item.title || "";
+    if (textEl) textEl.value = item.text || "";
+  });
+}
+
 
       updatePromptTokenInfo();
       refreshAllTemplateSelects();
