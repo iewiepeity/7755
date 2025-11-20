@@ -366,6 +366,23 @@
     .prompt-stats {
       margin-top: 6px;
     }
+        .field-utils {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      margin: -2px 0 6px;
+      gap: 4px;
+    }
+
+    .field-counter {
+      opacity: 0.7;
+    }
+
+    .field-copy {
+      margin-left: auto;
+    }
+
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -635,6 +652,7 @@
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
     const STORAGE_KEY = 'qing_char_multi_v1';
+    const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
 
     /* ========= 主題切換 ========= */
     function changeTheme(theme) {
@@ -671,19 +689,33 @@
       return text;
     }
 
+    function initEmptyTemplates() {
+      const obj = {};
+      TEMPLATE_TYPES.forEach(t => obj[t] = []);
+      return obj;
+    }
+
+    function ensureTemplateTypes(tpls) {
+      TEMPLATE_TYPES.forEach(t => {
+        if (!Array.isArray(tpls[t])) tpls[t] = [];
+      });
+    }
+
     function getStore() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { currentId: null, chars: {} };
+        if (!raw) return { currentId: null, chars: {}, templates: initEmptyTemplates() };
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') {
-          return { currentId: null, chars: {} };
+          return { currentId: null, chars: {}, templates: initEmptyTemplates() };
         }
         if (!parsed.chars) parsed.chars = {};
+        if (!parsed.templates) parsed.templates = initEmptyTemplates();
+        ensureTemplateTypes(parsed.templates);
         return parsed;
       } catch (e) {
         console.warn('讀取存檔失敗，重置 store：', e);
-        return { currentId: null, chars: {} };
+        return { currentId: null, chars: {}, templates: initEmptyTemplates() };
       }
     }
 
@@ -697,6 +729,115 @@
 
     function newCharId() {
       return 'char_' + Date.now();
+    }
+
+    /* ========= 模板相關 ========= */
+    function getTemplatesByType(type) {
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+      return store.templates[type] || [];
+    }
+
+    function refreshTemplateSelect(type) {
+      const selects = document.querySelectorAll(`select[data-template-type="${type}"]`);
+      const list = getTemplatesByType(type);
+      selects.forEach(sel => {
+        const currentValue = sel.value;
+        sel.innerHTML = '<option value="">套用模板…</option>';
+        list.forEach(tpl => {
+          const opt = document.createElement('option');
+          opt.value = tpl.id;
+          opt.textContent = tpl.name;
+          sel.appendChild(opt);
+        });
+        if (list.some(t => t.id === currentValue)) {
+          sel.value = currentValue;
+        }
+      });
+    }
+
+    function refreshAllTemplateSelects() {
+      TEMPLATE_TYPES.forEach(t => refreshTemplateSelect(t));
+    }
+
+    function saveTemplate(type, text) {
+      const content = (text || '').trim();
+      if (!content) {
+        alert("目前欄位是空的，無法存成模板喔～");
+        return;
+      }
+      const name = prompt("請輸入這個模板的名稱（例如：標準世界觀模板）：");
+      if (!name) return;
+
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+
+      store.templates[type].push({
+        id: 'tpl_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+        name: name.trim(),
+        text: content
+      });
+
+      setStore(store);
+      refreshTemplateSelect(type);
+      alert("已儲存模板：「" + name.trim() + "」");
+    }
+
+    function saveTemplateFromField(type, textareaId) {
+      const el = document.getElementById(textareaId);
+      if (!el) return;
+      saveTemplate(type, el.value);
+    }
+
+    function saveTemplateFromDynamicBlock(type, blockEl) {
+      if (!blockEl) return;
+      const textarea = blockEl.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!textarea) return;
+      saveTemplate(type, textarea.value);
+    }
+
+    function applyTemplateSingle(type, textareaId, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const ta = document.getElementById(textareaId);
+      if (!ta) return;
+      ta.value = tpl.text;
+      saveCurrentChar();
+      if (textareaId === 'promptRole' || textareaId === 'promptGuideline') {
+        updatePromptTokenInfo();
+      }
+      updateFieldCounter(ta);
+    }
+
+    function applyTemplateDynamic(type, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const block = selectEl.closest(type === 'extra' ? '.extra-block' : '.event-block');
+      if (!block) return;
+      const ta = block.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!ta) return;
+
+      ta.value = tpl.text;
+      saveCurrentChar();
+      updateFieldCounter(ta);
     }
 
     /* ========= 動態欄位：附加資訊 & 事件 ========= */
@@ -733,6 +874,25 @@
       const label = document.createElement("label");
       label.textContent = "附加資訊 ：";
 
+      const controls = document.createElement("div");
+      controls.className = "label-controls";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "tpl-select";
+      tplSelect.dataset.templateType = "extra";
+      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('extra', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('extra', block);
+      };
+
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "button-mini";
@@ -741,15 +901,23 @@
         block.remove();
         renumberExtras();
         saveCurrentChar();
+        updateAllFieldCounters();
       };
 
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
+
       labelRow.appendChild(label);
-      labelRow.appendChild(delBtn);
+      labelRow.appendChild(controls);
 
       const textarea = document.createElement("textarea");
       textarea.className = "extra-field";
       textarea.dataset.maxlength = "500";
-      textarea.addEventListener('input', saveCurrentChar);
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
 
       block.appendChild(labelRow);
       block.appendChild(textarea);
@@ -757,6 +925,8 @@
 
       renumberExtras();
       saveCurrentChar();
+      refreshTemplateSelect('extra');
+      setupFieldUtils(); // 給新欄位加上字數＆複製
     }
 
     function addEvent() {
@@ -776,6 +946,25 @@
       const label = document.createElement("label");
       label.textContent = "創作者事件 ：";
 
+      const controls = document.createElement("div");
+      controls.className = "label-controls";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "tpl-select";
+      tplSelect.dataset.templateType = "event";
+      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('event', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('event', block);
+      };
+
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "button-mini";
@@ -784,15 +973,23 @@
         block.remove();
         renumberEvents();
         saveCurrentChar();
+        updateAllFieldCounters();
       };
 
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
+
       labelRow.appendChild(label);
-      labelRow.appendChild(delBtn);
+      labelRow.appendChild(controls);
 
       const textarea = document.createElement("textarea");
       textarea.className = "event-field";
       textarea.dataset.maxlength = "2000";
-      textarea.addEventListener('input', saveCurrentChar);
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
 
       block.appendChild(labelRow);
       block.appendChild(textarea);
@@ -800,6 +997,93 @@
 
       renumberEvents();
       saveCurrentChar();
+      refreshTemplateSelect('event');
+      setupFieldUtils();
+    }
+
+    /* ========= 每個欄位：字數顯示 + 複製 ========= */
+    function copyFieldText(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.value || el.innerText || "";
+      if (!text) {
+        alert('這個欄位目前是空的喔～');
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => alert('已複製這個欄位的內容！'))
+          .catch(err => {
+            console.error(err);
+            fallbackCopy(el);
+          });
+      } else {
+        fallbackCopy(el);
+      }
+    }
+
+    function fallbackCopy(el) {
+      try {
+        el.select();
+        document.execCommand('copy');
+        alert('已複製內容（使用相容模式）');
+      } catch (e) {
+        alert('複製失敗，可能被瀏覽器擋住了 QQ');
+      }
+    }
+
+    function updateFieldCounter(el) {
+      const id = el.id;
+      if (!id) return;
+      let wrapper = el.nextElementSibling;
+      if (!wrapper || !wrapper.classList || !wrapper.classList.contains('field-utils')) {
+        return;
+      }
+      const counterSpan = wrapper.querySelector('.field-counter');
+      if (!counterSpan) return;
+
+      const max = el.dataset.maxlength ? parseInt(el.dataset.maxlength, 10) : null;
+      const len = el.value ? el.value.length : 0;
+      if (max) {
+        counterSpan.textContent = `目前 ${len} / ${max} 字`;
+      } else {
+        counterSpan.textContent = `目前 ${len} 字`;
+      }
+    }
+
+    function updateAllFieldCounters() {
+      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(updateFieldCounter);
+    }
+
+    function setupFieldUtils() {
+      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(el => {
+        const id = el.id;
+        if (!id) return;
+        const next = el.nextElementSibling;
+        if (next && next.classList && next.classList.contains('field-utils')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'field-utils';
+
+        const counter = document.createElement('span');
+        counter.className = 'field-counter';
+        counter.dataset.targetId = id;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'button-mini field-copy';
+        copyBtn.textContent = '複製內容';
+        copyBtn.addEventListener('click', () => copyFieldText(id));
+
+        wrapper.appendChild(counter);
+        wrapper.appendChild(copyBtn);
+        el.insertAdjacentElement('afterend', wrapper);
+      });
+
+      updateAllFieldCounters();
     }
 
     /* ========= 表單資料收集 & 填回 ========= */
@@ -857,6 +1141,7 @@
       if (eventContainer) eventContainer.innerHTML = "";
 
       updatePromptTokenInfo();
+      setupFieldUtils();
     }
 
     function fillFormFromData(data) {
@@ -890,6 +1175,8 @@
       }
 
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -978,7 +1265,6 @@
 
       const entries = Object.entries(store.chars);
 
-      // 收集分類
       const categorySet = new Set();
       entries.forEach(([id, item]) => {
         if (item.meta && item.meta.category) {
@@ -986,7 +1272,6 @@
         }
       });
 
-      // 填分類選單
       const filterSel = document.getElementById('filterCategory');
       if (filterSel) {
         const prev = filterSel.value;
@@ -1028,7 +1313,7 @@
       renderCharList(store);
     }
 
-    /* ========= 必填欄位提醒（不阻止生成） ========= */
+    /* ========= 必填欄位提醒 ========= */
     function validateRequired() {
       const requiredFields = [
         { id: 'charName', label: '姓名' },
@@ -1066,11 +1351,25 @@
     }
 
     /* ========= Prompt token & 果醬計算 ========= */
+
+    // 超隨便的估算：中文字 ≈ 2 token，其他字元 ≈ 1 token（空白不算）
+    function estimateTextTokens(text) {
+      let total = 0;
+      for (const ch of text) {
+        if (/\s/.test(ch)) continue;
+        if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
+          total += 2; // 中文雙倍
+        } else {
+          total += 1; // 英文、數字、符號先當 1
+        }
+      }
+      return total;
+    }
+
     function estimatePromptTokens() {
       const role = (document.getElementById('promptRole').value || "");
       const guide = (document.getElementById('promptGuideline').value || "");
-      // 這裡用「字數 ≒ token」的概念，簡單估算
-      return role.length + guide.length;
+      return estimateTextTokens(role) + estimateTextTokens(guide);
     }
 
     function getSelectedModelBaseCost() {
@@ -1093,8 +1392,14 @@
       let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
       const totalJam = baseCost + extraJams;
 
-      tokenSpan.textContent = `預估 token：${totalTokens}（前 500 token 免費，字數僅供估算參考）`;
-      jamSpan.textContent = `模型基礎花費：${baseCost} 果醬　＋　額外 token 花費：${extraJams} 果醬　＝　預估合計：${totalJam} 果醬`;
+      tokenSpan.textContent =
+        `預估 token：${totalTokens}（超級不負責任估算：` +
+        `粗略把「一個中文字 ≈ 2 token、英文/數字/符號一字元 ≈ 1 token」，` +
+        `實際還是看各模型的 tokenizer，請量力參考就好 🙈）`;
+
+      jamSpan.textContent =
+        `模型基礎花費：約 ${baseCost} 果醬　＋　額外 token 花費：約 ${extraJams} 果醬　` +
+        `⇒ 預估合計：約 ${totalJam} 果醬（純估算，實際以平台計價為準）`;
     }
 
     /* ========= Markdown 生成 ========= */
@@ -1139,7 +1444,6 @@
 
       let md = [];
 
-      // 角色資訊
       md.push(`【角色資訊】\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (category) md.push(`- 分類：${category}`);
@@ -1166,26 +1470,22 @@
 
       md.push("");
 
-      // 基本資訊
       md.push(`【基本資訊】`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
-      // 性格
       md.push(`【性格】`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
-      // 說話風格與習慣
       md.push(`【說話風格與習慣】`);
       md.push(speech || "（尚未填寫）");
       md.push("");
 
-      // 模型與 Prompt
       if (modelValue || promptRole || promptGuideline) {
         md.push(`【模型與 Prompt 設定】`);
         if (modelLabel) md.push(`- 模型：${modelLabel}`);
-        md.push(`- 預估 token：${promptTokens}（前 500 token 免費，字數估算僅供參考）`);
+        md.push(`- 預估 token：${promptTokens}（內部以「中文字≈2、其他字元≈1」粗估，實際依平台為準）`);
         if (promptRole) {
           md.push(`- Role：`);
           md.push(promptRole);
@@ -1197,21 +1497,18 @@
         md.push("");
       }
 
-      // 第一次聊天場景
       if (firstScene) {
         md.push(`【第一次聊天場景】`);
         md.push(firstScene);
         md.push("");
       }
 
-      // 角色對話
       if (sampleDialogue) {
         md.push(`【角色對話】`);
         md.push(sampleDialogue);
         md.push("");
       }
 
-      // 喜好
       if (likes || dislikes) {
         md.push(`【喜好】`);
         if (likes) md.push(`- 喜歡：${likes}`);
@@ -1219,7 +1516,6 @@
         md.push("");
       }
 
-      // 附加資訊
       md.push(`【附加資訊】`);
       const extras = document.querySelectorAll(".extra-field");
       if (extras.length === 0) {
@@ -1234,7 +1530,6 @@
         });
       }
 
-      // 創作者事件
       md.push(`【創作者事件】`);
       const events = document.querySelectorAll(".event-field");
       if (events.length === 0) {
@@ -1252,14 +1547,13 @@
       document.getElementById('output').textContent = md.join("\n");
     }
 
-    /* ========= Markdown 解析成表單 ========= */
+    /* ========= Markdown 解析 ========= */
     function readBlockUntilHeading(lines, startIndex) {
       let i = startIndex;
       const buf = [];
       while (i < lines.length) {
         const t = lines[i];
         const trimmed = t.trim();
-        // 新格式：遇到「【」「［」都視為下一段開頭
         if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("［")) break;
         buf.push(t);
         i++;
@@ -1316,7 +1610,6 @@
           i = res.nextIndex;
         }
 
-        // 基本資訊 / 性格 / 說話風格
         else if (line === "【基本資訊】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
@@ -1331,7 +1624,6 @@
           i = res.nextIndex;
         }
 
-        // 模型與 Prompt
         else if (line === "【模型與 Prompt 設定】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1349,22 +1641,21 @@
                 }
               }
             } else if (t.startsWith("- 預估 token")) {
-              // 忽略，不需要還原
+              // 忽略
             } else if (t.startsWith("- Role：")) {
-              const res = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptRole').value = res.text;
-              j = res.nextIndex;
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptRole').value = res2.text;
+              j = res2.nextIndex;
             } else if (t.startsWith("- Response Guideline：")) {
-              const res = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptGuideline').value = res.text;
-              j = res.nextIndex;
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptGuideline').value = res2.text;
+              j = res2.nextIndex;
             }
             j++;
           }
           i = j - 1;
         }
 
-        // 第一次聊天場景 / 角色對話
         else if (line === "【第一次聊天場景】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
@@ -1375,7 +1666,6 @@
           i = res.nextIndex;
         }
 
-        // 喜好
         else if (line === "【喜好】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1391,14 +1681,11 @@
           i = j - 1;
         }
 
-        // 附加資訊
-        else if (line.startsWith("【附加資訊】 ")) {
+        else if (line.startsWith("［附加資訊 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
           i = res.nextIndex;
-        }
-        // 創作者事件
-        else if (line.startsWith("【創作者事件】] ")) {
+        } else if (line.startsWith("［創作者事件 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
           i = res.nextIndex;
@@ -1424,6 +1711,8 @@
       }
 
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
       saveCurrentChar();
     }
 
@@ -1478,10 +1767,11 @@
       } else {
         el.value = '';
       }
-      if (id === 'promptRole' || id === 'promptGuideline') {
+      if (id === 'promptRole' || id === 'promptGuideline' || id === 'modelType') {
         updatePromptTokenInfo();
       }
       saveCurrentChar();
+      updateFieldCounter(el);
     }
 
     function clearGender() {
@@ -1500,11 +1790,23 @@
           if (el.id === 'promptRole' || el.id === 'promptGuideline') {
             updatePromptTokenInfo();
           }
+          if (el.tagName === 'TEXTAREA' ||
+              el.type === 'text' ||
+              el.type === 'search' ||
+              el.type === 'date') {
+            updateFieldCounter(el);
+          }
         });
         el.addEventListener('change', () => {
           saveCurrentChar();
           if (el.id === 'promptRole' || el.id === 'promptGuideline' || el.id === 'modelType') {
             updatePromptTokenInfo();
+          }
+          if (el.tagName === 'TEXTAREA' ||
+              el.type === 'text' ||
+              el.type === 'search' ||
+              el.type === 'date') {
+            updateFieldCounter(el);
           }
         });
       });
@@ -1524,6 +1826,8 @@
 
       renderCharList(store);
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1532,5 +1836,6 @@
       loadInitialFromStore();
     });
   </script>
+
 </body>
 </html>
