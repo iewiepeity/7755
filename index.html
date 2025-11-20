@@ -2013,10 +2013,12 @@
     }
 
     /* ========= Markdown 生成 ========= */
+/* ========= Markdown 生成 (AI 結構化優化版) ========= */
     function generateMarkdown() {
       validateRequired();
       saveCurrentChar();
 
+      // 1. 讀取欄位資料
       const name = document.getElementById('charName').value.trim();
       const age = limitText(document.getElementById('charAge').value, 15);
       const job = limitText(document.getElementById('charJob').value, 15);
@@ -2038,147 +2040,177 @@
       const birthdayRaw = document.getElementById('birthday').value;
 
       const modelSel = document.getElementById('modelType');
-      const modelValue = modelSel ? modelSel.value : "";
       const modelLabel = modelSel ? modelSel.options[modelSel.selectedIndex].textContent : "";
       const promptRole = document.getElementById('promptRole').value;
       const promptGuideline = document.getElementById('promptGuideline').value;
       const promptTokens = estimatePromptTokens();
 
       let birthdayText = birthdayRaw ? birthdayRaw : "";
-
       let tagsFormatted = "";
       if (tagsRaw) {
         const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
         tagsFormatted = parts.map(t => "#" + t.replace(/^#/, "")).join(" ");
       }
 
+      // 2. 開始建構 Markdown
       let md = [];
 
-      md.push(`【角色資訊】`);
-      md.push(`- 名稱：${name || "（未命名）"}`);
+      // --- H1: 角色總標題 ---
+      md.push(`# 角色設定：${name || "未命名"}`);
+      md.push(""); // 空行
+
+      // --- H2: 基本檔案 (清單格式) ---
+      md.push(`## 基本檔案`);
       if (category) md.push(`- 分類：${category}`);
       if (gender && gender !== '未設置') md.push(`- 性別：${gender}`);
       if (age) md.push(`- 年齡：${age}`);
       if (job) md.push(`- 職業：${job}`);
       if (birthdayText) md.push(`- 生日：${birthdayText}`);
       if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
+      if (likes) md.push(`- 喜歡：${likes}`);
+      if (dislikes) md.push(`- 討厭：${dislikes}`);
+      md.push("");
 
+      // --- H2: 核心設定 (區塊格式) ---
+      md.push(`## 核心設定`);
+      
       if (quote) {
-        md.push(`- 一句話：`);
+        md.push(`### 角色名言`);
         md.push(quote);
+        md.push("");
       }
 
       if (desc) {
-        md.push(`- 敘述：`);
+        md.push(`### 外貌與簡介`);
         md.push(desc);
+        md.push("");
       }
 
-      if (creatorNote) {
-        md.push(`- 創作者筆記：`);
-        md.push(creatorNote);
+      if (personality) {
+        md.push(`### 性格詳情`);
+        md.push(personality);
+        md.push("");
       }
 
-      md.push("");
+      // --- H2: 背景與說話 (區塊格式) ---
+      md.push(`## 背景與互動`);
 
-      md.push(`【基本資訊】`);
-      md.push(basic || "（尚未填寫）");
-      md.push("");
+      if (basic) {
+        md.push(`### 世界觀與背景`);
+        md.push(basic);
+        md.push("");
+      }
 
-      md.push(`【性格】`);
-      md.push(personality || "（尚未填寫）");
-      md.push("");
-
-      md.push(`【說話風格與習慣】`);
-      md.push(speech || "（尚未填寫）");
-      md.push("");
-
-      if (modelValue || promptRole || promptGuideline) {
-        md.push(`【模型與 Prompt 設定】`);
-        if (modelLabel) md.push(`- 模型：${modelLabel}`);
-        md.push(`- 預估 token：${promptTokens}（僅供參考）`);
-        if (promptRole) {
-          md.push(`- Role：`);
-          md.push(promptRole);
-        }
-        if (promptGuideline) {
-          md.push(`- Response Guideline：`);
-          md.push(promptGuideline);
-        }
+      if (speech) {
+        md.push(`### 說話風格`);
+        md.push(speech);
         md.push("");
       }
 
       if (firstScene) {
-        md.push(`【第一次聊天場景】`);
+        md.push(`### 開場情境`);
         md.push(firstScene);
         md.push("");
       }
 
       if (sampleDialogue) {
-        md.push(`【角色對話】`);
+        md.push(`### 對話範例`);
         md.push(sampleDialogue);
         md.push("");
       }
 
-      if (likes || dislikes) {
-        md.push(`【喜好】`);
-        if (likes) md.push(`- 喜歡：${likes}`);
-        if (dislikes) md.push(`- 不喜歡：${dislikes}`);
-        md.push("");
-      }
-
-      // 附加資訊
-      md.push(`【附加資訊】`);
+      // --- H2: 附加資訊 (動態區塊) ---
+      // 只有當有內容時才顯示標題
       const extraBlocks = document.querySelectorAll(".extra-block");
-      if (extraBlocks.length === 0) {
-        md.push("- （尚未填寫）\n");
-      } else {
-        extraBlocks.forEach((block, idx) => {
-          const titleEl = block.querySelector(".extra-title-field");
-          const textEl = block.querySelector(".extra-field");
-          const title = titleEl ? limitText(titleEl.value, 50) : "";
-          const txt = textEl ? limitText(textEl.value, 500) : "";
-          if (!title && !txt) return;
-
-          md.push(`［附加資訊 ${idx + 1}］`);
-          if (title) {
-            md.push(`- 標題：${title}`);
-          }
-          if (txt) {
-            md.push(txt);
-          }
-          md.push("");
+      if (extraBlocks.length > 0) {
+        let hasContent = false;
+        // 先檢查有沒有內容，避免印出空標題
+        extraBlocks.forEach(b => {
+           if(b.querySelector(".extra-field").value || b.querySelector(".extra-title-field").value) hasContent = true;
         });
+
+        if(hasContent){
+            md.push(`## 附加設定`);
+            extraBlocks.forEach((block, idx) => {
+              const titleEl = block.querySelector(".extra-title-field");
+              const textEl = block.querySelector(".extra-field");
+              const title = titleEl ? limitText(titleEl.value, 50) : "";
+              const txt = textEl ? limitText(textEl.value, 500) : "";
+              
+              if (!title && !txt) return;
+
+              // 如果有標題就用 H3，沒標題就用 Item
+              if (title) {
+                md.push(`### ${title}`);
+              } else {
+                md.push(`### 附加資訊 ${idx + 1}`);
+              }
+              
+              if (txt) md.push(txt);
+              md.push("");
+            });
+        }
       }
 
-      // 創作者事件
-      md.push(`【創作者事件】`);
+      // --- H2: 創作者事件 (動態區塊) ---
       const eventBlocks = document.querySelectorAll(".event-block");
-      if (eventBlocks.length === 0) {
-        md.push("- （尚未填寫）\n");
-      } else {
-        eventBlocks.forEach((block, idx) => {
-          const titleEl = block.querySelector(".event-title-field");
-          const textEl = block.querySelector(".event-field");
-          const title = titleEl ? limitText(titleEl.value, 50) : "";
-          const txt = textEl ? limitText(textEl.value, 2000) : "";
-          if (!title && !txt) return;
+      if (eventBlocks.length > 0) {
+         let hasContent = false;
+         eventBlocks.forEach(b => {
+            if(b.querySelector(".event-field").value || b.querySelector(".event-title-field").value) hasContent = true;
+         });
 
-          md.push(`［創作者事件 ${idx + 1}］`);
-          if (title) {
-            md.push(`- 標題：${title}`);
-          }
-          if (txt) {
-            md.push(txt);
-          }
-          md.push("");
-        });
+         if(hasContent){
+            md.push(`## 關鍵事件`);
+            eventBlocks.forEach((block, idx) => {
+              const titleEl = block.querySelector(".event-title-field");
+              const textEl = block.querySelector(".event-field");
+              const title = titleEl ? limitText(titleEl.value, 50) : "";
+              const txt = textEl ? limitText(textEl.value, 2000) : "";
+              
+              if (!title && !txt) return;
+
+              if (title) {
+                md.push(`### ${title}`);
+              } else {
+                md.push(`### 事件 ${idx + 1}`);
+              }
+
+              if (txt) md.push(txt);
+              md.push("");
+            });
+         }
       }
 
+      // --- H2: AI 模型指令 (如果有的話) ---
+      if (promptRole || promptGuideline) {
+        md.push(`## AI 模型指令`);
+        if (modelLabel) md.push(`- 建議模型：${modelLabel}`);
+        
+        if (promptRole) {
+          md.push(`### System Role`);
+          md.push(promptRole);
+          md.push("");
+        }
+        if (promptGuideline) {
+          md.push(`### Response Guideline`);
+          md.push(promptGuideline);
+          md.push("");
+        }
+      }
+
+      if (creatorNote) {
+        md.push(`---`);
+        md.push(`> 創作者筆記：${creatorNote}`);
+      }
+
+      // 3. 輸出到畫面
       const outputBox = document.getElementById('output');
       outputBox.textContent = md.join("\n");
-      // 滾動到輸出區
+      
+      // 4. 滾動並提示
       outputBox.scrollIntoView({behavior: "smooth", block: "center"});
-      showToast("已生成 Markdown！");
+      showToast("已生成 AI 結構化格式！");
     }
 
     /* ========= Markdown 解析 ========= */
