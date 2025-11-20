@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (終極完全版)</title>
+  <title>卿卿我我創角小幫手</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
   <style>
     :root {
@@ -141,10 +141,6 @@
     body.layout-mobile .layout-shell { flex-direction: column; padding: 0 12px; }
     body.layout-mobile .sidebar { width: 100%; position: sticky; top: 50px; z-index: 800; padding: 8px; border-radius: 16px; overflow: visible !important; }
     body.layout-mobile .sidebar-nav { flex-direction: row; gap: 6px; }
-    
-    /* Token Info Box */
-    #promptTokenInfo { font-size: 0.8rem; color: var(--text-main); line-height: 1.6; }
-    #promptTokenInfo strong { color: var(--focus-color); }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -159,8 +155,8 @@
 
   <div class="top-bar">
     <div>
-      <h1>💕 卿卿我我創角小幫手</h1>
-      <div class="tagline">終極完全版：填寫設定，一鍵生成 AI 角色卡與遊戲腳本。</div>
+      <h1>卿卿我我創角小幫手💕 </h1>
+      <div class="tagline">在網頁上填寫設定！紀錄你的角色。</div>
     </div>
     <div style="display:flex; gap:8px; align-items:center;">
       <div class="theme-select">
@@ -188,12 +184,16 @@
       <nav class="sidebar-nav">
         <button onclick="scrollToSection('sec-archive')"><span class="icon">📂</span><span class="text">存檔管理</span></button>
         <button onclick="scrollToSection('sec-info')"><span class="icon">💁‍♀️</span><span class="text">角色資訊</span></button>
+        <button onclick="scrollToSection('sec-gender')"><span class="icon">🚻</span><span class="text">性別設定</span></button>
         <button onclick="scrollToSection('sec-basic')"><span class="icon">🌏</span><span class="text">基本資訊</span></button>
         <button onclick="scrollToSection('sec-personality')"><span class="icon">💗</span><span class="text">性格特質</span></button>
         <button onclick="scrollToSection('sec-speech')"><span class="icon">🗣️</span><span class="text">說話風格</span></button>
         <button onclick="scrollToSection('sec-prompt')"><span class="icon">🧠</span><span class="text">Prompt</span></button>
         <button onclick="scrollToSection('sec-game-mgr')"><span class="icon">🎮</span><span class="text">遊戲管理</span></button>
         <button onclick="scrollToSection('sec-first')"><span class="icon">🎬</span><span class="text">開場對話</span></button>
+        <button onclick="scrollToSection('sec-fav')"><span class="icon">🎀</span><span class="text">喜好生日</span></button>
+        <button onclick="scrollToSection('sec-extra')"><span class="icon">📌</span><span class="text">附加資訊</span></button>
+        <button onclick="scrollToSection('sec-event')"><span class="icon">📚</span><span class="text">創作者事件</span></button>
         <button onclick="scrollToSection('sec-output')"><span class="icon">📝</span><span class="text">輸出預覽</span></button>
       </nav>
     </aside>
@@ -219,77 +219,32 @@
 
       <!-- 角色資訊 -->
       <div class="section" id="sec-info">
-        <h2>
-          <span>💁‍♀️ 角色資訊</span>
-          <button class="icon-btn" onclick="toggleSectionCollapse('sec-info')">⇕</button>
-        </h2>
+        <h2><span>💁‍♀️ 角色資訊</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-info')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group">
-            <div class="label-row">
-                <label>角色名稱 <span style="color:red">*</span> (15字)</label>
-                <button class="icon-btn" onclick="clearOne('charName')" title="清空">🗑️</button>
-            </div>
+            <div class="label-row"><label>角色名稱 * (15字)</label><button class="icon-btn" onclick="clearOne('charName')" title="清空">🗑️</button></div>
             <input id="charName" type="text" data-maxlength="15" placeholder="例如：林月如" oninput="updateChatPreview()" />
           </div>
-
           <div style="display:flex; gap:16px;">
-            <div class="field-group" style="flex:1;">
-               <label style="margin-bottom:6px;">年齡 (15字)</label>
-               <input id="charAge" type="text" data-maxlength="15" placeholder="18歲" />
-            </div>
-            <div class="field-group" style="flex:1;">
-               <label style="margin-bottom:6px;">職業 (15字)</label>
-               <input id="charJob" type="text" data-maxlength="15" placeholder="學生" />
-            </div>
+            <div class="field-group" style="flex:1;"><label style="margin-bottom:6px;">年齡 (15字)</label><input id="charAge" type="text" data-maxlength="15" placeholder="18歲" /></div>
+            <div class="field-group" style="flex:1;"><label style="margin-bottom:6px;">職業 (15字)</label><input id="charJob" type="text" data-maxlength="15" placeholder="學生" /></div>
           </div>
-          
-          <div class="field-group">
-             <label style="margin-bottom:6px;">角色分類</label>
-             <input id="charCategory" type="text" placeholder="現代、奇幻..." />
-          </div>
-
-          <div class="field-group">
-             <div class="label-row">
-                 <label>一句話介紹 <span style="color:red">*</span> (80字)</label>
-             </div>
-             <textarea id="charQuote" data-maxlength="80" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea>
-          </div>
-
-          <div class="field-group">
-             <div class="label-row">
-                 <label>敘述 (700字)</label>
-             </div>
-             <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
-          </div>
-
-          <div class="field-group">
-             <label style="margin-bottom:6px;">標籤 (輸入後按 Enter)</label>
-             <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
-                <input type="text" id="tagInput" class="tags-input" placeholder="輸入標籤..." />
-             </div>
-             <input type="hidden" id="charTags" />
-          </div>
-          
-          <div class="field-group">
-             <label style="margin-bottom:6px;">創作者筆記 (200字)</label>
-             <textarea id="creatorNote" data-maxlength="200" style="min-height:80px;"></textarea>
-          </div>
+          <div class="field-group"><label style="margin-bottom:6px;">角色分類</label><input id="charCategory" type="text" placeholder="現代、奇幻..." /></div>
+          <div class="field-group"><div class="label-row"><label>一句話介紹 * (80字)</label></div><textarea id="charQuote" data-maxlength="80" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea></div>
+          <div class="field-group"><div class="label-row"><label>敘述 (700字)</label></div><textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea></div>
+          <div class="field-group"><label style="margin-bottom:6px;">標籤 (輸入後按 Enter)</label><div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()"><input type="text" id="tagInput" class="tags-input" placeholder="輸入標籤..." /></div><input type="hidden" id="charTags" /></div>
+          <div class="field-group"><label style="margin-bottom:6px;">創作者筆記 (200字)</label><textarea id="creatorNote" data-maxlength="200" style="min-height:80px;"></textarea></div>
         </div>
       </div>
       
       <div class="section" id="sec-gender">
          <h2><span>🚻 性別</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-gender')">⇕</button></h2>
-        <div class="section-body">
-          <select id="gender"><option value="未設置" selected>未設置</option><option value="男性">男性</option><option value="女性">女性</option><option value="無性別">無性別</option></select>
-        </div>
+        <div class="section-body"><select id="gender"><option value="未設置" selected>未設置</option><option value="男性">男性</option><option value="女性">女性</option><option value="無性別">無性別</option></select></div>
       </div>
 
       <!-- 核心設定 -->
       <div class="section" id="sec-basic">
-        <h2>
-            <span>🌏 基本資訊 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-basic')">⇕</button>
-        </h2>
+        <h2><span>🌏 基本資訊 (700字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-basic')">⇕</button></h2>
         <div class="section-body">
            <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button></div>
           <textarea id="basicInfo" data-maxlength="700" placeholder="必填。世界觀、背景故事..."></textarea>
@@ -297,9 +252,7 @@
       </div>
 
       <div class="section" id="sec-personality">
-        <h2>
-            <span>💗 性格 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
+        <h2><span>💗 性格 (700字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
         <div class="section-body">
           <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('personality','personality')">存為模板</button></div>
           <textarea id="personality" data-maxlength="700" placeholder="必填。內在性格、對玩家的態度..."></textarea>
@@ -307,9 +260,7 @@
       </div>
       
       <div class="section" id="sec-speech">
-        <h2>
-            <span>🗣️ 說話風格與習慣 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
+        <h2><span>🗣️ 說話風格與習慣 (700字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
         <div class="section-body">
           <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button></div>
           <textarea id="speechStyle" data-maxlength="700" placeholder="必填。口頭禪、語氣、用詞習慣..."></textarea>
@@ -319,44 +270,25 @@
       <div class="section" id="sec-prompt">
         <h2><span>🧠 Prompt 設定</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
         <div class="section-body">
-          <div class="field-group">
-              <label style="margin-bottom:6px;">使用模型</label>
-              <select id="modelType">
+          <div class="field-group"><label style="margin-bottom:6px;">使用模型</label>
+            <select id="modelType">
                 <option value="gemini-3-pro">Gemini 3 Pro</option>
                 <option value="claude-sonnet-4-5">Claude Sonnet 4.5</option>
                 <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
-              </select>
+            </select>
           </div>
-          <div class="field-group">
-             <div class="label-row">
-                 <label>System Role</label>
-             </div>
-             <textarea id="promptRole" placeholder="系統指令..."></textarea>
-          </div>
-          <div class="field-group">
-             <label style="margin-bottom:6px;">Response Guideline</label>
-             <textarea id="promptGuideline" placeholder="回應規則..."></textarea>
-          </div>
+          <div class="field-group"><div class="label-row"><label>System Role (2000字)</label></div><textarea id="promptRole" data-maxlength="2000" placeholder="系統指令..."></textarea></div>
+          <div class="field-group"><label style="margin-bottom:6px;">Response Guideline (3000字)</label><textarea id="promptGuideline" data-maxlength="3000" placeholder="回應規則..."></textarea></div>
         </div>
       </div>
 
       <!-- 遊戲管理 -->
       <div class="section" id="sec-game-mgr">
-        <h2>
-            <span>🎮 遊戲管理</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-game-mgr')">⇕</button>
-        </h2>
+        <h2><span>🎮 遊戲管理</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-game-mgr')">⇕</button></h2>
         <div class="section-body">
-          <h3 style="font-size:0.95rem; font-weight:700; color:var(--focus-color); margin-bottom:12px;">1. 遊戲介紹基本資訊</h3>
-          <div class="field-group">
-              <label style="margin-bottom:6px;">標題 (30字)</label>
-              <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入遊戲標題..." oninput="saveCurrentChar()" />
-          </div>
-          <div class="field-group">
-              <label style="margin-bottom:6px;">介紹 (30字)</label>
-              <textarea id="gameIntro" data-maxlength="30" style="min-height:60px;" placeholder="簡短介紹..." oninput="saveCurrentChar()"></textarea>
-          </div>
-
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--focus-color); margin-bottom:12px;">1. 遊戲介紹</h3>
+          <div class="field-group"><label style="margin-bottom:6px;">標題 (30字)</label><input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入遊戲標題..." oninput="saveCurrentChar()" /></div>
+          <div class="field-group"><label style="margin-bottom:6px;">介紹 (30字)</label><textarea id="gameIntro" data-maxlength="30" style="min-height:60px;" placeholder="簡短介紹..." oninput="saveCurrentChar()"></textarea></div>
           <h3 style="font-size:0.95rem; font-weight:700; color:var(--focus-color); margin:30px 0 12px 0;">2. 私密物語</h3>
           <div class="tabs-header">
             <button class="tab-btn active" onclick="switchStoryTab(0)">熟人</button>
@@ -372,26 +304,13 @@
       <div class="section" id="sec-first">
         <h2><span>🎬 開場與對話 (800字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
         <div class="section-body">
-          <div class="field-group">
-              <div class="label-row">
-                  <label>第一聊天場景</label>
-              </div>
-              <textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
-          </div>
-          <div class="field-group">
-              <div class="label-row">
-                  <label>角色對話</label>
-              </div>
-              <textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
-          </div>
+          <div class="field-group"><div class="label-row"><label>第一聊天場景</label></div><textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea></div>
+          <div class="field-group"><div class="label-row"><label>角色對話範例</label></div><textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea></div>
         </div>
       </div>
       
       <div class="section" id="sec-fav">
-        <h2>
-            <span>🎀 喜好與生日 (50字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button>
-        </h2>
+        <h2><span>🎀 喜好與生日 (50字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group"><input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" /></div>
           <div class="field-group"><input id="dislikes" type="text" data-maxlength="50" placeholder="不喜歡的東西" /></div>
@@ -401,18 +320,12 @@
       
       <div class="section" id="sec-extra">
         <h2><span>📌 附加資訊 (500字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
-        <div class="section-body">
-            <div id="extraContainer"></div>
-            <button class="sec-btn" onclick="addExtra()">＋ 新增一筆</button>
-        </div>
+        <div class="section-body"><div id="extraContainer"></div><button class="sec-btn" onclick="addExtra()">＋ 新增一筆</button></div>
       </div>
       
       <div class="section" id="sec-event">
         <h2><span>📚 創作者事件 (2000字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
-        <div class="section-body">
-            <div id="eventContainer"></div>
-            <button class="sec-btn" onclick="addEvent()">＋ 新增事件</button>
-        </div>
+        <div class="section-body"><div id="eventContainer"></div><button class="sec-btn" onclick="addEvent()">＋ 新增事件</button></div>
       </div>
 
       <div class="section" id="sec-output">
@@ -432,9 +345,7 @@
              <button class="main-btn" style="background:#4b5563;" onclick="saveSelfHtml()">💾 儲存為獨立 App 檔</button>
              <button class="sec-btn" onclick="downloadTxt()">⬇ 下載 .txt</button>
              <button class="sec-btn" onclick="exportAllData()">📦 備份 JSON</button>
-             <label class="sec-btn" style="cursor:pointer; display:flex; align-items:center; margin:0;">
-                📂 匯入<input id="allFile" type="file" accept=".json,.html" style="display:none;" onchange="importAllData()" />
-             </label>
+             <label class="sec-btn" style="cursor:pointer; display:flex; align-items:center; margin:0;">📂 匯入<input id="allFile" type="file" accept=".json,.html" style="display:none;" onchange="importAllData()" /></label>
           </div>
           <div id="output"></div>
         </div>
@@ -453,17 +364,25 @@
   </div>
 
   <button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
-  <!-- 這裡存放應用程式狀態 -->
   <script id="app-state" type="application/json">/*__DATA__*/</script>
 
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v21_strict'; 
+    const STORAGE_KEY = 'qing_char_game_v21_final'; 
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
     const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
-    
     const STORY_STAGES = ['熟人階段', '朋友階段', '心動階段', '戀人階段', '結婚階段'];
+
+    /* Update Progress - Defined Globally First */
+    function updateProgress() {
+      const requiredIds = ['charName', 'charAge', 'charJob', 'charQuote', 'basicInfo', 'personality', 'speechStyle'];
+      let filledCount = 0;
+      requiredIds.forEach(id => { const el = document.getElementById(id); if(el && el.value.trim() !== '') filledCount++; });
+      if(document.getElementById('gender').value !== '未設置') filledCount++;
+      const percent = Math.round((filledCount / (requiredIds.length + 1)) * 100);
+      document.getElementById('progressBar').style.width = `${percent}%`; document.getElementById('progressText').textContent = `${percent}%`;
+    }
 
     function initLayoutByWidth() {
       if (window.innerWidth <= 850) setLayout('mobile');
@@ -511,7 +430,6 @@
       });
     });
 
-    /* ========= 單檔儲存核心 ========= */
     function saveSelfHtml() {
         const currentStore = getStore();
         const dataStr = JSON.stringify(currentStore);
@@ -532,7 +450,6 @@
         showToast("已儲存為獨立 HTML 檔！");
     }
 
-    /* ========= 遊戲管理 UI ========= */
     function initStoryEditors() {
       const container = document.getElementById('story-container'); container.innerHTML = '';
       STORY_STAGES.forEach((stage, idx) => {
@@ -550,12 +467,10 @@
         const uid = Date.now() + Math.random().toString(36).substr(2,9);
         div.innerHTML = `
           <div class="story-card-header"><span>故事設定</span><button type="button" class="icon-btn" style="color:#ef4444;" onclick="if(confirm('刪除?')){this.closest('.story-card').remove();saveCurrentChar();}">🗑️</button></div>
-          
           <div class="label-row" style="background:rgba(var(--focus-rgb),0.05); padding:8px; border-radius:8px; margin-bottom:12px;">
-              <div style="flex:1;"><label>使用等級</label><select class="story-age" onchange="saveCurrentChar()"><option value="all" ${d?.ageRating==='all'?'selected':''}>所有年齡層</option><option value="adult" ${d?.ageRating==='adult'?'selected':''}>成人限定</option></select></div>
+              <div style="flex:1;"><label>使用等級</label><select class="story-age" onchange="saveCurrentChar()"><option value="all" ${d?.ageRating==='all'?'selected':''}>全齡</option><option value="adult" ${d?.ageRating==='adult'?'selected':''}>成人限定</option></select></div>
               <div style="flex:1; margin-left:8px;"><label>公開設定</label><select class="story-public" onchange="saveCurrentChar()"><option value="free" ${d?.publicSetting==='free'?'selected':''}>免費</option><option value="paid" ${d?.publicSetting==='paid'?'selected':''}>付費(10果醬)</option></select></div>
           </div>
-
           <div class="field-group"><label>解鎖提示語 (60字)</label><input type="text" class="story-hint" data-maxlength="60" value="${d?.hint||''}" oninput="saveCurrentChar()"></div>
           <div class="field-group"><label>故事標題 (30字)</label><input type="text" class="story-title" data-maxlength="30" value="${d?.title||''}" oninput="saveCurrentChar()"></div>
           <div class="field-group"><label>內容 (2000字)</label><textarea class="story-content" data-maxlength="2000" style="min-height:150px;" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
@@ -578,12 +493,10 @@
        list.appendChild(div); setupFieldUtils(div); saveCurrentChar();
     }
 
-    /* ========= 字數統計 ========= */
     function updateFieldCounter(el) {
       let wrapper = el.nextElementSibling; if(!wrapper || !wrapper.classList.contains('field-utils')) return;
       const len = el.value.length; 
       const max = el.getAttribute('data-maxlength') || el.getAttribute('maxlength');
-      
       const counter = wrapper.querySelector('.field-counter');
       if(counter) {
           counter.textContent = max ? `${len} / ${max}` : `${len} 字`;
@@ -598,7 +511,8 @@
            const div = document.createElement('div'); div.className = 'field-utils';
            div.innerHTML = `<span class="field-counter">0 字</span><button type="button" class="icon-btn" title="複製" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.value);showToast('已複製')">📋</button>`;
            el.parentNode.insertBefore(div, el.nextSibling);
-           el.addEventListener('input', ()=>updateFieldCounter(el)); updateFieldCounter(el);
+           el.addEventListener('input', ()=>updateFieldCounter(el)); 
+           updateFieldCounter(el); 
        });
     }
     function addExtra() { addExtraWithVal('',''); }
@@ -614,7 +528,6 @@
         document.getElementById('eventContainer').appendChild(div); setupFieldUtils(div);
     }
 
-    // 基礎功能
     function getStore() { const r=localStorage.getItem(STORAGE_KEY); try{return JSON.parse(r)||_emptyStore();}catch{return _emptyStore();} }
     function _emptyStore(){ return { currentId: null, chars: {}, templates: {basicInfo:[], personality:[], speechStyle:[], extra:[], event:[]} }; }
     function setStore(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
@@ -625,7 +538,6 @@
        d.fields['charTags'] = document.getElementById('charTags').value;
        document.querySelectorAll('.extra-block').forEach(b => d.extras.push({title:b.querySelector('input').value, text:b.querySelector('textarea').value}));
        document.querySelectorAll('.event-block').forEach(b => d.events.push({title:b.querySelector('input').value, text:b.querySelector('textarea').value}));
-       // 遊戲存檔
        d.game.title = document.getElementById('gameTitle').value; d.game.intro = document.getElementById('gameIntro').value;
        STORY_STAGES.forEach((st, idx) => {
            const list = document.getElementById(`storyList_${idx}`); if(!list) return;
@@ -655,7 +567,6 @@
         initTagInput(); updateChatPreview(); updateProgress(); setupFieldUtils();
     }
     
-    // Markdown 生成 (Strict Format)
     function generateMarkdown() {
       saveCurrentChar();
       const d = getStore().chars[getStore().currentId].data.fields;
