@@ -9,32 +9,41 @@
     :root {
       /* === 核心變數 === */
       --radius-md: 12px;
-      --radius-lg: 20px;
+      --radius-lg: 24px; /* 更圓潤 */
       --radius-full: 999px;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-      --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.12);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.15);
+      --shadow-glow: 0 0 15px rgba(var(--focus-rgb), 0.4);
+      --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
       
       /* 背景色系定義 */
-      --bg-pink: #ffeef5; --accent-pink: #ff8ebf;
-      --bg-cream: #fffbf2; --accent-cream: #ffad6b;
-      --bg-mint: #f0fffa; --accent-mint: #5cd6ad;
-      --bg-lavender: #f9f2ff; --accent-lavender: #c4a3ff;
-      --bg-sky: #f0f9ff; --accent-sky: #7ac0ff;
-      --bg-lemon: #fffeec; --accent-lemon: #ffe066;
-      --bg-grey: #f7f7f7; --accent-grey: #999;
-      --bg-black: #1a1a1a; --accent-black: #666;
+      --bg-pink: #fff0f5; --accent-pink: #ff7eb3; --focus-rgb-pink: 255, 126, 179;
+      --bg-cream: #fdfcf0; --accent-cream: #ffac6e; --focus-rgb-cream: 255, 172, 110;
+      --bg-mint: #f0fff9; --accent-mint: #4cd9a4; --focus-rgb-mint: 76, 217, 164;
+      --bg-lavender: #f7f2ff; --accent-lavender: #b185ff; --focus-rgb-lavender: 177, 133, 255;
+      --bg-sky: #f0f8ff; --accent-sky: #6ab0ff; --focus-rgb-sky: 106, 176, 255;
+      --bg-lemon: #fffff0; --accent-lemon: #facc15; --focus-rgb-lemon: 250, 204, 21;
+      --bg-grey: #f8f9fa; --accent-grey: #8d99ae; --focus-rgb-grey: 141, 153, 174;
+      --bg-black: #121212; --accent-black: #666; --focus-rgb-black: 100, 100, 100;
 
-      /* 預設變數 */
+      /* 預設變數 (由 body class 覆寫) */
       --page-bg: var(--bg-pink);
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --sidebar-bg: rgba(255, 255, 255, 0.9);
-      --text-main: #4a3b45;
-      --text-sub: #7a6b75;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --sidebar-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #2c3e50;
+      --text-sub: #64748b;
       --border-color: rgba(0,0,0,0.08);
       --focus-color: var(--accent-pink);
+      --focus-rgb: var(--focus-rgb-pink);
       --btn-bg: var(--accent-pink);
       --btn-text: #fff;
+      
+      /* 聊天室變數 */
+      --chat-bg: #20232a;
+      --chat-bubble-sys: #3a3f4b;
+      --chat-bubble-user: var(--btn-bg);
+      --chat-text: #e0e0e0;
     }
 
     * { box-sizing: border-box; }
@@ -42,33 +51,34 @@
     body {
       margin: 0;
       padding: 20px;
-      font-family: "Noto Sans TC", system-ui, sans-serif;
-      line-height: 1.7;
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
       color: var(--text-main);
       background-color: var(--page-bg);
-      background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
-      background-size: 24px 24px;
-      transition: background 0.3s ease, color 0.3s ease;
+      background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      transition: background 0.4s ease, color 0.4s ease;
       min-height: 100vh;
     }
 
     /* === 主題色覆寫 === */
-    body.theme-pink { --page-bg: var(--bg-pink); --focus-color: #ff8ebf; --btn-bg: #ff6fa8; }
-    body.theme-cream { --page-bg: var(--bg-cream); --focus-color: #ffad6b; --btn-bg: #ff9c4a; }
-    body.theme-mint { --page-bg: var(--bg-mint); --focus-color: #5cd6ad; --btn-bg: #42c79a; }
-    body.theme-lavender { --page-bg: var(--bg-lavender); --focus-color: #c4a3ff; --btn-bg: #b48cff; }
-    body.theme-sky { --page-bg: var(--bg-sky); --focus-color: #7ac0ff; --btn-bg: #58a9ff; }
-    body.theme-lemon { --page-bg: var(--bg-lemon); --focus-color: #ffe066; --btn-bg: #ffd93b; --btn-text: #5c4e00; }
-    body.theme-grey { --page-bg: var(--bg-grey); --focus-color: #999; --btn-bg: #b0b0b0; }
+    body.theme-pink { --page-bg: var(--bg-pink); --focus-color: #ff7eb3; --focus-rgb: var(--focus-rgb-pink); --btn-bg: #ff7eb3; }
+    body.theme-cream { --page-bg: var(--bg-cream); --focus-color: #ffac6e; --focus-rgb: var(--focus-rgb-cream); --btn-bg: #ffac6e; }
+    body.theme-mint { --page-bg: var(--bg-mint); --focus-color: #4cd9a4; --focus-rgb: var(--focus-rgb-mint); --btn-bg: #4cd9a4; }
+    body.theme-lavender { --page-bg: var(--bg-lavender); --focus-color: #b185ff; --focus-rgb: var(--focus-rgb-lavender); --btn-bg: #b185ff; }
+    body.theme-sky { --page-bg: var(--bg-sky); --focus-color: #6ab0ff; --focus-rgb: var(--focus-rgb-sky); --btn-bg: #6ab0ff; }
+    body.theme-lemon { --page-bg: var(--bg-lemon); --focus-color: #facc15; --focus-rgb: var(--focus-rgb-lemon); --btn-bg: #facc15; --btn-text: #5c4e00; }
+    body.theme-grey { --page-bg: var(--bg-grey); --focus-color: #8d99ae; --focus-rgb: var(--focus-rgb-grey); --btn-bg: #8d99ae; }
     
     body.theme-black { 
       --page-bg: var(--bg-black); 
-      --card-bg: rgba(40, 40, 40, 0.85);
-      --sidebar-bg: rgba(30, 30, 30, 0.95);
+      --card-bg: rgba(30, 30, 30, 0.9);
+      --sidebar-bg: rgba(25, 25, 25, 0.95);
       --text-main: #e0e0e0;
-      --text-sub: #aaa;
-      --border-color: rgba(255,255,255,0.15);
-      --focus-color: #888;
+      --text-sub: #9ca3af;
+      --border-color: rgba(255,255,255,0.12);
+      --focus-color: #aaa;
+      --focus-rgb: 170,170,170;
       --btn-bg: #555;
       --btn-text: #fff;
       background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
@@ -78,106 +88,76 @@
     .layout-shell {
       display: flex;
       align-items: flex-start;
-      gap: 24px;
-      max-width: 1200px;
+      gap: 32px;
+      max-width: 1100px;
       margin: 0 auto;
-      /* 確保 flex 容器正確運作 */
       position: relative;
     }
 
     .main-area {
-      flex: 1; /* 讓主要區域自動填滿剩餘空間 */
-      min-width: 0; /* 防止內容撐爆 flex */
-      transition: var(--transition); /* 平滑過渡寬度變化 */
+      flex: 1;
+      min-width: 0;
+      transition: var(--transition);
     }
 
-    /* === 側邊欄 Sidebar (修正版) === */
+    /* === 側邊欄 Sidebar === */
     .sidebar {
-      /* 關鍵修正：設定 flex-basis 讓 flex 容器知道它佔多少空間 */
-      flex: 0 0 260px; 
+      flex: 0 0 260px;
       width: 260px;
-      
       position: sticky;
-      top: 20px;
+      top: 24px;
       background: var(--sidebar-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 16px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 20px;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
-      border: 1px solid rgba(255,255,255,0.3);
-      
-      /* 關鍵：加上 overflow: hidden 避免內容被擠壓時撐開寬度 */
+      border: 1px solid rgba(255,255,255,0.5);
       overflow: hidden;
-      
-      /* 確保寬度變化有動畫 */
-      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), flex-basis 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.3s ease;
-      z-index: 10;
-      
-      /* 防止文字換行導致版面跳動 */
-      white-space: nowrap;
+      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), flex-basis 0.4s ease;
+      z-index: 50;
     }
     
-    /* 側邊欄收合模式 (修正版) */
     .sidebar.is-collapsed {
-      /* 關鍵修正：同步更新 flex-basis 與 width */
-      flex: 0 0 68px;
-      width: 68px;
-      padding: 16px 10px; /* 稍微縮減內距 */
+      flex: 0 0 72px;
+      width: 72px;
+      padding: 20px 12px;
     }
     
-    /* 收合時隱藏的部分 */
     .sidebar.is-collapsed .sidebar-title,
     .sidebar.is-collapsed .sidebar-sub,
     .sidebar.is-collapsed .btn-text {
-      opacity: 0;
-      pointer-events: none;
-      /* 讓文字瞬間消失或快速淡出，避免動畫過程中文字被切斷 */
-      display: none; 
+      display: none;
     }
     
-    .sidebar.is-collapsed .sidebar-header {
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .sidebar.is-collapsed .sidebar-nav button {
-      justify-content: center;
-      padding: 10px 0;
-    }
-    
-    .sidebar.is-collapsed .sidebar-nav button span.btn-icon {
-      margin-right: 0;
-      font-size: 1.3rem;
-    }
-
-    /* Header 樣式 */
     .sidebar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-color);
-      min-height: 45px; /* 固定高度避免跳動 */
     }
+
+    .sidebar.is-collapsed .sidebar-header { justify-content: center; }
 
     .sidebar-title {
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--text-main);
+      letter-spacing: 0.02em;
     }
 
     .sidebar-sub {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-sub);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .sidebar-nav button {
@@ -187,285 +167,351 @@
       color: var(--text-main);
       box-shadow: none;
       border: 1px solid transparent;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: background 0.2s, transform 0.2s;
+      padding: 10px 14px;
+      border-radius: 12px;
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      font-size: 0.9rem;
     }
 
     .sidebar-nav button:hover {
-      background: rgba(0,0,0,0.05);
+      background: rgba(0,0,0,0.04);
+      color: var(--focus-color);
       transform: translateX(4px);
     }
+    body.theme-black .sidebar-nav button:hover { background: rgba(255,255,255,0.08); }
     
-    /* 收合時取消 hover 位移，避免看起來怪怪的 */
-    .sidebar.is-collapsed .sidebar-nav button:hover {
-      transform: none;
-      background: var(--focus-color);
-      color: #fff;
-    }
-    
-    body.theme-black .sidebar-nav button:hover {
-      background: rgba(255,255,255,0.1);
-    }
+    .sidebar.is-collapsed .sidebar-nav button:hover { transform: none; }
+    .sidebar.is-collapsed .sidebar-nav button { justify-content: center; padding: 10px 0; }
+    .sidebar.is-collapsed .sidebar-nav button span.btn-icon { margin: 0; font-size: 1.4rem; }
 
     .sidebar-nav button.sidebar-main { font-weight: 600; }
-    .sidebar-nav button.sidebar-subitem { font-size: 0.9rem; color: var(--text-sub); padding-left: 12px; }
-    
-    .sidebar-nav button span.btn-icon {
-      margin-right: 8px;
-      width: 24px;
-      text-align: center;
-      display: inline-block;
-    }
+    .sidebar-nav button.sidebar-subitem { font-size: 0.85rem; color: var(--text-sub); padding-left: 14px; }
+    .sidebar-nav button span.btn-icon { margin-right: 10px; width: 24px; text-align: center; font-size: 1.1rem; display: inline-block;}
 
-    /* === 其他排版樣式 (保持原本優化) === */
+    /* === Typography & Layout === */
     h1, h2, h3 { font-family: "Noto Serif TC", serif; margin-top: 0; color: var(--text-main); }
-    h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 700; }
-    h2 { font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
     
-    .tagline { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 20px; }
-    .top-bar { max-width: 1200px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-    .sub-label { font-size: 0.85rem; color: var(--text-sub); margin-top: 4px; display: block; }
+    h2 { 
+      font-size: 1.2rem; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding-bottom: 12px; 
+      border-bottom: 1px solid var(--border-color); 
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    
+    .top-bar { max-width: 1100px; margin: 0 auto 32px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; }
+    .tagline { color: var(--text-sub); font-size: 1rem; margin-top: 4px; opacity: 0.9; }
+    .sub-label { font-size: 0.85rem; color: var(--text-sub); margin-top: 6px; line-height: 1.5; }
 
+    /* === Card Section === */
     .section {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-radius: var(--radius-lg);
-      padding: 24px 28px;
-      margin-bottom: 24px;
+      padding: 32px;
+      margin-bottom: 32px;
       box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.6);
       transition: var(--transition);
     }
     .section:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .section.collapsed { padding-bottom: 20px; opacity: 0.8; }
     .section.collapsed .section-body { display: none; }
-    .section.collapsed { padding-bottom: 16px; opacity: 0.7; }
-    .section-body { margin-top: 16px; animation: fadeIn 0.4s ease; }
+    .section-body { margin-top: 24px; animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
     
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .label-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; }
-    label { font-weight: 500; color: var(--text-main); margin-right: 8px; }
+    /* === Inputs & Forms === */
+    .label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; flex-wrap: wrap; }
+    label { font-weight: 600; color: var(--text-main); margin-right: 8px; font-size: 0.95rem; letter-spacing: 0.02em; }
 
     input[type="text"], input[type="search"], input[type="date"], select, textarea {
-      width: 100%; padding: 10px 14px; font-size: 0.95rem; font-family: inherit; color: var(--text-main);
-      background: rgba(255,255,255,0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md);
-      transition: var(--transition); margin-bottom: 12px; outline: none;
+      width: 100%; padding: 12px 16px; font-size: 1rem; font-family: inherit; color: var(--text-main);
+      background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      transition: var(--transition); margin-bottom: 16px; outline: none;
+      box-shadow: var(--shadow-xs);
     }
-    body.theme-black input, body.theme-black select, body.theme-black textarea { background: rgba(0,0,0,0.3); color: #fff; }
-    textarea { min-height: 100px; line-height: 1.6; resize: vertical; }
-    input:focus, select:focus, textarea:focus { background: #fff; border-color: var(--focus-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-color), transparent 80%); }
-    body.theme-black input:focus, body.theme-black textarea:focus { background: rgba(0,0,0,0.5); }
-
-    button {
-      cursor: pointer; border: none; border-radius: var(--radius-full); padding: 8px 16px; font-size: 0.9rem;
-      font-family: inherit; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
-      background: var(--btn-bg); color: var(--btn-text); box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: var(--transition); margin-right: 6px; margin-bottom: 6px;
-    }
-    button:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    button:active { transform: translateY(0); }
+    body.theme-black input, body.theme-black select, body.theme-black textarea { background: rgba(0,0,0,0.3); color: #fff; border-color: #444; }
     
-    .button-secondary, .button-mini { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
-    .button-secondary:hover, .button-mini:hover { background: rgba(0,0,0,0.05); border-color: var(--focus-color); color: var(--focus-color); }
+    textarea { min-height: 120px; line-height: 1.7; resize: vertical; }
+    
+    input:focus, select:focus, textarea:focus { 
+      background: #fff; 
+      border-color: var(--focus-color); 
+      box-shadow: 0 0 0 4px rgba(var(--focus-rgb), 0.15);
+    }
+    body.theme-black input:focus, body.theme-black textarea:focus { background: rgba(40,40,40,0.8); }
+
+    /* === Buttons === */
+    button {
+      cursor: pointer; border: none; border-radius: var(--radius-full); padding: 10px 20px; font-size: 0.95rem;
+      font-family: inherit; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+      background: var(--btn-bg); color: var(--btn-text);
+      box-shadow: 0 4px 12px rgba(var(--focus-rgb), 0.25);
+      transition: var(--transition); margin-right: 8px; margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    button:hover { filter: brightness(1.05); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(var(--focus-rgb), 0.35); }
+    button:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(var(--focus-rgb), 0.2); }
+    
+    .button-secondary, .button-mini { 
+      background: transparent; color: var(--text-main); border: 1px solid var(--border-color); 
+      box-shadow: var(--shadow-xs); 
+    }
+    .button-secondary:hover, .button-mini:hover { 
+      background: rgba(255,255,255,0.5); border-color: var(--focus-color); color: var(--focus-color); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
     body.theme-black .button-secondary:hover, body.theme-black .button-mini:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .button-mini { padding: 3px 10px; font-size: 0.75rem; margin: 0; }
+    
+    .button-mini { padding: 4px 12px; font-size: 0.8rem; margin: 0; border-radius: 8px; }
     
     .sidebar-toggle-btn {
-      width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.05); color: var(--text-sub); border-radius: 50%; margin: 0; box-shadow: none;
+      width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;
+      background: transparent; color: var(--text-sub); border-radius: 50%; margin: 0; box-shadow: none; border: 1px solid var(--border-color);
     }
-    .sidebar-toggle-btn:hover { background: var(--focus-color); color: #fff; }
+    .sidebar-toggle-btn:hover { background: var(--focus-color); color: #fff; border-color: var(--focus-color); }
 
+    /* === Output Area === */
     #output {
-      background: #222; color: #f0f0f0; padding: 16px; border-radius: var(--radius-md);
-      font-family: "Menlo", "Monaco", "Courier New", monospace; font-size: 0.9rem; white-space: pre-wrap;
-      line-height: 1.5; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); margin-top: 12px;
+      background: #1e1e1e; color: #f0f0f0; padding: 24px; border-radius: var(--radius-md);
+      font-family: "Menlo", "Monaco", "Consolas", monospace; font-size: 0.9rem; white-space: pre-wrap;
+      line-height: 1.6; box-shadow: inset 0 4px 12px rgba(0,0,0,0.4); margin-top: 20px; border: 1px solid #333;
     }
 
-    .tpl-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-    .tpl-card:hover { border-color: var(--focus-color); }
+    /* === Template Card === */
+    .tpl-card { 
+      background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 12px; 
+      box-shadow: var(--shadow-xs); transition: var(--transition);
+    }
+    body.theme-black .tpl-card { background: #2a2a2a; }
+    .tpl-card:hover { border-color: var(--focus-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .tpl-name { font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
-    .tpl-meta { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 6px; }
-    .tpl-preview { font-size: 0.85rem; color: var(--text-sub); background: rgba(0,0,0,0.03); padding: 6px; border-radius: 4px; white-space: pre-wrap; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-    
-    .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: -8px; margin-bottom: 16px; font-size: 0.75rem; color: var(--text-sub); }
-    .extra-block, .event-block { border-left: 3px solid var(--border-color); padding-left: 16px; margin-bottom: 24px; transition: border-color 0.3s; }
+    .tpl-meta { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 8px; }
+    .tpl-preview { 
+      font-size: 0.85rem; color: var(--text-sub); background: rgba(0,0,0,0.03); padding: 10px; border-radius: 8px; 
+      white-space: pre-wrap; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; 
+    }
+
+    .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: -12px; margin-bottom: 20px; font-size: 0.75rem; color: var(--text-sub); }
+    .extra-block, .event-block { border-left: 4px solid var(--border-color); padding-left: 20px; margin-bottom: 32px; transition: border-color 0.3s; }
     .extra-block:hover, .event-block:hover { border-left-color: var(--focus-color); }
+
+    /* === Toast Notification (吐司訊息) === */
+    .toast-container {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(30, 30, 30, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      pointer-events: auto;
+      min-width: 200px;
+      justify-content: center;
+    }
+
+    .toast.fade-out { animation: toastOut 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(20px) scale(0.9); }
+    }
+
+    /* === Chat Preview (聊天預覽) === */
+    .chat-container {
+      background: var(--chat-bg);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #333;
+      max-width: 500px;
+      margin: 20px auto 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .chat-header {
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+      border-bottom: 1px solid #333;
+      text-align: center;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .chat-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 300px;
+    }
+
+    .msg-system {
+      color: #888;
+      font-size: 0.85rem;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      padding: 8px 16px;
+      border-radius: 12px;
+      align-self: center;
+      max-width: 90%;
+      line-height: 1.5;
+    }
+
+    .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .msg-avatar {
+      width: 40px;
+      height: 40px;
+      background: #555;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .msg-bubble {
+      background: var(--chat-bubble-sys);
+      color: var(--chat-text);
+      padding: 12px 16px;
+      border-radius: 4px 16px 16px 16px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 85%;
+      position: relative;
+    }
+    
+    /* 模擬用戶回覆 (靠右) - 雖然這裡只展示角色 */
+    .msg-row.user { flex-direction: row-reverse; }
+    .msg-row.user .msg-bubble {
+      background: var(--chat-bubble-user);
+      color: #fff; /* 如果按鈕色太淺，這可能要改 */
+      border-radius: 16px 4px 16px 16px;
+    }
+
+    /* === 回到頁首按鈕 === */
+    #backToTopBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      color: #fff;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      border: none;
+    }
+    #backToTopBtn.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    #backToTopBtn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
 
     /* === RWD 響應式 === */
     @media (max-width: 850px) {
-      .layout-shell { flex-direction: column; }
-      .sidebar {
-        width: 100%; flex: 0 0 auto; /* 手機版取消 flex 限制 */
-        position: static; margin-bottom: 20px; display: flex; flex-direction: column; padding: 12px;
-      }
+      .layout-shell { flex-direction: column; gap: 20px; }
+      .section { padding: 24px; }
+      .sidebar { width: 100%; flex: 0 0 auto; position: static; margin-bottom: 0; padding: 16px; display: flex; flex-direction: column; }
       .sidebar-header { display: none; }
-      .sidebar-nav { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
+      .sidebar-nav { flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 4px; scrollbar-width: none; }
       .sidebar-nav::-webkit-scrollbar { display: none; }
-      .sidebar-nav button { white-space: nowrap; width: auto; background: var(--card-bg); border: 1px solid var(--border-color); }
-      .section { padding: 16px 20px; }
+      .sidebar-nav button { white-space: nowrap; width: auto; background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 99px; }
+      .sidebar-nav button span.btn-icon { margin-right: 6px; }
     }
-    
-    /* 強制排版樣式 */
-/* =========================================
-       手機版排版專用優化 (修正靠左與選單問題)
-       ========================================= */
-    
-    /* 1. 強制手機版模式在電腦上看時，要置中且限制寬度 */
+
+    /* 手機版排版專用優化 */
     body.layout-mobile {
-      max-width: 680px !important; /* 限制寬度，模擬手機/平板 */
+      max-width: 680px !important;
       margin-left: auto !important;
       margin-right: auto !important;
-      padding: 20px 12px; /* 手機版左右留白小一點 */
+      padding: 16px 12px;
     }
-
-    body.layout-mobile .layout-shell {
-      flex-direction: column;
-    }
-
-    /* 2. 側邊欄在手機版變成頂部導航列 */
-/* 2. 側邊欄在手機版變成頂部導航列 (修正版) */
+    body.layout-mobile .layout-shell { flex-direction: column; gap: 16px; }
     body.layout-mobile .sidebar {
       width: 100%;
       flex: 0 0 auto;
       position: sticky;
       top: 10px;
       z-index: 100;
-      margin-bottom: 16px;
-      padding: 6px; /* 稍微縮小內距，讓按鈕更滿 */
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      
-      /* 關鍵修正：解除電腦版的 hidden 設定，讓子元素可以滑動 */
-      overflow: visible !important; 
-      
-      /* 避免電腦版的高度動畫影響手機版 */
-      transition: none !important; 
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      overflow: visible !important;
+      transition: none !important;
     }
-    /* 隱藏手機版側邊欄的標題 (節省空間) */
     body.layout-mobile .sidebar-header, 
     body.layout-mobile .sidebar-sub,
-    body.layout-mobile .sidebar-toggle-btn {
-      display: none !important; 
-    }
-
-    /* 3. 導航按鈕容器：橫向滑動優化 */
+    body.layout-mobile .sidebar-toggle-btn { display: none !important; }
     body.layout-mobile .sidebar-nav {
-      display: flex;
-      flex-direction: row;
-      overflow-x: auto;     /* 允許左右滑動 */
-      overflow-y: hidden;
-      gap: 8px;
-      padding: 2px 4px;
-      
-      /* 隱藏捲軸但保留滑動功能 */
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
-      
-      /* 讓滑動更順暢 */
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
+      display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden;
+      gap: 8px; padding: 4px 8px;
+      -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
     }
-
-    /* Chrome/Safari 隱藏捲軸 */
-    body.layout-mobile .sidebar-nav::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* 4. 導航按鈕：變成膠囊狀 (Pills) */
+    body.layout-mobile .sidebar-nav::-webkit-scrollbar { display: none; }
     body.layout-mobile .sidebar-nav button {
-      flex: 0 0 auto;       /* 關鍵：不要讓按鈕被壓縮 */
-      width: auto;          /* 寬度隨文字自動撐開 */
-      white-space: nowrap;  /* 文字不換行 */
-      margin: 0;
-      padding: 6px 14px;
-      border-radius: 99px;  /* 圓弧膠囊 */
-      font-size: 0.85rem;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid var(--border-color);
+      flex: 0 0 auto; width: auto; white-space: nowrap; margin: 0; padding: 8px 18px;
+      border-radius: 99px; font-size: 0.9rem; background: rgba(255,255,255,0.8); border: 1px solid var(--border-color);
     }
-
-    /* 修正 icon 位置 */
-    body.layout-mobile .sidebar-nav button span.btn-icon {
-      margin-right: 4px;
-    }
-
-    /* 選中或 Hover 的狀態 */
+    body.layout-mobile .sidebar-nav button span.btn-icon { margin-right: 6px; }
     body.layout-mobile .sidebar-nav button:hover,
     body.layout-mobile .sidebar-nav button:active {
-      background: var(--focus-color);
-      color: #fff;
-      border-color: var(--focus-color);
-      transform: translateY(0); /* 手機版不需要浮起動畫 */
+      background: var(--focus-color); color: #fff; border-color: var(--focus-color); transform: none;
     }
+    body.layout-mobile .section { padding: 20px; border-radius: 20px; }
     
-    /* 手機版內容區塊調整 */
-    body.layout-mobile .section {
-      padding: 16px 16px; /* 縮小內距增加顯示空間 */
-    }
-    
-    body.layout-desktop .layout-shell { flex-direction: row; }
-    body.layout-desktop .sidebar { flex: 0 0 260px; width: 260px; position: sticky; }
-    body.layout-desktop .sidebar.is-collapsed { flex: 0 0 68px; width: 68px; }
-    body.layout-desktop .sidebar-nav { flex-direction: column; overflow-x: visible; }
-/* === 回到頁首按鈕 === */
-    #backToTopBtn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      font-size: 1.2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 999;
-      
-      /* 預設隱藏，透過 JS 控制顯示 */
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      
-      /* 內容置中 */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      margin: 0;
-    }
-
-    /* 顯示狀態 */
-    #backToTopBtn.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    #backToTopBtn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-    }
-
-    /* 手機版稍微調整位置，避免擋到手指或太靠邊 */
-    @media (max-width: 600px) {
-      #backToTopBtn {
-        bottom: 20px;
-        right: 20px;
-        width: 44px;
-        height: 44px;
-        font-size: 1rem;
-      }
-    }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
+
+  <div class="toast-container" id="toastContainer"></div>
 
   <div class="top-bar">
     <div>
@@ -473,9 +519,9 @@
       <div class="tagline">填寫設定，一鍵生成 AI 角色卡 Markdown，讓故事開始。</div>
     </div>
     <div class="theme-select">
-      <label style="font-size:0.9rem;">背景主題：</label>
-      <select onchange="changeTheme(this.value)" style="width:auto; display:inline-block; padding:6px 10px; margin-bottom:0;">
-        <option value="pink" selected>🌸 淡粉紅</option>
+      <label style="font-size:0.9rem;">🎨 背景主題：</label>
+      <select onchange="changeTheme(this.value)" style="width:auto; display:inline-block; padding:8px 14px; margin-bottom:0; cursor:pointer;">
+        <option value="pink" selected>🌸 櫻花粉</option>
         <option value="cream">🍞 奶油白</option>
         <option value="mint">🌿 薄荷綠</option>
         <option value="lavender">🔮 薰衣草</option>
@@ -487,24 +533,18 @@
     </div>
   </div>
 
-  <div style="max-width:1200px; margin:0 auto 20px; opacity:0.8;">
-      <p class="sub-label">※ 各欄位支援 Markdown 語法。請善用「匯出存檔」功能避免資料遺失。</p>
-  </div>
-
   <div class="layout-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-title">📎 功能導航</div>
-        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="收合/展開">
-          ◀
-        </button>
+        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="收合/展開">◀</button>
       </div>
       
       <div class="sidebar-sub">點擊快速跳轉</div>
       
       <nav class="sidebar-nav">
         <button type="button" class="sidebar-main" onclick="scrollToSection('sec-archive')">
-          <span class="btn-icon">📂</span><span class="btn-text">角色存檔管理</span>
+          <span class="btn-icon">📂</span><span class="btn-text">角色存檔</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-info')">
           <span class="btn-icon">💁‍♀️</span><span class="btn-text">角色資訊</span>
@@ -513,22 +553,22 @@
           <span class="btn-icon">🚻</span><span class="btn-text">性別設定</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-basic')">
-          <span class="btn-icon">🌏</span><span class="btn-text">基本資訊 (世界觀)</span>
+          <span class="btn-icon">🌏</span><span class="btn-text">基本資訊</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-personality')">
-          <span class="btn-icon">💗</span><span class="btn-text">性格與特質</span>
+          <span class="btn-icon">💗</span><span class="btn-text">性格特質</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-speech')">
           <span class="btn-icon">🗣️</span><span class="btn-text">說話風格</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-prompt')">
-          <span class="btn-icon">🧠</span><span class="btn-text">模型 & Prompt</span>
+          <span class="btn-icon">🧠</span><span class="btn-text">Prompt 設定</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-first')">
           <span class="btn-icon">🎬</span><span class="btn-text">開場與對話</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-fav')">
-          <span class="btn-icon">🎀</span><span class="btn-text">喜好與生日</span>
+          <span class="btn-icon">🎀</span><span class="btn-text">喜好生日</span>
         </button>
         <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-extra')">
           <span class="btn-icon">📌</span><span class="btn-text">附加資訊</span>
@@ -537,7 +577,7 @@
           <span class="btn-icon">📚</span><span class="btn-text">創作者事件</span>
         </button>
         <button type="button" class="sidebar-main" onclick="scrollToSection('sec-output')">
-          <span class="btn-icon">📝</span><span class="btn-text">輸出與匯入</span>
+          <span class="btn-icon">📝</span><span class="btn-text">輸出/預覽</span>
         </button>
         <button type="button" class="sidebar-main" onclick="scrollToSection('sec-template-center')">
           <span class="btn-icon">🧰</span><span class="btn-text">模板管理</span>
@@ -557,14 +597,14 @@
         </h2>
         <div class="section-body">
           <div class="label-row">
-            <div style="flex:1; margin-right:12px;">
+             <div style="flex:1; margin-right:12px;">
               <label>分類篩選</label>
               <select id="filterCategory" onchange="refreshCharListFromStorage()">
                 <option value="">全部分類</option>
               </select>
             </div>
             <div style="flex:1; margin-right:12px;">
-              <label>排序方式</label>
+              <label>排序</label>
               <select id="charSort" onchange="refreshCharListFromStorage()">
                 <option value="created_desc">新 ➝ 舊</option>
                 <option value="created_asc">舊 ➝ 新</option>
@@ -577,13 +617,12 @@
             </div>
           </div>
 
-          <div id="charList" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; min-height:40px;">
-            </div>
+          <div id="charList" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; min-height:40px;"></div>
 
-          <div style="margin-top:16px; border-top:1px dashed var(--border-color); padding-top:16px;">
+          <div style="margin-top:20px; border-top:1px dashed var(--border-color); padding-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="newCharacter()">➕ 新角色</button>
             <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
-            <button type="button" class="button-secondary" onclick="deleteCurrentChar()" style="float:right;">🗑 刪除</button>
+            <button type="button" class="button-secondary" onclick="deleteCurrentChar()" style="margin-left:auto;">🗑 刪除</button>
           </div>
         </div>
       </div>
@@ -594,7 +633,6 @@
           <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button>
         </h2>
         <div class="section-body">
-
           <div class="label-row">
             <label>角色名稱 <span style="color:red;font-size:0.8em;">*</span></label>
             <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
@@ -608,7 +646,7 @@
           <input id="charCategory" type="text" placeholder="例如：現代、奇幻、OC..." />
 
           <div class="label-row">
-            <div style="flex:1; margin-right:10px;">
+            <div style="flex:1; margin-right:16px;">
                <label>年齡 <span style="color:red;font-size:0.8em;">*</span></label>
                <input id="charAge" type="text" data-maxlength="15" placeholder="例如：18歲" />
             </div>
@@ -622,10 +660,10 @@
             <label>來自角色的一句話 <span style="color:red;font-size:0.8em;">*</span></label>
             <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
           </div>
-          <textarea id="charQuote" style="min-height:60px;" data-maxlength="80" placeholder="顯示在列表的短介紹"></textarea>
+          <textarea id="charQuote" style="min-height:80px;" data-maxlength="80" placeholder="顯示在列表的短介紹"></textarea>
 
           <div class="label-row">
-            <label>敘述 (Description)</label>
+             <label>敘述 (Description)</label>
             <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
           </div>
           <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
@@ -640,12 +678,12 @@
             <label>創作者筆記</label>
             <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
           </div>
-          <textarea id="creatorNote" style="min-height:70px;" data-maxlength="200"></textarea>
+          <textarea id="creatorNote" style="min-height:80px;" data-maxlength="200"></textarea>
         </div>
       </div>
 
       <div class="section" id="sec-gender">
-        <h2>
+         <h2>
           <span>🚻 性別</span>
           <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕</button>
         </h2>
@@ -731,7 +769,7 @@
             <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
           </select>
 
-          <div class="label-row" style="margin-top:12px;">
+          <div class="label-row" style="margin-top:20px;">
             <label>Role（系統提示）</label>
             <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
           </div>
@@ -743,16 +781,16 @@
           </div>
           <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI……"></textarea>
 
-          <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:8px; margin-top:10px;">
+          <div style="background:rgba(0,0,0,0.03); padding:16px; border-radius:12px; margin-top:16px;">
             <div id="promptTokenInfo" class="sub-label" style="color:var(--text-main);"></div>
-            <div id="promptJamInfo" class="sub-label" style="font-weight:bold;"></div>
+            <div id="promptJamInfo" class="sub-label" style="font-weight:700; margin-top:4px;"></div>
           </div>
         </div>
       </div>
 
       <div class="section" id="sec-first">
         <h2>
-          <span>🎬 第一次聊天場景與對話</span>
+          <span>🎬 開場與對話</span>
           <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button>
         </h2>
         <div class="section-body">
@@ -760,13 +798,13 @@
             <label>第一次聊天場景</label>
             <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
           </div>
-          <textarea id="firstScene" data-maxlength="800" placeholder="設定開場情境..."></textarea>
+          <textarea id="firstScene" data-maxlength="800" placeholder="設定開場情境（旁白）..." oninput="updateChatPreview()"></textarea>
 
           <div class="label-row">
             <label>角色對話範例</label>
             <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
           </div>
-          <textarea id="sampleDialogue" data-maxlength="800" placeholder="角色可能會說的話..."></textarea>
+          <textarea id="sampleDialogue" data-maxlength="800" placeholder="角色可能會說的話..." oninput="updateChatPreview()"></textarea>
         </div>
       </div>
 
@@ -805,7 +843,7 @@
           <p class="sub-label">最多 10 筆，可用於補充世界觀細節。</p>
           <div id="extraContainer"></div>
           
-          <div style="margin-top:12px;">
+          <div style="margin-top:16px;">
               <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
               <button type="button" class="button-secondary" onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
           </div>
@@ -821,7 +859,7 @@
           <p class="sub-label">最多 20 筆，用於紀錄故事片段。</p>
           <div id="eventContainer"></div>
 
-          <div style="margin-top:12px;">
+          <div style="margin-top:16px;">
             <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
             <button type="button" class="button-secondary" onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
           </div>
@@ -830,32 +868,50 @@
 
       <div class="section" id="sec-output">
         <h2>
-          <span>📝 輸出與匯入</span>
+          <span>📝 輸出與預覽</span>
           <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="actions-row" style="margin-bottom:16px;">
-            <button onclick="generateMarkdown()" style="width:100%; justify-content:center; padding:12px; font-size:1rem;">✨ 生成 Markdown 角色卡</button>
+          <div class="actions-row" style="margin-bottom:24px;">
+             <button onclick="generateMarkdown()" style="width:100%; justify-content:center; padding:14px; font-size:1.1rem;">✨ 生成 Markdown 角色卡</button>
+          </div>
+          
+          <h3 style="margin-top:30px; border-left:4px solid var(--focus-color); padding-left:12px;">💬 情境模擬預覽</h3>
+          <p class="sub-label">這是根據你填寫的「第一次聊天場景」與「角色對話」生成的模擬畫面。</p>
+          
+          <div class="chat-container">
+            <div class="chat-header">
+              <span id="chatHeaderName">角色名稱</span>
+            </div>
+            <div class="chat-body">
+              <div class="msg-system" id="previewScene">
+                （等待輸入場景...）
+              </div>
+              <div class="msg-row">
+                <div class="msg-avatar" id="previewAvatar">A</div>
+                <div class="msg-bubble" id="previewDialogue">
+                  （等待輸入對話...）
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="label-row" style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:12px;">
-             <div style="flex:1;">
-                <label>單一角色操作 (.txt)</label>
-                <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
-                   <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載目前角色</button>
+          <div style="margin-top:32px; display:flex; flex-wrap:wrap; gap:20px;">
+             <div style="flex:1; min-width:280px;">
+                <label style="display:block; margin-bottom:8px;">單一角色操作 (.txt)</label>
+                <div style="display:flex; gap:10px;">
+                   <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 .txt</button>
                    <label class="button-secondary" style="cursor:pointer; margin:0;">
                       📂 匯入 .txt
                       <input id="txtFile" type="file" accept=".txt" style="display:none;" onchange="importTxt()" />
                    </label>
                 </div>
              </div>
-          </div>
-
-           <div class="label-row" style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:12px;">
-             <div style="flex:1;">
-                <label>完整備份 (.json)</label>
-                <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
-                   <button class="button-secondary" type="button" onclick="exportAllData()">📦 備份所有資料</button>
+             
+             <div style="flex:1; min-width:280px;">
+                <label style="display:block; margin-bottom:8px;">完整備份 (.json)</label>
+                <div style="display:flex; gap:10px;">
+                   <button class="button-secondary" type="button" onclick="exportAllData()">📦 備份全部</button>
                    <label class="button-secondary" style="cursor:pointer; margin:0;">
                       📥 還原備份
                       <input id="allFile" type="file" accept=".json" style="display:none;" onchange="importAllData()" />
@@ -864,7 +920,7 @@
              </div>
           </div>
 
-          <h3 style="margin-top:24px; font-size:1rem;">🖨 輸出預覽</h3>
+          <h3 style="margin-top:32px; font-size:1rem;">🖨 輸出結果 (Markdown)</h3>
           <div id="output"></div>
         </div>
       </div>
@@ -896,7 +952,7 @@
           <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-layout')">⇕</button>
         </h2>
         <div class="section-body">
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:12px;">
               <button type="button" class="button-secondary" onclick="setLayout('desktop')">💻 電腦版</button>
               <button type="button" class="button-secondary" onclick="setLayout('mobile')">📱 手機版</button>
           </div>
@@ -905,9 +961,9 @@
 
     </main>
   </div>
-<button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
+  
+  <button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
 
-<script>
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
@@ -920,6 +976,31 @@
       extra: '附加資訊',
       event: '創作者事件'
     };
+
+    /* ========= Toast Notification ========= */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      
+      let icon = '✅';
+      if(type === 'error') icon = '❌';
+      if(type === 'warn') icon = '⚠️';
+      
+      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      // 3秒後自動移除
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        toast.addEventListener('animationend', () => {
+          toast.remove();
+        });
+      }, 3000);
+    }
 
     /* ========= 主題切換 ========= */
     function changeTheme(theme) {
@@ -962,8 +1043,7 @@
       const sec = document.getElementById(sectionId);
       if (!sec) return;
       expandSection(sectionId);
-      // 位移一點點以免被 sticky header 擋住 (雖然這裡 header 不是 sticky)
-      const yOffset = -20; 
+      const yOffset = -24; 
       const y = sec.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({top: y, behavior: 'smooth'});
     }
@@ -978,6 +1058,20 @@
       const sec = document.getElementById(sectionId);
       if (!sec) return;
       sec.classList.remove('collapsed');
+    }
+    
+    /* ========= 聊天預覽 ========= */
+    function updateChatPreview() {
+        const name = document.getElementById('charName').value || "角色";
+        const scene = document.getElementById('firstScene').value || "（等待輸入場景...）";
+        const dialogue = document.getElementById('sampleDialogue').value || "（等待輸入對話...）";
+        
+        document.getElementById('chatHeaderName').textContent = name;
+        document.getElementById('previewAvatar').textContent = name.charAt(0);
+        
+        // 處理換行顯示
+        document.getElementById('previewScene').innerHTML = scene.replace(/\n/g, '<br>');
+        document.getElementById('previewDialogue').innerHTML = dialogue.replace(/\n/g, '<br>');
     }
 
     /* ========= 工具 ========= */
@@ -1064,7 +1158,7 @@
     function saveTemplate(type, text) {
       const content = (text || '').trim();
       if (!content) {
-        alert("目前欄位是空的，無法存成模板喔～");
+        showToast("目前欄位是空的，無法存成模板喔～", "warn");
         return;
       }
       const name = prompt("請輸入這個模板的名稱（例如：標準世界觀模板）：");
@@ -1083,7 +1177,7 @@
       setStore(store);
       refreshTemplateSelect(type);
       renderTemplateManager();
-      alert("已儲存模板：「" + name.trim() + "」");
+      showToast(`已儲存模板：「${name.trim()}」`);
     }
 
     function saveTemplateFromField(type, textareaId) {
@@ -1119,6 +1213,7 @@
       }
       updateFieldCounter(ta);
       selectEl.value = ""; // Reset select
+      showToast("已套用模板！");
     }
 
     function applyTemplateDynamic(type, selectEl) {
@@ -1141,6 +1236,7 @@
       saveCurrentChar();
       updateFieldCounter(ta);
       selectEl.value = "";
+      showToast("已套用模板！");
     }
 
     /* ========= 模板管理中心渲染 ========= */
@@ -1166,7 +1262,7 @@
         const title = document.createElement('h3');
         title.className = 'tpl-type-title';
         title.style.fontSize = "1rem";
-        title.style.marginTop = "16px";
+        title.style.marginTop = "20px";
         title.textContent = `${TEMPLATE_TYPE_LABELS[type]}（${list.length} 筆）`;
         container.appendChild(title);
 
@@ -1189,7 +1285,7 @@
           previewEl.textContent = txt;
 
           const btnRow = document.createElement('div');
-          btnRow.style.marginTop = "8px";
+          btnRow.style.marginTop = "12px";
           const delBtn = document.createElement('button');
           delBtn.type = 'button';
           delBtn.className = 'button-mini';
@@ -1220,6 +1316,7 @@
       setStore(store);
       refreshTemplateSelect(type);
       renderTemplateManager();
+      showToast("模板已刪除");
     }
 
     /* ========= 動態欄位：附加資訊 & 事件 ========= */
@@ -1246,7 +1343,7 @@
     function addExtra() {
       const current = document.querySelectorAll(".extra-block").length;
       if (current >= EXTRA_MAX) {
-        alert("附加資訊最多只能 10 筆喔～");
+        showToast("附加資訊最多只能 10 筆喔～", "warn");
         return;
       }
       const container = document.getElementById("extraContainer");
@@ -1285,7 +1382,7 @@
       const controls = document.createElement("div");
       controls.className = "label-controls";
       controls.style.display = "flex";
-      controls.style.gap = "4px";
+      controls.style.gap = "8px";
 
       const tplSelect = document.createElement("select");
       tplSelect.className = "button-mini";
@@ -1340,13 +1437,13 @@
       renumberExtras();
       saveCurrentChar();
       refreshTemplateSelect('extra');
-      setupFieldUtils(block); // 給新欄位加上字數＆複製
+      setupFieldUtils(block); 
     }
 
     function addEvent() {
       const current = document.querySelectorAll(".event-block").length;
       if (current >= EVENT_MAX) {
-        alert("創作者事件最多只能 20 筆喔～");
+        showToast("創作者事件最多只能 20 筆喔～", "warn");
         return;
       }
       const container = document.getElementById("eventContainer");
@@ -1384,7 +1481,7 @@
 
       const controls = document.createElement("div");
       controls.style.display = "flex";
-      controls.style.gap = "4px";
+      controls.style.gap = "8px";
 
       const tplSelect = document.createElement("select");
       tplSelect.className = "button-mini";
@@ -1448,7 +1545,6 @@
       if (typeof idOrEl === 'string') {
           el = document.getElementById(idOrEl);
       } else {
-          // 嘗試找到按鈕關聯的輸入框
           const wrapper = idOrEl.closest('.field-utils');
           if(wrapper) {
               const prev = wrapper.previousElementSibling;
@@ -1461,18 +1557,14 @@
       if (!el) return;
       const text = el.value || el.innerText || "";
       if (!text) {
-        alert('這個欄位目前是空的喔～');
+        showToast('這個欄位目前是空的喔～', 'warn');
         return;
       }
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text)
           .then(() => {
-               const originalText = '複製';
-               // 簡單的視覺反饋
-               const btn = event.target;
-               btn.textContent = '已複製！';
-               setTimeout(() => btn.textContent = originalText, 1500);
+               showToast('已複製內容！');
           })
           .catch(err => {
             console.error(err);
@@ -1487,9 +1579,9 @@
       try {
         el.select();
         document.execCommand('copy');
-        alert('已複製內容');
+        showToast('已複製內容');
       } catch (e) {
-        alert('複製失敗，可能被瀏覽器擋住了 QQ');
+        showToast('複製失敗，可能被瀏覽器擋住了', 'error');
       }
     }
 
@@ -1505,7 +1597,7 @@
       const len = el.value ? el.value.length : 0;
       if (max) {
         counterSpan.textContent = `${len} / ${max}`;
-        if(len >= max) counterSpan.style.color = "red";
+        if(len >= max) counterSpan.style.color = "#ff4d4f";
         else counterSpan.style.color = "inherit";
       } else {
         counterSpan.textContent = `${len} 字`;
@@ -1520,7 +1612,6 @@
     function setupFieldUtils(scope = document) {
       const fields = scope.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
       fields.forEach(el => {
-        // 避免重複添加
         const next = el.nextElementSibling;
         if (next && next.classList && next.classList.contains('field-utils')) return;
 
@@ -1615,8 +1706,7 @@
       if (eventContainer) eventContainer.innerHTML = "";
 
       updatePromptTokenInfo();
-      // 重新初始化 utils
-      // setupFieldUtils(); // 不需要，因為DOM沒變，只是值變了，除了動態區塊
+      updateChatPreview(); // 更新預覽
     }
 
     function fillFormFromData(data) {
@@ -1639,7 +1729,6 @@
             title = item.title || "";
             text = item.text || "";
           }
-          // if (!title && !text) return; // 即使是空的也還原結構
 
           addExtra();
           const blocks = document.querySelectorAll(".extra-block");
@@ -1677,6 +1766,7 @@
       updatePromptTokenInfo();
       refreshAllTemplateSelects();
       updateAllFieldCounters();
+      updateChatPreview(); // 更新預覽
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -1723,15 +1813,15 @@
       document.getElementById('output').textContent = "";
       saveCurrentChar();
       
-      // 滾動到頂部
       window.scrollTo({top:0, behavior:'smooth'});
+      showToast("已建立新角色");
     }
 
     function deleteCurrentChar() {
       const store = getStore();
       const id = store.currentId;
       if (!id || !store.chars[id]) {
-        alert("目前沒有選中的角色可以刪除哦～");
+        showToast("目前沒有選中的角色可以刪除哦～", "warn");
         return;
       }
       if (!confirm("確定要刪除這個角色嗎？刪除後無法復原！")) return;
@@ -1749,6 +1839,7 @@
         document.getElementById('output').textContent = "";
       }
       renderCharList(store);
+      showToast("角色已刪除");
     }
 
     function loadChar(id) {
@@ -1762,7 +1853,6 @@
       document.getElementById('output').textContent = "";
       renderCharList(store);
       
-      // 為了避免使用者不知道切換了，給點提示或滾動
       // window.scrollTo({top:0, behavior:'smooth'});
     }
 
@@ -1789,7 +1879,6 @@
       const filterSel = document.getElementById('filterCategory');
       if (filterSel) {
         const prev = filterSel.value;
-        // 保存原本選項
         let html = '<option value="">全部分類</option>';
         [...categorySet].sort().forEach(cat => {
           html += `<option value="${cat}">${cat}</option>`;
@@ -1827,13 +1916,13 @@
 
         const btn = document.createElement('button');
         btn.type = "button";
-        // 根據是否選中改變樣式
         if (store.currentId === id) {
-          btn.className = "button-mini"; // 主要按鈕樣式
+          btn.className = "button-mini";
           btn.style.background = "var(--focus-color)";
           btn.style.color = "#fff";
+          btn.style.boxShadow = "0 4px 12px rgba(var(--focus-rgb), 0.4)";
         } else {
-          btn.className = "button-secondary"; // 次要
+          btn.className = "button-secondary";
         }
         
         btn.textContent = cat ? `${name} (${cat})` : name;
@@ -1874,9 +1963,7 @@
       });
 
       if (missing.length > 0) {
-        alert("以下欄位建議填寫，資料會更完整喔：\n" +
-          missing.join("、") +
-          "\n\n（仍然會幫你生成 Markdown）");
+        showToast("還有必填欄位沒寫，建議補上喔！", "warn");
       }
       return true;
     }
@@ -2091,6 +2178,7 @@
       outputBox.textContent = md.join("\n");
       // 滾動到輸出區
       outputBox.scrollIntoView({behavior: "smooth", block: "center"});
+      showToast("已生成 Markdown！");
     }
 
     /* ========= Markdown 解析 ========= */
@@ -2294,13 +2382,14 @@
       refreshAllTemplateSelects();
       updateAllFieldCounters();
       saveCurrentChar();
+      updateChatPreview(); // 更新預覽
     }
 
     /* ========= 匯入 / 匯出 ========= */
     function importTxt() {
       const input = document.getElementById('txtFile');
       if (!input.files || !input.files[0]) {
-        alert("請先選擇一個 txt 檔案喔～");
+        showToast("請先選擇一個 txt 檔案喔～", "warn");
         return;
       }
 
@@ -2311,7 +2400,7 @@
         const content = e.target.result || "";
         document.getElementById('output').textContent = content;
         parseMarkdownToForm(content);
-        alert("已載入：" + file.name);
+        showToast("已載入：" + file.name);
       };
 
       reader.readAsText(file, "utf-8");
@@ -2337,6 +2426,7 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showToast("已下載 .txt");
     }
 
     function exportAllData() {
@@ -2354,12 +2444,13 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      showToast("已備份所有資料！");
     }
 
     function importAllData() {
       const input = document.getElementById('allFile');
       if (!input.files || !input.files[0]) {
-        alert("請先選擇一個 JSON 檔案喔～");
+        showToast("請先選擇一個 JSON 檔案喔～", "warn");
         return;
       }
 
@@ -2372,11 +2463,11 @@
           const parsed = JSON.parse(content);
 
           if (!parsed || typeof parsed !== 'object') {
-            alert("匯入失敗：檔案格式錯誤");
+            showToast("匯入失敗：檔案格式錯誤", "error");
             return;
           }
           if (!parsed.chars || typeof parsed.chars !== 'object') {
-            alert("匯入失敗：缺少 chars 資料");
+            showToast("匯入失敗：缺少 chars 資料", "error");
             return;
           }
           if (!parsed.templates) {
@@ -2388,10 +2479,10 @@
           setStore(parsed);
           loadInitialFromStore();
 
-          alert("匯入完成！已還原所有資料。");
+          showToast("匯入完成！已還原所有資料。");
         } catch (err) {
           console.error(err);
-          alert("匯入失敗：無法解析 JSON");
+          showToast("匯入失敗：無法解析 JSON", "error");
         }
       };
 
@@ -2412,6 +2503,7 @@
       }
       saveCurrentChar();
       updateFieldCounter(el);
+      updateChatPreview(); // 如果是聊天相關欄位，更新預覽
     }
 
     /* ========= 自動暫存 ========= */
@@ -2455,6 +2547,7 @@
       refreshAllTemplateSelects();
       setupFieldUtils();
       renderTemplateManager();
+      updateChatPreview(); // 初始化預覽
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -2469,7 +2562,8 @@
         resizeTimer = setTimeout(initLayoutByWidth, 200);
       });
     });
-  /* ========= 回到頁首功能 ========= */
+    
+    /* ========= 回到頁首功能 ========= */
     function scrollToTop() {
       window.scrollTo({
         top: 0,
@@ -2482,7 +2576,6 @@
       const btn = document.getElementById('backToTopBtn');
       if (!btn) return;
       
-      // 當捲動超過 300px 時顯示按鈕
       if (window.scrollY > 300) {
         btn.classList.add('show');
       } else {
