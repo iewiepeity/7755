@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>卿卿我我創角小幫手</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'system-ui', 'sans-serif'],
+            serif: ['"Noto Serif TC"', 'serif'],
+          },
+          colors: {
+            'page-bg': 'var(--page-bg)',
+            'card-bg': 'var(--card-bg)',
+            'sidebar-bg': 'var(--sidebar-bg)',
+            'text-main': 'var(--text-main)',
+            'text-sub': 'var(--text-sub)',
+            'focus': 'var(--focus-color)',
+            'btn-bg': 'var(--btn-bg)',
+            'btn-text': 'var(--btn-text)',
+            'border-color': 'var(--border-color)',
+          },
+          boxShadow: {
+            'glow': 'var(--shadow-glow)',
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar for Sidebar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* Base Transitions */
+    body {
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react,typescript">
+    const { useState, useEffect, createContext, useContext, useCallback } = React;
+
+    // --- Types & Constants ---
+
+    const THEMES = {
+      pink: {
+        '--page-bg': '#fff0f5',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#ff7eb3',
+        '--btn-bg': '#ff7eb3',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(255, 126, 179, 0.4)',
+      },
+      cream: {
+        '--page-bg': '#fdfcf0',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#ffac6e',
+        '--btn-bg': '#ffac6e',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(255, 172, 110, 0.4)',
+      },
+      mint: {
+        '--page-bg': '#f0fff9',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#4cd9a4',
+        '--btn-bg': '#4cd9a4',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(76, 217, 164, 0.4)',
+      },
+      lavender: {
+        '--page-bg': '#f7f2ff',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#b185ff',
+        '--btn-bg': '#b185ff',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(177, 133, 255, 0.4)',
+      },
+      sky: {
+        '--page-bg': '#f0f8ff',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#6ab0ff',
+        '--btn-bg': '#6ab0ff',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(106, 176, 255, 0.4)',
+      },
+      lemon: {
+        '--page-bg': '#fffff0',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#facc15',
+        '--btn-bg': '#facc15',
+        '--btn-text': '#5c4e00',
+        '--shadow-glow': '0 0 15px rgba(250, 204, 21, 0.4)',
+      },
+      grey: {
+        '--page-bg': '#f8f9fa',
+        '--card-bg': 'rgba(255, 255, 255, 0.9)',
+        '--sidebar-bg': 'rgba(255, 255, 255, 0.95)',
+        '--text-main': '#2c3e50',
+        '--text-sub': '#64748b',
+        '--border-color': 'rgba(0,0,0,0.08)',
+        '--focus-color': '#8d99ae',
+        '--btn-bg': '#8d99ae',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(141, 153, 174, 0.4)',
+      },
+      black: {
+        '--page-bg': '#121212',
+        '--card-bg': 'rgba(30, 30, 30, 0.9)',
+        '--sidebar-bg': 'rgba(25, 25, 25, 0.95)',
+        '--text-main': '#e0e0e0',
+        '--text-sub': '#9ca3af',
+        '--border-color': 'rgba(255,255,255,0.12)',
+        '--focus-color': '#aaaaaa',
+        '--btn-bg': '#555555',
+        '--btn-text': '#fff',
+        '--shadow-glow': '0 0 15px rgba(170, 170, 170, 0.4)',
+      },
+    };
+
+    const STAGE_LABELS = {
+      acquaintance: '熟人階段',
+      friend: '朋友階段',
+      crush: '心動階段',
+      lover: '戀人階段',
+      marriage: '結婚階段',
+    };
+
+    const TEMPLATE_TYPES = {
+      basicInfo: '一、基本資訊',
+      personality: '二、性格',
+      speechStyle: '三、說話風格與習慣',
+      extra: '附加資訊',
+      event: '創作者事件',
+    };
+
+    const DEFAULT_FIELDS = {
+      charName: '',
+      charCategory: '',
+      charAge: '',
+      charJob: '',
+      charQuote: '',
+      charDesc: '',
+      charTags: '',
+      creatorNote: '',
+      basicInfo: '',
+      personality: '',
+      speechStyle: '',
+      firstScene: '',
+      sampleDialogue: '',
+      likes: '',
+      dislikes: '',
+      birthday: '',
+      gender: '未設置',
+      modelType: 'gemini-3-pro',
+      promptRole: '',
+      promptGuideline: '',
+    };
+
+    const DEFAULT_GAME_MANAGEMENT = {
+      info: { title: '', intro: '' },
+      stories: []
+    };
+
+    // --- Helpers ---
+
+    const limitText = (text, max) => {
+      const t = text || '';
+      return t.trim().length > max ? t.trim().slice(0, max) : t.trim();
+    };
+
+    const estimateTextTokens = (text) => {
+      let total = 0;
+      for (const ch of text || '') {
+        if (/\s/.test(ch)) continue;
+        if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
+          total += 2;
+        } else {
+          total += 1;
+        }
+      }
+      return total;
+    };
+
+    const estimatePromptTokens = (role, guide) => {
+      return estimateTextTokens(role) + estimateTextTokens(guide);
+    };
+
+    const generateMarkdown = (data) => {
+      const { fields, extras, events, gameManagement } = data;
+      const lines = [];
+
+      const addLine = (str) => lines.push(str);
+      const addMainHeader = (title) => {
+        lines.push('');
+        lines.push(`# ${title}`);
+      };
+      const addSubHeader = (title) => {
+        lines.push('');
+        lines.push(`## ${title}`);
+      };
+      const addSubSubHeader = (title) => {
+        lines.push('');
+        lines.push(`### ${title}`);
+      }
+      const addProp = (key, val) => {
+        if (val) lines.push(`- ${key}：${val}`);
+      };
+
+      // --- Character Info ---
+      addMainHeader('角色資訊');
+      addProp('名稱', fields.charName || "（未命名）");
+      addProp('分類', limitText(fields.charCategory, 100));
+      if (fields.gender && fields.gender !== '未設置') addProp('性別', fields.gender);
+      addProp('年齡', limitText(fields.charAge, 15));
+      addProp('職業', limitText(fields.charJob, 15));
+      addProp('生日', fields.birthday);
+      
+      if (fields.charTags) {
+        const tagsFormatted = fields.charTags.split(/[,，\s]+/).filter(Boolean).map(t => "#" + t.replace(/^#/, "")).join(" ");
+        if (tagsFormatted) addProp('標籤', tagsFormatted);
+      }
+
+      if (fields.charQuote) {
+        addProp('一句話', limitText(fields.charQuote, 80));
+      }
+
+      if (fields.charDesc) {
+        addSubHeader('敘述');
+        addLine(limitText(fields.charDesc, 700));
+      }
+
+      if (fields.creatorNote) {
+        addSubHeader('創作者筆記');
+        addLine(limitText(fields.creatorNote, 200));
+      }
+
+      // --- Core Stats ---
+      addSubHeader('基本資訊');
+      addLine(limitText(fields.basicInfo, 700) || "（尚未填寫）");
+
+      addSubHeader('性格');
+      addLine(limitText(fields.personality, 700) || "（尚未填寫）");
+
+      addSubHeader('說話風格與習慣');
+      addLine(limitText(fields.speechStyle, 700) || "（尚未填寫）");
+
+      // --- Config ---
+      if (fields.modelType || fields.promptRole || fields.promptGuideline) {
+        addMainHeader('模型與 Prompt 設定');
+        if (fields.modelType) {
+          const modelMap = { 
+            'gemini-3-pro': 'Gemini 3 Pro', 
+            'claude-sonnet-4.5': 'Claude Sonnet 4.5', 
+            'claude-haiku-4.5': 'Claude Haiku 4.5' 
+          };
+          addProp('模型', modelMap[fields.modelType] || fields.modelType);
+        }
+        const tokens = estimatePromptTokens(fields.promptRole, fields.promptGuideline);
+        addProp('預估 token', `${tokens}（僅供參考）`);
+        
+        if (fields.promptRole) {
+          addSubHeader('Role');
+          addLine(fields.promptRole);
+        }
+        if (fields.promptGuideline) {
+          addSubHeader('Response Guideline');
+          addLine(fields.promptGuideline);
+        }
+      }
+
+       // --- Game Management ---
+      if (gameManagement) {
+        addMainHeader('遊戲管理');
+        
+        addSubHeader('遊戲介紹');
+        addProp('標題', limitText(gameManagement.info.title, 30));
+        addProp('介紹', limitText(gameManagement.info.intro, 30));
+
+        addSubHeader('私密物語');
+        if (gameManagement.stories.length === 0) {
+          addLine("- （無）");
+        } else {
+          gameManagement.stories.forEach((story, idx) => {
+            // 按照要求格式: ### [階段] 標題
+            addSubSubHeader(`[${STAGE_LABELS[story.stage] || story.stage}] ${limitText(story.title, 30)}`);
+            addProp('提示', limitText(story.unlockHint, 60));
+            addProp('好感度', story.affinityScore.toString());
+            addProp('分級', story.rating === 'adult' ? '成人限定' : '所有年齡');
+            addProp('取得方式', story.access === 'paid' ? '付費 (10果醬)' : '免費');
+            
+            lines.push(`- 內容：`);
+            lines.push(limitText(story.content, 2000));
+
+            if (story.hasEndings && story.endings.length > 0) {
+              lines.push(`- 多重結局：`);
+              story.endings.forEach((end, eIdx) => {
+                lines.push(`  - [選項${eIdx+1}] ${limitText(end.option, 100)} (好感${end.affinity > 0 ? '+' : ''}${end.affinity})`);
+                lines.push(`    結果：${limitText(end.content, 500)}`);
+              });
+            }
+          });
+        }
+      }
+
+      // --- Scene ---
+      if (fields.firstScene) {
+        addSubHeader('第一次聊天場景');
+        addLine(limitText(fields.firstScene, 800));
+      }
+
+      if (fields.sampleDialogue) {
+        addSubHeader('角色對話');
+        addLine(limitText(fields.sampleDialogue, 800));
+      }
+
+      // --- Favs ---
+      if (fields.likes || fields.dislikes) {
+        addSubHeader('喜好');
+        if (fields.likes) addProp('喜歡', limitText(fields.likes, 50));
+        if (fields.dislikes) addProp('不喜歡', limitText(fields.dislikes, 50));
+      }
+
+      // --- Extras ---
+      addMainHeader('附加資訊');
+      if (!extras || extras.length === 0) {
+        addLine("- （尚未填寫）");
+      } else {
+        extras.forEach((item, idx) => {
+          if (!item.title && !item.text) return;
+          addSubSubHeader(`附加資訊 ${idx + 1}`);
+          if (item.title) addProp('標題', limitText(item.title, 50));
+          if (item.text) addLine(limitText(item.text, 500));
+        });
+      }
+
+      // --- Events ---
+      addMainHeader('創作者事件');
+      if (!events || events.length === 0) {
+        addLine("- （尚未填寫）");
+      } else {
+        events.forEach((item, idx) => {
+          if (!item.title && !item.text) return;
+          addSubSubHeader(`創作者事件 ${idx + 1}`);
+          if (item.title) addProp('標題', limitText(item.title, 50));
+          if (item.text) addLine(limitText(item.text, 2000));
+        });
+      }
+
+      return lines.join('\n');
+    };
+
+    const parseMarkdown = (md) => {
+      // Minimal Parser for restore functionality
+      // Note: This is a best-effort parser given the loose structure of MD
+      const lines = md.split(/\r?\n/);
+      const data = {
+        fields: { ...DEFAULT_FIELDS },
+        extras: [],
+        events: [],
+        gameManagement: { ...DEFAULT_GAME_MANAGEMENT, stories: [] }
+      };
+
+      const readBlock = (startIndex) => {
+        let i = startIndex;
+        const buf = [];
+        while (i < lines.length) {
+          const t = lines[i];
+          const trimmed = t.trim();
+          if (trimmed.startsWith("#") || trimmed.startsWith("##") || trimmed.startsWith("###")) break;
+          buf.push(t);
+          i++;
+        }
+        while (buf.length && buf[buf.length - 1].trim() === "") buf.pop();
+        return { text: buf.join("\n").trim(), nextIndex: i - 1 };
+      };
+
+      let currentSection = '';
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('# ')) currentSection = line;
+
+        if (line.startsWith("- 名稱：")) data.fields.charName = line.replace("- 名稱：", "").replace("（未命名）", "").trim();
+        else if (line.startsWith("- 分類：")) data.fields.charCategory = line.replace("- 分類：", "").trim();
+        else if (line.startsWith("- 性別：")) data.fields.gender = line.replace("- 性別：", "").trim();
+        else if (line.startsWith("- 年齡：")) data.fields.charAge = line.replace("- 年齡：", "").trim();
+        else if (line.startsWith("- 職業：")) data.fields.charJob = line.replace("- 職業：", "").trim();
+        else if (line.startsWith("- 生日：")) data.fields.birthday = line.replace("- 生日：", "").trim();
+        else if (line.startsWith("- 標籤：")) data.fields.charTags = line.replace("- 標籤：", "").trim().replace(/#/g, '').split(/\s+/).join(", ");
+        else if (line.startsWith("- 喜歡：")) data.fields.likes = line.replace("- 喜歡：", "").trim();
+        else if (line.startsWith("- 不喜歡：")) data.fields.dislikes = line.replace("- 不喜歡：", "").trim();
+        
+        else if (line === "## 敘述") {
+           const res = readBlock(i + 1);
+           data.fields.charDesc = res.text;
+           i = res.nextIndex;
+        }
+        else if (line === "## 創作者筆記") {
+           const res = readBlock(i + 1);
+           data.fields.creatorNote = res.text;
+           i = res.nextIndex;
+        }
+        else if (line === "## 基本資訊") {
+            const res = readBlock(i + 1);
+            data.fields.basicInfo = res.text === "（尚未填寫）" ? "" : res.text;
+            i = res.nextIndex;
+        }
+        else if (line === "## 性格") {
+            const res = readBlock(i + 1);
+            data.fields.personality = res.text === "（尚未填寫）" ? "" : res.text;
+            i = res.nextIndex;
+        }
+        else if (line === "## 說話風格與習慣") {
+            const res = readBlock(i + 1);
+            data.fields.speechStyle = res.text === "（尚未填寫）" ? "" : res.text;
+            i = res.nextIndex;
+        }
+        else if (line === "## 第一次聊天場景") {
+            const res = readBlock(i + 1);
+            data.fields.firstScene = res.text;
+            i = res.nextIndex;
+        }
+        else if (line === "## 角色對話") {
+            const res = readBlock(i + 1);
+            data.fields.sampleDialogue = res.text;
+            i = res.nextIndex;
+        }
+        // Parsing Extras/Events
+        else if (line.startsWith("### 附加資訊")) {
+            const res = readBlock(i + 1);
+            if (res.text && res.text !== "（尚未填寫）") {
+                let title = "";
+                let body = res.text;
+                const parts = res.text.split(/\r?\n/);
+                if (parts.length > 0 && parts[0].trim().startsWith("- 標題：")) {
+                     title = parts[0].trim().replace("- 標題：", "").trim();
+                     body = parts.slice(1).join("\n").trim();
+                }
+                data.extras.push({ title, text: body });
+            }
+            i = res.nextIndex;
+        }
+        else if (line.startsWith("### 創作者事件")) {
+            const res = readBlock(i + 1);
+            if (res.text && res.text !== "（尚未填寫）") {
+                let title = "";
+                let body = res.text;
+                const parts = res.text.split(/\r?\n/);
+                if (parts.length > 0 && parts[0].trim().startsWith("- 標題：")) {
+                     title = parts[0].trim().replace("- 標題：", "").trim();
+                     body = parts.slice(1).join("\n").trim();
+                }
+                data.events.push({ title, text: body });
+            }
+            i = res.nextIndex;
+        }
+        // Basic Game Management Parsing
+        else if (line.startsWith("- 遊戲標題：")) {
+             data.gameManagement.info.title = line.replace("- 遊戲標題：", "").trim();
+        }
+      }
+      return data;
+    };
+
+    // --- Components ---
+
+    const ToastContext = createContext(undefined);
+    
+    const ToastProvider = ({ children }) => {
+      const [toasts, setToasts] = useState([]);
+      const showToast = useCallback((message, type = 'info') => {
+        const id = Date.now();
+        setToasts((prev) => [...prev, { id, message, type }]);
+        setTimeout(() => { setToasts((prev) => prev.filter((t) => t.id !== id)); }, 3000);
+      }, []);
+
+      return (
+        <ToastContext.Provider value={{ showToast }}>
+          {children}
+          <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[9999] flex flex-col gap-2 pointer-events-none">
+            {toasts.map((toast) => (
+              <div key={toast.id} className="bg-gray-800/90 text-white px-6 py-3 rounded-full shadow-xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4">
+                <span>{toast.type === 'success' || toast.type === 'info' ? '✅' : toast.type === 'warn' ? '⚠️' : '❌'}</span>
+                <span className="font-medium">{toast.message}</span>
+              </div>
+            ))}
+          </div>
+        </ToastContext.Provider>
+      );
+    };
+
+    const useToast = () => {
+       const ctx = useContext(ToastContext);
+       if(!ctx) throw new Error("Missing ToastProvider");
+       return ctx;
+    };
+
+    const ThemeWrapper = ({ theme, children }) => {
+      return (
+        <div style={THEMES[theme]} className="min-h-screen bg-page-bg text-text-main transition-colors duration-500 font-sans">
+          <div className="fixed inset-0 pointer-events-none opacity-50 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] z-0" />
+          <div className="relative z-10">{children}</div>
+        </div>
+      );
+    };
+
+    const Sidebar = ({ onNavigate, isMobile }) => {
+      const [collapsed, setCollapsed] = useState(false);
+      const menuItems = [
+        { id: 'sec-archive', icon: '📂', label: '角色存檔', main: true },
+        { id: 'sec-info', icon: '💁‍♀️', label: '角色資訊' },
+        { id: 'sec-game-mgr', icon: '🎮', label: '遊戲管理', main: true },
+        { id: 'sec-gender', icon: '🚻', label: '性別設定' },
+        { id: 'sec-basic', icon: '🌏', label: '基本資訊' },
+        { id: 'sec-personality', icon: '💗', label: '性格特質' },
+        { id: 'sec-speech', icon: '🗣️', label: '說話風格' },
+        { id: 'sec-prompt', icon: '🧠', label: 'Prompt 設定' },
+        { id: 'sec-first', icon: '🎬', label: '開場與對話' },
+        { id: 'sec-fav', icon: '🎀', label: '喜好生日' },
+        { id: 'sec-extra', icon: '📌', label: '附加資訊' },
+        { id: 'sec-event', icon: '📚', label: '創作者事件' },
+        { id: 'sec-output', icon: '📝', label: '輸出/預覽', main: true },
+        { id: 'sec-template-center', icon: '🧰', label: '模板管理', main: true },
+      ];
+
+      if (isMobile) {
+        return (
+          <div className="sticky top-2 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-2 rounded-xl shadow-lg overflow-x-auto flex gap-2 no-scrollbar mb-4 border border-border-color">
+            {menuItems.map((item) => (
+              <button key={item.id} onClick={() => onNavigate(item.id)} className="flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full bg-white/50 border border-border-color text-sm font-medium hover:bg-focus hover:text-white transition-colors">
+                <span className="mr-2">{item.icon}</span>{item.label}
+              </button>
+            ))}
+          </div>
+        );
+      }
+
+      return (
+        <aside className={`sticky top-6 bg-sidebar-bg backdrop-blur-xl p-5 rounded-3xl shadow-lg border border-white/50 transition-all duration-300 z-40 ${collapsed ? 'w-20' : 'w-64'}`}>
+          <div className={`flex items-center justify-between mb-6 pb-3 border-b border-border-color ${collapsed ? 'justify-center' : ''}`}>
+            {!collapsed && <div className="font-bold text-lg text-text-main tracking-wide">📎 功能導航</div>}
+            <button onClick={() => setCollapsed(!collapsed)} className="w-8 h-8 flex items-center justify-center rounded-full border border-border-color text-text-sub hover:bg-focus hover:text-white hover:border-focus transition-all">
+              {collapsed ? '▶' : '◀'}
+            </button>
+          </div>
+          {!collapsed && <div className="text-xs text-text-sub mb-4">點擊快速跳轉</div>}
+          <nav className="flex flex-col gap-2">
+            {menuItems.map((item) => (
+              <button key={item.id} onClick={() => onNavigate(item.id)} className={`flex items-center text-left transition-all duration-200 rounded-xl ${collapsed ? 'justify-center py-3 px-0' : 'px-4 py-3'} ${item.main ? 'font-bold' : 'text-sm text-text-main hover:translate-x-1'} hover:bg-black/5 dark:hover:bg-white/10 hover:text-focus`}>
+                <span className={`${collapsed ? 'text-xl' : 'mr-3 text-lg'}`}>{item.icon}</span>
+                {!collapsed && <span>{item.label}</span>}
+              </button>
+            ))}
+          </nav>
+        </aside>
+      );
+    };
+
+    const Section = ({ id, title, icon, children }) => {
+      const [collapsed, setCollapsed] = useState(false);
+      return (
+        <div id={id} className={`bg-card-bg backdrop-blur-xl rounded-3xl p-8 mb-8 shadow-sm border border-white/60 transition-all duration-300 hover:shadow-md ${collapsed ? 'pb-5 opacity-80' : ''}`}>
+          <div className="flex items-center justify-between border-b border-border-color pb-3 mb-6">
+            <h2 className="text-xl font-serif font-bold flex items-center gap-2 text-text-main">
+              <span>{icon}</span><span>{title}</span>
+            </h2>
+            <button onClick={() => setCollapsed(!collapsed)} className="p-2 text-sm border border-border-color rounded-lg hover:bg-focus hover:text-white transition-colors">⇕</button>
+          </div>
+          <div className={`transition-all duration-500 overflow-hidden ${collapsed ? 'max-h-0 opacity-0' : 'max-h-[5000px] opacity-100'}`}>
+            {children}
+          </div>
+        </div>
+      );
+    };
+
+    const InputRow = ({ label, value, onChange, placeholder, type = 'text', maxLength, onClear, actions }) => (
+      <div className="mb-4">
+        {(label || onClear || actions) && (
+          <div className="flex justify-between items-end mb-2">
+            {label && <label className="font-semibold text-text-main text-sm tracking-wide">{label}</label>}
+            <div className="flex gap-2">
+              {actions}
+              {onClear && <button onClick={onClear} className="text-xs px-3 py-1 rounded-lg border border-border-color hover:bg-focus hover:text-white transition-colors">清空</button>}
+            </div>
+          </div>
+        )}
+        <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="w-full px-4 py-3 bg-white/50 dark:bg-black/20 border border-border-color rounded-xl focus:outline-none focus:ring-2 focus:ring-focus focus:bg-white dark:focus:bg-black/40 transition-all" maxLength={maxLength} />
+        {maxLength && <div className="text-right text-xs text-text-sub mt-1">{value.length} / {maxLength}</div>}
+      </div>
+    );
+
+    const TextAreaRow = ({ label, subLabel, value, onChange, placeholder, maxLength, onClear, actions, minHeight = '120px' }) => {
+      const { showToast } = useToast();
+      return (
+        <div className="mb-6">
+          {(label || onClear || actions) && (
+            <div className="flex justify-between items-end mb-2 flex-wrap gap-2">
+              <div>
+                {label && <label className="font-semibold text-text-main text-lg tracking-wide block">{label}</label>}
+                {subLabel && <span className="text-xs text-text-sub">{subLabel}</span>}
+              </div>
+              <div className="flex gap-2 items-center">
+                {actions}
+                <button onClick={() => { navigator.clipboard.writeText(value).then(() => showToast('已複製內容！')); }} className="text-xs px-3 py-1 rounded-lg border border-border-color hover:bg-focus hover:text-white transition-colors">複製</button>
+                {onClear && <button onClick={onClear} className="text-xs px-3 py-1 rounded-lg border border-border-color hover:bg-focus hover:text-white transition-colors">清空</button>}
+              </div>
+            </div>
+          )}
+          <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="w-full px-4 py-3 bg-white/50 dark:bg-black/20 border border-border-color rounded-xl focus:outline-none focus:ring-2 focus:ring-focus focus:bg-white dark:focus:bg-black/40 transition-all resize-y" style={{ minHeight }} maxLength={maxLength} />
+          <div className="flex justify-end mt-1">
+            <span className={`text-xs ${maxLength && value.length >= maxLength ? 'text-red-500' : 'text-text-sub'}`}>
+              {value.length} {maxLength ? `/ ${maxLength}` : '字'}
+            </span>
+          </div>
+        </div>
+      );
+    };
+
+    const GameManagement = ({ data, onChange }) => {
+      const updateInfo = (key, val) => onChange({ ...data, info: { ...data.info, [key]: val } });
+      const addStory = () => {
+        const newStory = { id: `story_${Date.now()}`, title: '', unlockHint: '', content: '', stage: 'acquaintance', affinityScore: 0, rating: 'all', access: 'free', hasEndings: false, endings: [] };
+        onChange({ ...data, stories: [...data.stories, newStory] });
+      };
+      const updateStory = (index, field, val) => {
+        const newStories = [...data.stories];
+        newStories[index] = { ...newStories[index], [field]: val };
+        onChange({ ...data, stories: newStories });
+      };
+      const removeStory = (index) => {
+        const newStories = [...data.stories];
+        newStories.splice(index, 1);
+        onChange({ ...data, stories: newStories });
+      };
+      const addEnding = (sIdx) => {
+        const newStories = [...data.stories];
+        newStories[sIdx].endings.push({ option: '', content: '', affinity: 0 });
+        onChange({ ...data, stories: newStories });
+      };
+      const updateEnding = (sIdx, eIdx, field, val) => {
+        const newStories = [...data.stories];
+        newStories[sIdx].endings[eIdx] = { ...newStories[sIdx].endings[eIdx], [field]: val };
+        onChange({ ...data, stories: newStories });
+      };
+      const removeEnding = (sIdx, eIdx) => {
+        const newStories = [...data.stories];
+        newStories[sIdx].endings.splice(eIdx, 1);
+        onChange({ ...data, stories: newStories });
+      };
+
+      return (
+        <Section id="sec-game-mgr" title="遊戲管理" icon="🎮">
+          <div className="mb-8 border-b border-border-color pb-6">
+            <h3 className="font-bold text-lg mb-4 text-text-main">1. 遊戲介紹基本資訊</h3>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1"><InputRow label="遊戲標題 (30字)" value={data.info.title} onChange={v => updateInfo('title', v)} maxLength={30} /></div>
+              <div className="flex-1"><InputRow label="遊戲介紹 (30字)" value={data.info.intro} onChange={v => updateInfo('intro', v)} maxLength={30} /></div>
+            </div>
+          </div>
+          <div>
+            <h3 className="font-bold text-lg mb-4 text-text-main flex justify-between items-center">
+              <span>2. 私密物語 (私密劇情)</span>
+              <button onClick={addStory} className="text-xs bg-focus text-white px-3 py-1 rounded-full hover:opacity-90">＋ 新增物語</button>
+            </h3>
+            <div className="flex flex-col gap-6">
+              {data.stories.map((story, sIdx) => (
+                <div key={story.id} className="bg-white/40 dark:bg-black/20 rounded-2xl p-5 border border-border-color relative">
+                  <button onClick={() => removeStory(sIdx)} className="absolute top-4 right-4 text-xs text-red-500 border border-red-200 px-2 py-1 rounded hover:bg-red-50">刪除此物語</button>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 pr-20">
+                    <div>
+                      <label className="text-xs font-bold text-text-sub block mb-1">階段</label>
+                      <select value={story.stage} onChange={e => updateStory(sIdx, 'stage', e.target.value)} className="w-full text-sm p-2 rounded-lg border border-border-color bg-white/60">
+                        {Object.entries(STAGE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-text-sub block mb-1">好感度分數</label>
+                      <input type="number" value={story.affinityScore} onChange={e => updateStory(sIdx, 'affinityScore', parseInt(e.target.value) || 0)} className="w-full text-sm p-2 rounded-lg border border-border-color bg-white/60" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-text-sub block mb-1">分級</label>
+                      <select value={story.rating} onChange={e => updateStory(sIdx, 'rating', e.target.value)} className="w-full text-sm p-2 rounded-lg border border-border-color bg-white/60">
+                        <option value="all">所有年齡</option>
+                        <option value="adult">成人限定</option>
+                      </select>
+                    </div>
+                    <div>
+                       <label className="text-xs font-bold text-text-sub block mb-1">公開設定</label>
+                       <select value={story.access} onChange={e => updateStory(sIdx, 'access', e.target.value)} className="w-full text-sm p-2 rounded-lg border border-border-color bg-white/60">
+                         <option value="free">免費</option>
+                         <option value="paid">付費 (10果醬)</option>
+                       </select>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4 mb-2">
+                    <div className="flex-[2]"><InputRow label="故事標題 (30字)" value={story.title} onChange={v => updateStory(sIdx, 'title', v)} maxLength={30} /></div>
+                    <div className="flex-[3]"><InputRow label="解鎖提示語 (60字)" value={story.unlockHint} onChange={v => updateStory(sIdx, 'unlockHint', v)} maxLength={60} /></div>
+                  </div>
+                  <TextAreaRow label="故事內容 (2000字)" value={story.content} onChange={v => updateStory(sIdx, 'content', v)} maxLength={2000} minHeight="150px" />
+                  
+                  <div className="mt-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={story.hasEndings} onChange={e => updateStory(sIdx, 'hasEndings', e.target.checked)} className="w-4 h-4" />
+                      <span className="font-bold text-sm text-text-main">啟用多重結局</span>
+                    </label>
+                  </div>
+                  
+                  {story.hasEndings && (
+                    <div className="mt-4 pl-4 border-l-2 border-focus bg-focus/5 p-4 rounded-r-xl">
+                      <h4 className="text-sm font-bold mb-3 text-focus">多重結局選項設定</h4>
+                      {story.endings.map((ending, eIdx) => (
+                        <div key={eIdx} className="mb-4 bg-white/80 p-3 rounded-lg border border-border-color">
+                          <div className="flex justify-between items-start mb-2">
+                             <span className="text-xs font-bold bg-gray-200 px-2 py-1 rounded text-gray-600">選項 {eIdx + 1}</span>
+                             <button onClick={() => removeEnding(sIdx, eIdx)} className="text-xs text-red-400 hover:text-red-600">移除</button>
+                          </div>
+                          <InputRow placeholder="選項文字 (例如：溫柔地抱住他) - 100字" value={ending.option} onChange={v => updateEnding(sIdx, eIdx, 'option', v)} maxLength={100} />
+                          <div className="flex gap-4 items-start">
+                             <div className="flex-1"><TextAreaRow placeholder="選擇後顯示的內容 - 500字" value={ending.content} onChange={v => updateEnding(sIdx, eIdx, 'content', v)} maxLength={500} minHeight="80px" /></div>
+                             <div className="w-24">
+                                <label className="text-xs block mb-1 text-text-sub">好感度增減</label>
+                                <input type="number" min="-20" max="20" value={ending.affinity} onChange={e => updateEnding(sIdx, eIdx, 'affinity', parseInt(e.target.value) || 0)} className="w-full p-2 text-sm border border-border-color rounded-lg text-center" />
+                                <div className="text-[10px] text-center text-gray-400 mt-1">-20 ~ +20</div>
+                             </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button onClick={() => addEnding(sIdx)} className="w-full py-2 text-sm border border-dashed border-focus text-focus rounded-lg hover:bg-focus hover:text-white transition-colors">＋ 新增選項</button>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {data.stories.length === 0 && <div className="text-center text-text-sub py-4">尚未新增任何私密物語</div>}
+            </div>
+          </div>
+        </Section>
+      );
+    };
+
+    const InnerApp = () => {
+      const { showToast } = useToast();
+      const [isMobile, setIsMobile] = useState(window.innerWidth <= 850);
+      const [theme, setTheme] = useState('pink');
+      const [store, setStore] = useState({ currentId: null, chars: {}, templates: { basicInfo: [], personality: [], speechStyle: [], extra: [], event: [] } });
+      const [formData, setFormData] = useState({ fields: { ...DEFAULT_FIELDS }, extras: [], events: [], gameManagement: { ...DEFAULT_GAME_MANAGEMENT } });
+
+      const STORAGE_KEY = 'qing_char_standalone_v1';
+
+      useEffect(() => {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (!parsed.templates) parsed.templates = { basicInfo: [], personality: [], speechStyle: [], extra: [], event: [] };
+            if (!parsed.chars) parsed.chars = {};
+            // Migration
+            Object.keys(parsed.chars).forEach(key => {
+               if(!parsed.chars[key].data.gameManagement) {
+                   parsed.chars[key].data.gameManagement = { ...DEFAULT_GAME_MANAGEMENT };
+               }
+            });
+            setStore(parsed);
+            if (parsed.currentId && parsed.chars[parsed.currentId]) {
+              setFormData(parsed.chars[parsed.currentId].data);
+            }
+          } catch (e) {}
+        }
+      }, []);
+
+      useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }, [store]);
+      useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 850);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
+
+      const scrollToSection = (id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const yOffset = -80;
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      };
+
+      const updateField = (key, value) => {
+        const newData = { ...formData, fields: { ...formData.fields, [key]: value } };
+        setFormData(newData);
+        saveToStore(newData);
+      };
+
+      const saveToStore = (data) => {
+        if (!store.currentId) return;
+        setStore(prev => ({
+          ...prev,
+          chars: {
+            ...prev.chars,
+            [prev.currentId]: {
+              meta: {
+                name: data.fields.charName || '未命名角色',
+                category: data.fields.charCategory || '',
+                tags: data.fields.charTags.split(/[,，\s]+/).filter(Boolean),
+                createdAt: prev.chars[prev.currentId]?.meta.createdAt || Date.now()
+              },
+              data: data
+            }
+          }
+        }));
+      };
+
+      const createNewChar = () => {
+        const newId = `char_${Date.now()}`;
+        const newChar = {
+          meta: { name: '未命名角色', category: '', tags: [], createdAt: Date.now() },
+          data: { fields: { ...DEFAULT_FIELDS }, extras: [], events: [], gameManagement: { ...DEFAULT_GAME_MANAGEMENT } }
+        };
+        setStore(prev => ({ ...prev, currentId: newId, chars: { ...prev.chars, [newId]: newChar } }));
+        setFormData(newChar.data);
+        showToast('已建立新角色');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      
+      const deleteChar = () => {
+        if (!store.currentId) return;
+        if (!confirm("確定要刪除這個角色嗎？")) return;
+        setStore(prev => {
+          const newChars = { ...prev.chars };
+          delete newChars[prev.currentId];
+          const remainingIds = Object.keys(newChars);
+          const nextId = remainingIds.length > 0 ? remainingIds[0] : null;
+          if (nextId) setFormData(newChars[nextId].data);
+          else setFormData({ fields: { ...DEFAULT_FIELDS }, extras: [], events: [], gameManagement: { ...DEFAULT_GAME_MANAGEMENT } });
+          return { ...prev, currentId: nextId, chars: newChars };
+        });
+        showToast('角色已刪除', 'warn');
+      };
+
+      const loadChar = (id) => {
+        setStore(prev => ({ ...prev, currentId: id }));
+        setFormData(store.chars[id].data);
+        showToast(`已載入: ${store.chars[id].meta.name}`);
+      };
+
+      const addDynamicField = (type) => {
+        if (formData[type].length >= (type === 'extras' ? 10 : 20)) { showToast('已達數量上限', 'warn'); return; }
+        const newData = { ...formData, [type]: [...formData[type], { title: '', text: '' }] };
+        setFormData(newData);
+        saveToStore(newData);
+      };
+
+      const updateDynamicField = (type, index, key, val) => {
+        const list = [...formData[type]];
+        list[index] = { ...list[index], [key]: val };
+        const newData = { ...formData, [type]: list };
+        setFormData(newData);
+        saveToStore(newData);
+      };
+
+      const removeDynamicField = (type, index) => {
+        const list = [...formData[type]];
+        list.splice(index, 1);
+        const newData = { ...formData, [type]: list };
+        setFormData(newData);
+        saveToStore(newData);
+      };
+
+      const updateGameManagement = (gmData) => {
+        const newData = { ...formData, gameManagement: gmData };
+        setFormData(newData);
+        saveToStore(newData);
+      };
+
+      const saveTemplate = (type, text) => {
+        if (!text.trim()) { showToast('內容為空', 'warn'); return; }
+        const name = prompt('請輸入模板名稱：');
+        if (!name) return;
+        setStore(prev => ({
+          ...prev,
+          templates: {
+            ...prev.templates,
+            [type]: [...(prev.templates[type] || []), { id: `tpl_${Date.now()}`, name, text }]
+          }
+        }));
+        showToast('模板已儲存');
+      };
+      const deleteTemplate = (type, id) => {
+          setStore(prev => ({ ...prev, templates: { ...prev.templates, [type]: prev.templates[type].filter(t => t.id !== id) } }));
+          showToast('模板已刪除');
+      };
+      
+      const TemplateSelector = ({ type, onApply, currentValue }) => (
+        <div className="flex gap-2">
+          <select className="text-xs px-2 py-1 rounded-lg border border-border-color bg-white/50" onChange={(e) => { const tpl = store.templates[type].find(t => t.id === e.target.value); if (tpl) onApply(tpl.text); e.target.value = ''; }} defaultValue="">
+            <option value="" disabled>✨ 套用模板...</option>
+            {(store.templates[type] || []).map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+          <button className="text-xs px-2 py-1 rounded-lg border border-border-color hover:bg-focus hover:text-white" onClick={() => saveTemplate(type, currentValue)}>存為模板</button>
+        </div>
+      );
+
+      const exportMD = () => {
+        const md = generateMarkdown(formData);
+        const blob = new Blob([md], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${formData.fields.charName || 'character'}.txt`;
+        a.click();
+      };
+
+      const promptTokens = estimatePromptTokens(formData.fields.promptRole, formData.fields.promptGuideline);
+
+      return (
+        <ThemeWrapper theme={theme}>
+          <div className="max-w-6xl mx-auto p-5 min-h-screen flex flex-col">
+            <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
+              <div>
+                <h1 className="text-4xl font-bold font-serif text-text-main mb-2 tracking-tight">💕 卿卿我我創角小幫手</h1>
+                <p className="text-text-sub">填寫設定，一鍵生成 AI 角色卡 Markdown，讓故事開始。</p>
+              </div>
+              <div className="flex items-center gap-3 bg-card-bg p-2 rounded-xl border border-white/50 shadow-sm">
+                <span className="text-sm font-semibold ml-2">🎨 主題：</span>
+                <select value={theme} onChange={(e) => setTheme(e.target.value)} className="bg-transparent border-none text-sm font-medium focus:ring-0 cursor-pointer">
+                  {Object.keys(THEMES).map(t => <option key={t} value={t}>{t === 'pink' ? '🌸 櫻花粉' : t === 'black' ? '🌙 深夜黑' : t}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <Sidebar onNavigate={scrollToSection} isMobile={isMobile} />
+              <main className="flex-1 w-full min-w-0">
+                <Section id="sec-archive" title="角色存檔管理" icon="📂">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-wrap gap-2 p-3 bg-white/40 rounded-xl border border-border-color min-h-[50px] items-center">
+                       {Object.entries(store.chars).map(([id, char]) => (
+                           <button key={id} onClick={() => loadChar(id)} className={`px-3 py-1.5 rounded-lg text-sm transition-all ${store.currentId === id ? 'bg-focus text-white shadow-md scale-105 font-bold' : 'bg-white/60 border border-border-color hover:bg-white'}`}>{char.meta.name || '未命名'}</button>
+                       ))}
+                    </div>
+                    <div className="flex gap-3 mt-2">
+                        <button onClick={createNewChar} className="bg-btn-bg text-btn-text px-4 py-2 rounded-full font-bold shadow-lg hover:scale-105 transition-transform">➕ 新角色</button>
+                        <button onClick={deleteChar} className="bg-transparent border border-red-400 text-red-500 hover:bg-red-50 px-4 py-2 rounded-full font-bold transition-colors ml-auto">🗑 刪除目前</button>
+                    </div>
+                  </div>
+                </Section>
+
+                <Section id="sec-info" title="角色資訊" icon="💁‍♀️">
+                  <InputRow label="角色名稱 (15字)" value={formData.fields.charName} onChange={v => updateField('charName', v)} onClear={() => updateField('charName', '')} maxLength={15} />
+                  <InputRow label="角色分類" value={formData.fields.charCategory} onChange={v => updateField('charCategory', v)} placeholder="例如：現代、奇幻、OC..." maxLength={100} />
+                  <div className="flex gap-4">
+                      <div className="flex-1"><InputRow label="年齡 (15字)" value={formData.fields.charAge} onChange={v => updateField('charAge', v)} maxLength={15} /></div>
+                      <div className="flex-1"><InputRow label="職業 (15字)" value={formData.fields.charJob} onChange={v => updateField('charJob', v)} maxLength={15} /></div>
+                  </div>
+                  <TextAreaRow label="來自角色的一句話 (80字)" value={formData.fields.charQuote} onChange={v => updateField('charQuote', v)} minHeight="80px" maxLength={80} onClear={() => updateField('charQuote', '')} />
+                  <TextAreaRow label="敘述 (700字)" value={formData.fields.charDesc} onChange={v => updateField('charDesc', v)} maxLength={700} onClear={() => updateField('charDesc', '')} />
+                  <InputRow label="標籤 (Hashtag)" value={formData.fields.charTags} onChange={v => updateField('charTags', v)} placeholder="空格分隔，如：傲嬌 雙馬尾" />
+                  <TextAreaRow label="創作者筆記 (200字)" value={formData.fields.creatorNote} onChange={v => updateField('creatorNote', v)} minHeight="80px" maxLength={200} onClear={() => updateField('creatorNote', '')} />
+                </Section>
+
+                <Section id="sec-gender" title="性別" icon="🚻">
+                   <select value={formData.fields.gender} onChange={e => updateField('gender', e.target.value)} className="w-full px-4 py-3 bg-white/50 border border-border-color rounded-xl">
+                      <option value="未設置">未設置</option>
+                      <option value="男性">男性</option>
+                      <option value="女性">女性</option>
+                      <option value="無性別">無性別</option>
+                   </select>
+                </Section>
+
+                <Section id="sec-basic" title="一、基本資訊" icon="🌏">
+                    <TextAreaRow subLabel="必填。建議 ≤700字。" value={formData.fields.basicInfo} onChange={v => updateField('basicInfo', v)} maxLength={700} onClear={() => updateField('basicInfo', '')} actions={<TemplateSelector type="basicInfo" currentValue={formData.fields.basicInfo} onApply={v => updateField('basicInfo', v)} />} />
+                </Section>
+                <Section id="sec-personality" title="二、性格" icon="💗">
+                    <TextAreaRow subLabel="必填。建議 ≤700字。" value={formData.fields.personality} onChange={v => updateField('personality', v)} maxLength={700} onClear={() => updateField('personality', '')} actions={<TemplateSelector type="personality" currentValue={formData.fields.personality} onApply={v => updateField('personality', v)} />} />
+                </Section>
+                <Section id="sec-speech" title="三、說話風格與習慣" icon="🗣️">
+                    <TextAreaRow subLabel="必填。建議 ≤700字。" value={formData.fields.speechStyle} onChange={v => updateField('speechStyle', v)} maxLength={700} onClear={() => updateField('speechStyle', '')} actions={<TemplateSelector type="speechStyle" currentValue={formData.fields.speechStyle} onApply={v => updateField('speechStyle', v)} />} />
+                </Section>
+
+                <Section id="sec-prompt" title="模型與 Prompt 設定" icon="🧠">
+                    <div className="mb-4">
+                       <label className="font-semibold block mb-2">使用模型</label>
+                       <select value={formData.fields.modelType} onChange={e => updateField('modelType', e.target.value)} className="w-full px-4 py-3 bg-white/50 border border-border-color rounded-xl">
+                         <option value="gemini-3-pro">Gemini 3 Pro</option>
+                         <option value="claude-sonnet-4.5">Claude Sonnet 4.5</option>
+                         <option value="claude-haiku-4.5">Claude Haiku 4.5</option>
+                       </select>
+                    </div>
+                    <TextAreaRow label="Role" value={formData.fields.promptRole} onChange={v => updateField('promptRole', v)} maxLength={2000} onClear={() => updateField('promptRole', '')} placeholder="Role setting..." />
+                    <TextAreaRow label="Response Guideline" value={formData.fields.promptGuideline} onChange={v => updateField('promptGuideline', v)} maxLength={3000} onClear={() => updateField('promptGuideline', '')} placeholder="Guideline..." />
+                    <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-sm">
+                        <div className="text-text-main">預估 Token：{promptTokens}</div>
+                    </div>
+                </Section>
+                
+                <GameManagement data={formData.gameManagement} onChange={updateGameManagement} />
+
+                <Section id="sec-first" title="開場與對話" icon="🎬">
+                    <TextAreaRow label="第一次聊天場景 (800字)" value={formData.fields.firstScene} onChange={v => updateField('firstScene', v)} maxLength={800} />
+                    <TextAreaRow label="角色對話範例 (800字)" value={formData.fields.sampleDialogue} onChange={v => updateField('sampleDialogue', v)} maxLength={800} />
+                </Section>
+
+                 <Section id="sec-fav" title="喜好與生日" icon="🎀">
+                    <InputRow label="喜歡的東西 (50字)" value={formData.fields.likes} onChange={v => updateField('likes', v)} maxLength={50} />
+                    <InputRow label="不喜歡的東西 (50字)" value={formData.fields.dislikes} onChange={v => updateField('dislikes', v)} maxLength={50} />
+                    <InputRow label="生日" type="date" value={formData.fields.birthday} onChange={v => updateField('birthday', v)} />
+                </Section>
+
+                <Section id="sec-extra" title="附加資訊" icon="📌">
+                    <p className="text-sm text-text-sub mb-4">最多 10 筆，每筆 500 字。</p>
+                    {formData.extras.map((extra, idx) => (
+                        <div key={idx} className="mb-6 pl-4 border-l-4 border-border-color hover:border-focus transition-colors">
+                            <InputRow label="標題" value={extra.title} onChange={v => updateDynamicField('extras', idx, 'title', v)} maxLength={50} />
+                            <TextAreaRow label={`附加資訊 ${idx + 1}`} value={extra.text} onChange={v => updateDynamicField('extras', idx, 'text', v)} maxLength={500} actions={<><TemplateSelector type="extra" currentValue={extra.text} onApply={v => updateDynamicField('extras', idx, 'text', v)} /><button onClick={() => removeDynamicField('extras', idx)} className="text-xs px-2 py-1 text-red-500 border border-red-200 rounded">刪除</button></>} />
+                        </div>
+                    ))}
+                    <button onClick={() => addDynamicField('extras')} className="w-full py-3 border-2 border-dashed border-border-color rounded-xl text-text-sub hover:border-focus hover:text-focus transition-colors">＋ 新增附加資訊</button>
+                </Section>
+
+                <Section id="sec-event" title="創作者事件" icon="📚">
+                    <p className="text-sm text-text-sub mb-4">最多 20 筆，每筆 2000 字。</p>
+                    {formData.events.map((evt, idx) => (
+                        <div key={idx} className="mb-6 pl-4 border-l-4 border-border-color hover:border-focus transition-colors">
+                            <InputRow label="標題" value={evt.title} onChange={v => updateDynamicField('events', idx, 'title', v)} maxLength={50} />
+                            <TextAreaRow label={`創作者事件 ${idx + 1}`} value={evt.text} onChange={v => updateDynamicField('events', idx, 'text', v)} maxLength={2000} actions={<><TemplateSelector type="event" currentValue={evt.text} onApply={v => updateDynamicField('events', idx, 'text', v)} /><button onClick={() => removeDynamicField('events', idx)} className="text-xs px-2 py-1 text-red-500 border border-red-200 rounded">刪除</button></>} />
+                        </div>
+                    ))}
+                    <button onClick={() => addDynamicField('events')} className="w-full py-3 border-2 border-dashed border-border-color rounded-xl text-text-sub hover:border-focus hover:text-focus transition-colors">＋ 新增創作者事件</button>
+                </Section>
+
+                <Section id="sec-output" title="輸出與預覽" icon="📝">
+                     <div className="flex flex-col gap-4">
+                        <div className="p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl border border-border-color">
+                            <h3 className="font-bold mb-4">操作</h3>
+                            <button onClick={exportMD} className="w-full mb-3 bg-btn-bg text-btn-text font-bold py-3 rounded-xl shadow-lg hover:brightness-110 transition-all">✨ 下載角色卡 (.txt)</button>
+                        </div>
+                     </div>
+                     <div className="mt-8">
+                         <h3 className="font-bold mb-2">預覽 Markdown</h3>
+                         <div className="bg-[#1e1e1e] text-gray-300 p-6 rounded-xl font-mono text-sm whitespace-pre-wrap border border-gray-700 shadow-inner h-96 overflow-y-auto">
+                             {generateMarkdown(formData)}
+                         </div>
+                     </div>
+                </Section>
+                
+                <Section id="sec-template-center" title="模板管理中心" icon="🧰">
+                   <div className="grid md:grid-cols-2 gap-6">
+                     {Object.keys(TEMPLATE_TYPES).map(type => (
+                       <div key={type} className="bg-white/40 rounded-xl p-4 border border-border-color">
+                          <h3 className="font-bold mb-3 border-b border-border-color pb-2">{TEMPLATE_TYPES[type]}</h3>
+                          {(store.templates[type] || []).map(tpl => (
+                             <div key={tpl.id} className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center mb-2">
+                               <div className="text-sm">{tpl.name}</div>
+                               <button onClick={() => deleteTemplate(type, tpl.id)} className="text-xs text-red-400 hover:text-red-600">刪除</button>
+                             </div>
+                          ))}
+                       </div>
+                     ))}
+                   </div>
+                </Section>
+
+              </main>
+            </div>
+            <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="fixed bottom-8 right-8 w-14 h-14 bg-btn-bg text-white rounded-full shadow-2xl flex items-center justify-center text-xl hover:-translate-y-1 transition-transform z-50">▲</button>
+          </div>
+        </ThemeWrapper>
+      );
+    };
+
+    const App = () => <ToastProvider><InnerApp /></ToastProvider>;
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
