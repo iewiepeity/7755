@@ -47,7 +47,7 @@
     }
 
     body {
-      max-width: 960px;
+      max-width: 1120px;
       margin: 24px auto 40px;
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
         system-ui, -apple-system, sans-serif;
@@ -69,7 +69,7 @@
 
     /* 版面：電腦 / 手機 */
     body.layout-desktop {
-      max-width: 960px;
+      max-width: 1120px;
       font-size: 1rem;
     }
 
@@ -97,6 +97,98 @@
       gap: 4px;
     }
 
+    /* 主版面：側邊欄＋內容 */
+    .layout-shell {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .sidebar {
+      flex: 0 0 190px;
+      position: sticky;
+      top: 10px;
+      align-self: flex-start;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid #f3c6d8;
+      box-shadow: 0 4px 10px rgba(255, 160, 195, 0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    body.theme-black .sidebar {
+      background: rgba(36,36,36,0.96);
+      border-color: #555;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .sidebar-title {
+      font-family: "Noto Serif TC", serif;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-sub {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .sidebar-nav button {
+      width: 100%;
+      justify-content: flex-start;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      box-shadow: none;
+      border-radius: 999px;
+    }
+
+    .sidebar-nav button.sidebar-main {
+      font-weight: 600;
+    }
+
+    .sidebar-nav button.sidebar-subitem {
+      padding-left: 16px;
+      opacity: 0.9;
+    }
+
+    .main-area {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    body.layout-mobile .layout-shell {
+      flex-direction: column;
+    }
+
+    body.layout-mobile .sidebar {
+      position: static;
+      width: 100%;
+      box-shadow: none;
+      margin-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    body.layout-mobile .sidebar-nav {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 6px;
+    }
+
+    body.layout-mobile .sidebar-nav button {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
     /* 說明文字統一風格 */
     .tagline,
     .sub-label,
@@ -117,6 +209,16 @@
       font-size: 1.1rem;
       font-family: "Noto Serif TC", serif;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    h3.tpl-type-title {
+      font-size: 0.95rem;
+      margin: 10px 0 4px;
+      font-family: "Noto Serif TC", serif;
     }
 
     p {
@@ -176,6 +278,14 @@
       margin-bottom: 14px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(255, 160, 195, 0.18);
+    }
+
+    .section-body {
+      margin-top: 6px;
+    }
+
+    .section.collapsed .section-body {
+      display: none;
     }
 
     body.theme-black .section {
@@ -366,6 +476,53 @@
     .prompt-stats {
       margin-top: 6px;
     }
+
+    .field-utils {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      margin: -2px 0 6px;
+      gap: 4px;
+    }
+
+    .field-counter {
+      opacity: 0.7;
+    }
+
+    .field-copy {
+      margin-left: auto;
+    }
+
+    /* 模板管理中心 */
+    .tpl-card {
+      border-radius: 8px;
+      border: 1px solid #f1c5dd;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: #fffdfd;
+    }
+    body.theme-black .tpl-card {
+      background: #1c1c1c;
+      border-color: #555;
+    }
+    .tpl-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .tpl-preview {
+      font-size: 0.8rem;
+      margin: 2px 0 4px;
+      white-space: pre-wrap;
+      max-height: 5.5em;
+      overflow: hidden;
+    }
+    .tpl-meta {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -396,245 +553,469 @@
     ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。使用 localStorage 存檔，若手動清除瀏覽資料、使用無痕模式、不同瀏覽器、不同裝置可能導致資料消失。
   </p>
   <p class="sub-label">
-    ※ 提醒：匯出/匯入功能僅能匯出當下的角色，無法所有角色一起匯出。
+    ※ 提醒：下載 txt 僅會匯出「目前這隻角色」；JSON 匯出 / 匯入會打包「全部角色＋模板」做備份。
   </p>
 
-  <!-- 角色存檔管理區 -->
-  <div class="section">
-    <h2>📂 角色存檔管理</h2>
+  <div class="layout-shell">
+    <!-- 側邊功能選單 -->
+    <aside class="sidebar">
+      <div class="sidebar-title">📎 功能選單</div>
+      <div class="sidebar-sub">點一下直接跳到該區塊，會自動幫你展開。</div>
+      <div class="sidebar-nav">
+        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-archive')">📂 角色存檔管理</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-info')">💁‍♀️ 角色資訊</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-gender')">🚻 性別</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-basic')">🌏 一、基本資訊</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-personality')">💗 二、性格</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-speech')">🗣️ 三、說話風格</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-prompt')">🧠 模型 & Prompt</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-first')">🎬 第一次聊天場景</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-fav')">🎀 喜好與生日</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-extra')">📌 附加資訊</button>
+        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-event')">📚 創作者事件</button>
+        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-output')">📝 輸出與匯入</button>
+        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-template-center')">🧰 模板管理中心</button>
+        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-layout')">📱 版面切換</button>
+      </div>
+    </aside>
 
-    <div class="label-row">
-      <label>分類篩選：</label>
-      <select id="filterCategory" onchange="refreshCharListFromStorage()">
-        <option value="">全部分類</option>
-      </select>
-    </div>
+    <!-- 主內容區 -->
+    <main class="main-area">
 
-    <div class="label-row">
-      <label>角色名稱：</label>
-      <input id="searchName" type="search" placeholder="輸入部分名字即可" oninput="refreshCharListFromStorage()" />
-    </div>
+      <!-- 角色存檔管理區 -->
+      <div class="section" id="sec-archive">
+        <h2>
+          📂 角色存檔管理
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-archive')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>分類篩選：</label>
+            <select id="filterCategory" onchange="refreshCharListFromStorage()">
+              <option value="">全部分類</option>
+            </select>
+          </div>
 
-    <div id="charList" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
-      <!-- JS 動態產生角色按鈕 -->
-    </div>
+          <div class="label-row">
+            <label>角色名稱搜尋：</label>
+            <input id="searchName" type="search" placeholder="輸入部分名字即可" oninput="refreshCharListFromStorage()" />
+          </div>
 
-    <div style="margin-top:10px;">
-      <button type="button" onclick="newCharacter()">➕ 新角色</button>
-      <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
-      <button type="button" class="button-secondary" onclick="deleteCurrentChar()">🗑 刪除目前角色</button>
-    </div>
-  </div>
+          <div class="label-row">
+            <label>排序方式：</label>
+            <select id="charSort" onchange="refreshCharListFromStorage()">
+              <option value="created_desc">建立時間：新 ➝ 舊</option>
+              <option value="created_asc">建立時間：舊 ➝ 新</option>
+              <option value="name_asc">角色名稱：A ➝ Z</option>
+            </select>
+          </div>
 
-  <div class="section">
-    <h2>💁‍♀️ 角色資訊</h2>
+          <div id="charList" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+            <!-- JS 動態產生角色按鈕 -->
+          </div>
 
-    <div class="label-row">
-      <label>角色名稱（必填）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
-    </div>
-    <input id="charName" type="text" />
+          <div style="margin-top:10px;">
+            <button type="button" onclick="newCharacter()">➕ 新角色</button>
+            <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
+            <button type="button" class="button-secondary" onclick="deleteCurrentChar()">🗑 刪除目前角色</button>
+          </div>
+        </div>
+      </div>
 
-    <div class="label-row">
-      <label>角色分類（選填，例如：種類/世界觀等方便你自己分類的名字）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charCategory')">清空</button>
-    </div>
-    <input id="charCategory" type="text" />
+      <div class="section" id="sec-info">
+        <h2>
+          💁‍♀️ 角色資訊
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
 
-    <div class="label-row">
-      <label>年齡（必填，15字內）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charAge')">清空</button>
-    </div>
-    <input id="charAge" type="text" data-maxlength="15" />
+          <div class="label-row">
+            <label>角色名稱（必填）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
+          </div>
+          <input id="charName" type="text" />
 
-    <div class="label-row">
-      <label>職業（必填，15字內）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charJob')">清空</button>
-    </div>
-    <input id="charJob" type="text" data-maxlength="15" />
+          <div class="label-row">
+            <label>角色分類（選填，例如：種類/世界觀等方便你自己分類的名字）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charCategory')">清空</button>
+          </div>
+          <input id="charCategory" type="text" />
 
-    <div class="label-row">
-      <label>來自角色的一句話（必填，80字內）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
-    </div>
-    <textarea id="charQuote" style="min-height:60px;" data-maxlength="80"></textarea>
+          <div class="label-row">
+            <label>年齡（必填，15字內）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charAge')">清空</button>
+          </div>
+          <input id="charAge" type="text" data-maxlength="15" />
 
-    <div class="label-row">
-      <label>敘述（選填，700字內）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
-    </div>
-    <textarea id="charDesc" data-maxlength="700"></textarea>
+          <div class="label-row">
+            <label>職業（必填，15字內）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charJob')">清空</button>
+          </div>
+          <input id="charJob" type="text" data-maxlength="15" />
 
-    <div class="label-row">
-      <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('charTags')">清空</button>
-    </div>
-    <input id="charTags" type="text" />
+          <div class="label-row">
+            <label>來自角色的一句話（必填，80字內）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
+          </div>
+          <textarea id="charQuote" style="min-height:60px;" data-maxlength="80"></textarea>
 
-    <div class="label-row">
-      <label>創作者筆記（選填，200字）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
-    </div>
-    <textarea id="creatorNote" style="min-height:70px;" data-maxlength="200"></textarea>
-  </div>
+          <div class="label-row">
+            <label>敘述（選填，700字內）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
+          </div>
+          <textarea id="charDesc" data-maxlength="700"></textarea>
 
-  <div class="section">
-    <h2>🚻 性別</h2>
-    <div class="label-row">
-      <label>性別（必填）：</label>
-      <button type="button" class="button-mini" onclick="clearGender()">清空</button>
-    </div>
-    <select id="gender">
-      <option value="未設置" selected>未設置</option>
-      <option value="男性">男性</option>
-      <option value="女性">女性</option>
-    </select>
-  </div>
+          <div class="label-row">
+            <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('charTags')">清空</button>
+          </div>
+          <input id="charTags" type="text" />
 
-  <div class="section">
-    <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
-    <div class="label-row">
-      <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
-      <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
-    </div>
-    <textarea id="basicInfo" data-maxlength="700"></textarea>
-  </div>
+          <div class="label-row">
+            <label>創作者筆記（選填，200字）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
+          </div>
+          <textarea id="creatorNote" style="min-height:70px;" data-maxlength="200"></textarea>
+        </div>
+      </div>
 
-  <div class="section">
-    <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
-    <div class="label-row">
-      <span class="sub-label">可描述角色性格。</span>
-      <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
-    </div>
-    <textarea id="personality" data-maxlength="700"></textarea>
-  </div>
+      <div class="section" id="sec-gender">
+        <h2>
+          🚻 性別
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>性別（必填）：</label>
+            <button type="button" class="button-mini" onclick="clearGender()">清空</button>
+          </div>
+          <select id="gender">
+            <option value="未設置" selected>未設置</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="section">
-    <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
-    <div class="label-row">
-      <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
-      <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
-    </div>
-    <textarea id="speechStyle" data-maxlength="700"></textarea>
-  </div>
+      <div class="section" id="sec-basic">
+        <h2>
+          🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
+            <div>
+              <!-- 套用模板 -->
+              <select data-template-type="basicInfo"
+                      onchange="applyTemplateSingle('basicInfo','basicInfo',this)"
+                      class="tpl-select button-mini">
+                <option value="">套用模板…</option>
+              </select>
+              <!-- 存為模板 -->
+              <button type="button"
+                      class="button-mini"
+                      onclick="saveTemplateFromField('basicInfo','basicInfo')">
+                存為模板
+              </button>
+              <!-- 清空 -->
+              <button type="button"
+                      class="button-mini"
+                      onclick="clearOne('basicInfo')">
+                清空
+              </button>
+            </div>
+          </div>
+          <textarea id="basicInfo" data-maxlength="700"></textarea>
+        </div>
+      </div>
 
-  <!-- 新增：模型與 Prompt 設定 -->
-  <div class="section">
-    <h2>🧠 模型與 Prompt 設定</h2>
+      <div class="section" id="sec-personality">
+        <h2>
+          💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <span class="sub-label">可描述角色性格。</span>
+            <div>
+              <select data-template-type="personality"
+                      onchange="applyTemplateSingle('personality','personality',this)"
+                      class="tpl-select button-mini">
+                <option value="">套用模板…</option>
+              </select>
+              <button type="button"
+                      class="button-mini"
+                      onclick="saveTemplateFromField('personality','personality')">
+                存為模板
+              </button>
+              <button type="button"
+                      class="button-mini"
+                      onclick="clearOne('personality')">
+                清空
+              </button>
+            </div>
+          </div>
+          <textarea id="personality" data-maxlength="700"></textarea>
+        </div>
+      </div>
 
-    <div class="label-row">
-      <label>使用模型：</label>
-    </div>
-    <select id="modelType" onchange="updatePromptTokenInfo(); saveCurrentChar();">
-      <option value="claude-haiku" data-basecost="5">Claude Haiku（起價 5 果醬）</option>
-      <option value="claude-sonnet" data-basecost="15">Claude Sonnet（起價 15 果醬）</option>
-      <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
-    </select>
+      <div class="section" id="sec-speech">
+        <h2>
+          🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
+            <div>
+              <select data-template-type="speechStyle"
+                      onchange="applyTemplateSingle('speechStyle','speechStyle',this)"
+                      class="tpl-select button-mini">
+                <option value="">套用模板…</option>
+              </select>
+              <button type="button"
+                      class="button-mini"
+                      onclick="saveTemplateFromField('speechStyle','speechStyle')">
+                存為模板
+              </button>
+              <button type="button"
+                      class="button-mini"
+                      onclick="clearOne('speechStyle')">
+                清空
+              </button>
+            </div>
+          </div>
+          <textarea id="speechStyle" data-maxlength="700"></textarea>
+        </div>
+      </div>
 
-    <div class="label-row" style="margin-top:8px;">
-      <label>Role（系統提示）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
-    </div>
-    <textarea id="promptRole" data-maxlength="2000" placeholder="例如：你是一位只對玩家溫柔、會主動帶話題的戀愛角色……"></textarea>
+      <!-- 模型與 Prompt 設定 -->
+      <div class="section" id="sec-prompt">
+        <h2>
+          🧠 模型與 Prompt 設定
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>使用模型：</label>
+          </div>
+          <select id="modelType" onchange="updatePromptTokenInfo(); saveCurrentChar();">
+            <option value="claude-haiku" data-basecost="5">Claude Haiku（起價 5 果醬）</option>
+            <option value="claude-sonnet" data-basecost="15">Claude Sonnet（起價 15 果醬）</option>
+            <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
+          </select>
 
-    <div class="label-row">
-      <label>Response Guideline（回應規則）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('promptGuideline')">清空</button>
-    </div>
-    <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI、每次回覆控制在……"></textarea>
+          <div class="label-row" style="margin-top:8px;">
+            <label>Role（系統提示）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
+          </div>
+          <textarea id="promptRole" data-maxlength="2000" placeholder="例如：你是一位只對玩家溫柔、會主動帶話題的戀愛角色……"></textarea>
 
-    <div class="prompt-stats">
-      <div id="promptTokenInfo" class="sub-label"></div>
-      <div id="promptJamInfo" class="sub-label"></div>
-    </div>
-  </div>
+          <div class="label-row">
+            <label>Response Guideline（回應規則）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('promptGuideline')">清空</button>
+          </div>
+          <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI、每次回覆控制在……"></textarea>
 
-  <div class="section">
-    <h2>🎬 第一次聊天場景與角色對話</h2>
+          <div class="prompt-stats">
+            <div id="promptTokenInfo" class="sub-label"></div>
+            <div id="promptJamInfo" class="sub-label"></div>
+          </div>
+        </div>
+      </div>
 
-    <div class="label-row">
-      <label>第一次聊天場景（選填，800字內）</label>
-      <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
-    </div>
-    <div class="sub-label">
-      設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
-    </div>
-    <textarea id="firstScene" data-maxlength="800"></textarea>
+      <div class="section" id="sec-first">
+        <h2>
+          🎬 第一次聊天場景與角色對話
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>第一次聊天場景（選填，800字內）</label>
+            <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
+          </div>
+          <div class="sub-label">
+            設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
+          </div>
+          <textarea id="firstScene" data-maxlength="800"></textarea>
 
-    <div class="label-row">
-      <label>角色對話（選填，800字）</label>
-      <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
-    </div>
-    <textarea id="sampleDialogue" data-maxlength="800"></textarea>
-  </div>
+          <div class="label-row">
+            <label>角色對話（選填，800字）</label>
+            <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
+          </div>
+          <textarea id="sampleDialogue" data-maxlength="800"></textarea>
+        </div>
+      </div>
 
-  <div class="section">
-    <h2>🎀 喜好與生日</h2>
+      <div class="section" id="sec-fav">
+        <h2>
+          🎀 喜好與生日
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>角色喜歡的東西（選填，50字）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
+          </div>
+          <input id="likes" type="text" data-maxlength="50" />
 
-    <div class="label-row">
-      <label>角色喜歡的東西（選填，50字）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
-    </div>
-    <input id="likes" type="text" data-maxlength="50" />
+          <div class="label-row">
+            <label>不喜歡的東西（選填，50字）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
+          </div>
+          <input id="dislikes" type="text" data-maxlength="50" />
 
-    <div class="label-row">
-      <label>不喜歡的東西（選填，50字）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
-    </div>
-    <input id="dislikes" type="text" data-maxlength="50" />
+          <div class="label-row">
+            <label>生日（選填，西元日期）：</label>
+            <button type="button" class="button-mini" onclick="clearOne('birthday')">清空</button>
+          </div>
+          <input id="birthday" type="date" style="max-width:220px;" />
+        </div>
+      </div>
 
-    <div class="label-row">
-      <label>生日（選填，西元日期）：</label>
-      <button type="button" class="button-mini" onclick="clearOne('birthday')">清空</button>
-    </div>
-    <input id="birthday" type="date" style="max-width:220px;" />
-  </div>
+      <div class="section" id="sec-extra">
+        <h2>
+          📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div style="margin-bottom:6px;">
+            <select data-template-type="extra"
+                    onchange=""
+                    class="tpl-select button-mini">
+              <option value="">（模板列表顯示在新增欄位中）</option>
+            </select>
+            <button type="button"
+                    class="button-mini"
+                    onclick="alert('模板須在「新增後的每一筆附加資訊欄位」中套用');">
+              如何套用模板？
+            </button>
+          </div>
 
-  <div class="section">
-    <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
-    <div id="extraContainer"></div>
-    <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
-    <button type="button"
-            class="button-secondary"
-            onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
-      清空所有附加資訊
-    </button>
-  </div>
+          <div id="extraContainer"></div>
 
-  <div class="section">
-    <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
-    <div id="eventContainer"></div>
-    <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
-    <button type="button"
-            class="button-secondary"
-            onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
-      清空所有創作者事件
-    </button>
-  </div>
+          <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+          <button type="button"
+                  class="button-secondary"
+                  onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
+            清空所有附加資訊
+          </button>
+        </div>
+      </div>
 
-  <div class="actions-row">
-    <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
-    <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
+      <div class="section" id="sec-event">
+        <h2>
+          📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div style="margin-bottom:6px;">
+            <select data-template-type="event"
+                    onchange=""
+                    class="tpl-select button-mini">
+              <option value="">（模板列表會在事件欄位內顯示）</option>
+            </select>
+            <button type="button"
+                    class="button-mini"
+                    onclick="alert('模板需在事件欄位內套用喔～');">
+              如何套用模板？
+            </button>
+          </div>
 
-    <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
-    <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
-  </div>
+          <div id="eventContainer"></div>
 
-  <h2>📝 輸出結果（Markdown，可直接複製）</h2>
-  <div id="output"></div>
+          <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+          <button type="button"
+                  class="button-secondary"
+                  onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
+            清空所有創作者事件
+          </button>
+        </div>
+      </div>
 
-  <!-- 版面切換 -->
-  <div class="section">
-    <h2>📱 版面切換</h2>
-    <p class="sub-label">如果在手機上覺得排版太擠，可以切換成手機版；在電腦上想窄版閱讀也可以強制手機版。</p>
-    <button type="button" onclick="setLayout('desktop')">💻 電腦版排版</button>
-    <button type="button" onclick="setLayout('mobile')">📱 手機版排版</button>
+      <!-- 輸出 / 匯入區 -->
+      <div class="section" id="sec-output">
+        <h2>
+          📝 輸出與匯入
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <div class="actions-row">
+            <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
+            <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔（目前角色）</button>
+
+            <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
+            <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
+          </div>
+
+          <div class="actions-row">
+            <button class="button-secondary" type="button" onclick="exportAllData()">📦 匯出全部角色＆模板（JSON 備份）</button>
+
+            <input id="allFile" type="file" accept=".json" style="max-width:220px;" />
+            <button class="button-secondary" type="button" onclick="importAllData()">📥 匯入全部角色＆模板（覆蓋）</button>
+          </div>
+
+          <h2 style="margin-top:8px;">
+            🖨 輸出結果（Markdown，可直接複製）
+          </h2>
+          <div id="output"></div>
+        </div>
+      </div>
+
+      <!-- 模板管理中心 -->
+      <div class="section" id="sec-template-center">
+        <h2>
+          🧰 模板管理中心
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-template-center')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <p class="sub-label">
+            可以在這裡查看所有欄位存過的模板，或刪除不需要的模板。新增模板還是照舊在各欄位按「存為模板」。
+          </p>
+          <div class="label-row">
+            <label>篩選模板類型：</label>
+            <select id="tplFilter" onchange="renderTemplateManager()">
+              <option value="">全部類型</option>
+              <option value="basicInfo">一、基本資訊</option>
+              <option value="personality">二、性格</option>
+              <option value="speechStyle">三、說話風格與習慣</option>
+              <option value="extra">附加資訊</option>
+              <option value="event">創作者事件</option>
+            </select>
+          </div>
+          <div id="tplManagerList"></div>
+        </div>
+      </div>
+
+      <!-- 版面切換 -->
+      <div class="section" id="sec-layout">
+        <h2>
+          📱 版面切換
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-layout')">⇕ 收合 / 展開</button>
+        </h2>
+        <div class="section-body">
+          <p class="sub-label">如果在手機上覺得排版太擠，可以切換成手機版；在電腦上想窄版閱讀也可以強制手機版。</p>
+          <button type="button" onclick="setLayout('desktop')">💻 電腦版排版</button>
+          <button type="button" onclick="setLayout('mobile')">📱 手機版排版</button>
+        </div>
+      </div>
+
+    </main>
   </div>
 
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
     const STORAGE_KEY = 'qing_char_multi_v1';
+    const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
+    const TEMPLATE_TYPE_LABELS = {
+      basicInfo: '一、基本資訊',
+      personality: '二、性格',
+      speechStyle: '三、說話風格與習慣',
+      extra: '附加資訊',
+      event: '創作者事件'
+    };
 
     /* ========= 主題切換 ========= */
     function changeTheme(theme) {
@@ -662,6 +1043,26 @@
       }
     }
 
+    /* ========= 側邊欄捲動 & 區塊收合 ========= */
+    function scrollToSection(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      expandSection(sectionId);
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function toggleSectionCollapse(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      sec.classList.toggle('collapsed');
+    }
+
+    function expandSection(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      sec.classList.remove('collapsed');
+    }
+
     /* ========= 工具 ========= */
     function limitText(text, max) {
       text = text.trim();
@@ -671,19 +1072,33 @@
       return text;
     }
 
+    function initEmptyTemplates() {
+      const obj = {};
+      TEMPLATE_TYPES.forEach(t => obj[t] = []);
+      return obj;
+    }
+
+    function ensureTemplateTypes(tpls) {
+      TEMPLATE_TYPES.forEach(t => {
+        if (!Array.isArray(tpls[t])) tpls[t] = [];
+      });
+    }
+
     function getStore() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { currentId: null, chars: {} };
+        if (!raw) return { currentId: null, chars: {}, templates: initEmptyTemplates() };
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') {
-          return { currentId: null, chars: {} };
+          return { currentId: null, chars: {}, templates: initEmptyTemplates() };
         }
         if (!parsed.chars) parsed.chars = {};
+        if (!parsed.templates) parsed.templates = initEmptyTemplates();
+        ensureTemplateTypes(parsed.templates);
         return parsed;
       } catch (e) {
         console.warn('讀取存檔失敗，重置 store：', e);
-        return { currentId: null, chars: {} };
+        return { currentId: null, chars: {}, templates: initEmptyTemplates() };
       }
     }
 
@@ -699,20 +1114,210 @@
       return 'char_' + Date.now();
     }
 
+    /* ========= 模板相關 ========= */
+    function getTemplatesByType(type) {
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+      return store.templates[type] || [];
+    }
+
+    function refreshTemplateSelect(type) {
+      const selects = document.querySelectorAll(`select[data-template-type="${type}"]`);
+      const list = getTemplatesByType(type);
+      selects.forEach(sel => {
+        const currentValue = sel.value;
+        sel.innerHTML = '<option value="">套用模板…</option>';
+        list.forEach(tpl => {
+          const opt = document.createElement('option');
+          opt.value = tpl.id;
+          opt.textContent = tpl.name;
+          sel.appendChild(opt);
+        });
+        if (list.some(t => t.id === currentValue)) {
+          sel.value = currentValue;
+        }
+      });
+    }
+
+    function refreshAllTemplateSelects() {
+      TEMPLATE_TYPES.forEach(t => refreshTemplateSelect(t));
+    }
+
+    function saveTemplate(type, text) {
+      const content = (text || '').trim();
+      if (!content) {
+        alert("目前欄位是空的，無法存成模板喔～");
+        return;
+      }
+      const name = prompt("請輸入這個模板的名稱（例如：標準世界觀模板）：");
+      if (!name) return;
+
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+
+      store.templates[type].push({
+        id: 'tpl_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+        name: name.trim(),
+        text: content
+      });
+
+      setStore(store);
+      refreshTemplateSelect(type);
+      renderTemplateManager();
+      alert("已儲存模板：「" + name.trim() + "」");
+    }
+
+    function saveTemplateFromField(type, textareaId) {
+      const el = document.getElementById(textareaId);
+      if (!el) return;
+      saveTemplate(type, el.value);
+    }
+
+    function saveTemplateFromDynamicBlock(type, blockEl) {
+      if (!blockEl) return;
+      const textarea = blockEl.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!textarea) return;
+      saveTemplate(type, textarea.value);
+    }
+
+    function applyTemplateSingle(type, textareaId, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const ta = document.getElementById(textareaId);
+      if (!ta) return;
+      ta.value = tpl.text;
+      saveCurrentChar();
+      if (textareaId === 'promptRole' || textareaId === 'promptGuideline') {
+        updatePromptTokenInfo();
+      }
+      updateFieldCounter(ta);
+    }
+
+    function applyTemplateDynamic(type, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const block = selectEl.closest(type === 'extra' ? '.extra-block' : '.event-block');
+      if (!block) return;
+      const ta = block.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!ta) return;
+
+      ta.value = tpl.text;
+      saveCurrentChar();
+      updateFieldCounter(ta);
+    }
+
+    /* ========= 模板管理中心渲染 ========= */
+    function renderTemplateManager() {
+      const container = document.getElementById('tplManagerList');
+      if (!container) return;
+
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+
+      const filterSel = document.getElementById('tplFilter');
+      const filter = filterSel ? filterSel.value : '';
+
+      container.innerHTML = '';
+      let total = 0;
+
+      TEMPLATE_TYPES.forEach(type => {
+        if (filter && filter !== type) return;
+        const list = store.templates[type] || [];
+        if (!list.length) return;
+
+        const title = document.createElement('h3');
+        title.className = 'tpl-type-title';
+        title.textContent = `${TEMPLATE_TYPE_LABELS[type]}（${list.length} 筆）`;
+        container.appendChild(title);
+
+        list.forEach(tpl => {
+          total++;
+          const card = document.createElement('div');
+          card.className = 'tpl-card';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'tpl-name';
+          nameEl.textContent = tpl.name || '（未命名模板）';
+
+          const metaEl = document.createElement('div');
+          metaEl.className = 'tpl-meta';
+          metaEl.textContent = `類型：${TEMPLATE_TYPE_LABELS[type]}`;
+
+          const previewEl = document.createElement('pre');
+          previewEl.className = 'tpl-preview';
+          const txt = tpl.text || '';
+          previewEl.textContent = txt.length > 120 ? (txt.slice(0,120) + '…') : txt;
+
+          const btnRow = document.createElement('div');
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'button-mini';
+          delBtn.textContent = '刪除此模板';
+          delBtn.onclick = () => deleteTemplate(type, tpl.id);
+          btnRow.appendChild(delBtn);
+
+          card.appendChild(nameEl);
+          card.appendChild(metaEl);
+          card.appendChild(previewEl);
+          card.appendChild(btnRow);
+
+          container.appendChild(card);
+        });
+      });
+
+      if (!total) {
+        container.innerHTML = '<p class="sub-label">目前尚未建立任何模板，可以在各欄位按「存為模板」建立。</p>';
+      }
+    }
+
+    function deleteTemplate(type, id) {
+      if (!confirm('確定要刪除此模板嗎？刪除後無法復原喔～')) return;
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      store.templates[type] = (store.templates[type] || []).filter(t => t.id !== id);
+      setStore(store);
+      refreshTemplateSelect(type);
+      renderTemplateManager();
+    }
+
     /* ========= 動態欄位：附加資訊 & 事件 ========= */
     function renumberExtras() {
       const blocks = document.querySelectorAll(".extra-block");
       blocks.forEach((block, idx) => {
-        const label = block.querySelector("label");
-        label.textContent = `附加資訊 ${idx + 1}：`;
+        const labels = block.querySelectorAll("label");
+        if (labels.length >= 2) {
+          labels[1].textContent = `附加資訊 ${idx + 1}：`;
+        }
       });
     }
 
     function renumberEvents() {
       const blocks = document.querySelectorAll(".event-block");
       blocks.forEach((block, idx) => {
-        const label = block.querySelector("label");
-        label.textContent = `創作者事件 ${idx + 1}：`;
+        const labels = block.querySelectorAll("label");
+        if (labels.length >= 2) {
+          labels[1].textContent = `創作者事件 ${idx + 1}：`;
+        }
       });
     }
 
@@ -727,11 +1332,51 @@
       const block = document.createElement("div");
       block.className = "extra-block";
 
+      // 第一行：標題列
+      const titleRow = document.createElement("div");
+      titleRow.className = "label-row";
+
+      const titleLabel = document.createElement("label");
+      titleLabel.textContent = "標題（選填）：";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.className = "extra-title-field";
+      titleInput.dataset.maxlength = "50";
+      titleInput.style.flex = "1";
+      titleInput.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(titleInput);
+      });
+
+      titleRow.appendChild(titleLabel);
+      titleRow.appendChild(titleInput);
+
+      // 第二行：內容標籤 + 模板/刪除
       const labelRow = document.createElement("div");
       labelRow.className = "label-row";
 
       const label = document.createElement("label");
       label.textContent = "附加資訊 ：";
+
+      const controls = document.createElement("div");
+      controls.className = "label-controls";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "tpl-select";
+      tplSelect.dataset.templateType = "extra";
+      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('extra', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('extra', block);
+      };
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
@@ -741,22 +1386,34 @@
         block.remove();
         renumberExtras();
         saveCurrentChar();
+        updateAllFieldCounters();
       };
 
-      labelRow.appendChild(label);
-      labelRow.appendChild(delBtn);
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
 
+      labelRow.appendChild(label);
+      labelRow.appendChild(controls);
+
+      // 內容欄位
       const textarea = document.createElement("textarea");
       textarea.className = "extra-field";
       textarea.dataset.maxlength = "500";
-      textarea.addEventListener('input', saveCurrentChar);
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
 
+      block.appendChild(titleRow);
       block.appendChild(labelRow);
       block.appendChild(textarea);
       container.appendChild(block);
 
       renumberExtras();
       saveCurrentChar();
+      refreshTemplateSelect('extra');
+      setupFieldUtils(); // 給新欄位加上字數＆複製（有 id 的欄位）
     }
 
     function addEvent() {
@@ -770,11 +1427,51 @@
       const block = document.createElement("div");
       block.className = "event-block";
 
+      // 第一行：標題列
+      const titleRow = document.createElement("div");
+      titleRow.className = "label-row";
+
+      const titleLabel = document.createElement("label");
+      titleLabel.textContent = "標題（選填）：";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.className = "event-title-field";
+      titleInput.dataset.maxlength = "50";
+      titleInput.style.flex = "1";
+      titleInput.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(titleInput);
+      });
+
+      titleRow.appendChild(titleLabel);
+      titleRow.appendChild(titleInput);
+
+      // 第二行：內容標籤 + 模板/刪除
       const labelRow = document.createElement("div");
       labelRow.className = "label-row";
 
       const label = document.createElement("label");
       label.textContent = "創作者事件 ：";
+
+      const controls = document.createElement("div");
+      controls.className = "label-controls";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "tpl-select";
+      tplSelect.dataset.templateType = "event";
+      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('event', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('event', block);
+      };
 
       const delBtn = document.createElement("button");
       delBtn.type = "button";
@@ -784,22 +1481,119 @@
         block.remove();
         renumberEvents();
         saveCurrentChar();
+        updateAllFieldCounters();
       };
 
-      labelRow.appendChild(label);
-      labelRow.appendChild(delBtn);
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
 
+      labelRow.appendChild(label);
+      labelRow.appendChild(controls);
+
+      // 內容欄位
       const textarea = document.createElement("textarea");
       textarea.className = "event-field";
       textarea.dataset.maxlength = "2000";
-      textarea.addEventListener('input', saveCurrentChar);
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
 
+      block.appendChild(titleRow);
       block.appendChild(labelRow);
       block.appendChild(textarea);
       container.appendChild(block);
 
       renumberEvents();
       saveCurrentChar();
+      refreshTemplateSelect('event');
+      setupFieldUtils();
+    }
+
+    /* ========= 每個欄位：字數顯示 + 複製（有 id 的欄位）========= */
+    function copyFieldText(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.value || el.innerText || "";
+      if (!text) {
+        alert('這個欄位目前是空的喔～');
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => alert('已複製這個欄位的內容！'))
+          .catch(err => {
+            console.error(err);
+            fallbackCopy(el);
+          });
+      } else {
+        fallbackCopy(el);
+      }
+    }
+
+    function fallbackCopy(el) {
+      try {
+        el.select();
+        document.execCommand('copy');
+        alert('已複製內容（使用相容模式）');
+      } catch (e) {
+        alert('複製失敗，可能被瀏覽器擋住了 QQ');
+      }
+    }
+
+    function updateFieldCounter(el) {
+      const id = el.id;
+      if (!id) return;
+      let wrapper = el.nextElementSibling;
+      if (!wrapper || !wrapper.classList || !wrapper.classList.contains('field-utils')) {
+        return;
+      }
+      const counterSpan = wrapper.querySelector('.field-counter');
+      if (!counterSpan) return;
+
+      const max = el.dataset.maxlength ? parseInt(el.dataset.maxlength, 10) : null;
+      const len = el.value ? el.value.length : 0;
+      if (max) {
+        counterSpan.textContent = `目前 ${len} / ${max} 字`;
+      } else {
+        counterSpan.textContent = `目前 ${len} 字`;
+      }
+    }
+
+    function updateAllFieldCounters() {
+      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(updateFieldCounter);
+    }
+
+    function setupFieldUtils() {
+      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(el => {
+        const id = el.id;
+        if (!id) return;
+        const next = el.nextElementSibling;
+        if (next && next.classList && next.classList.contains('field-utils')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'field-utils';
+
+        const counter = document.createElement('span');
+        counter.className = 'field-counter';
+        counter.dataset.targetId = id;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'button-mini field-copy';
+        copyBtn.textContent = '複製內容';
+        copyBtn.addEventListener('click', () => copyFieldText(id));
+
+        wrapper.appendChild(counter);
+        wrapper.appendChild(copyBtn);
+        el.insertAdjacentElement('afterend', wrapper);
+      });
+
+      updateAllFieldCounters();
     }
 
     /* ========= 表單資料收集 & 填回 ========= */
@@ -823,11 +1617,26 @@
         }
       });
 
-      document.querySelectorAll('.extra-field').forEach(el => {
-        data.extras.push(el.value || "");
+      data.extras = [];
+      document.querySelectorAll('.extra-block').forEach(block => {
+        const titleEl = block.querySelector('.extra-title-field');
+        const textEl = block.querySelector('.extra-field');
+        const title = titleEl ? (titleEl.value || "") : "";
+        const text = textEl ? (textEl.value || "") : "";
+        if (title || text) {
+          data.extras.push({ title, text });
+        }
       });
-      document.querySelectorAll('.event-field').forEach(el => {
-        data.events.push(el.value || "");
+
+      data.events = [];
+      document.querySelectorAll('.event-block').forEach(block => {
+        const titleEl = block.querySelector('.event-title-field');
+        const textEl = block.querySelector('.event-field');
+        const title = titleEl ? (titleEl.value || "") : "";
+        const text = textEl ? (textEl.value || "") : "";
+        if (title || text) {
+          data.events.push({ title, text });
+        }
       });
 
       return data;
@@ -857,6 +1666,7 @@
       if (eventContainer) eventContainer.innerHTML = "";
 
       updatePromptTokenInfo();
+      setupFieldUtils();
     }
 
     function fillFormFromData(data) {
@@ -870,26 +1680,54 @@
       });
 
       if (Array.isArray(data.extras)) {
-        data.extras.forEach(txt => {
-          if (!txt) return;
+        data.extras.forEach(item => {
+          let title = "";
+          let text = "";
+          if (typeof item === "string") {
+            text = item;
+          } else if (item && typeof item === "object") {
+            title = item.title || "";
+            text = item.text || "";
+          }
+          if (!title && !text) return;
+
           addExtra();
-          const els = document.querySelectorAll('.extra-field');
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
+          const blocks = document.querySelectorAll(".extra-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".extra-title-field");
+          const textEl = lastBlock.querySelector(".extra-field");
+          if (titleEl) titleEl.value = title;
+          if (textEl) textEl.value = text;
         });
       }
 
       if (Array.isArray(data.events)) {
-        data.events.forEach(txt => {
-          if (!txt) return;
+        data.events.forEach(item => {
+          let title = "";
+          let text = "";
+          if (typeof item === "string") {
+            text = item;
+          } else if (item && typeof item === "object") {
+            title = item.title || "";
+            text = item.text || "";
+          }
+          if (!title && !text) return;
+
           addEvent();
-          const els = document.querySelectorAll('.event-field');
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
+          const blocks = document.querySelectorAll(".event-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".event-title-field");
+          const textEl = lastBlock.querySelector(".event-field");
+          if (titleEl) titleEl.value = title;
+          if (textEl) textEl.value = text;
         });
       }
 
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -901,6 +1739,11 @@
         store.currentId = id;
       }
 
+      const existing = store.chars[id];
+      const existingCreated = existing && existing.meta && existing.meta.createdAt
+        ? existing.meta.createdAt
+        : Date.now();
+
       const data = collectFormData();
       const name = (document.getElementById('charName').value.trim() || "未命名角色");
       const category = document.getElementById('charCategory').value.trim() || "";
@@ -911,7 +1754,8 @@
         meta: {
           name,
           category,
-          tags: tagsArray
+          tags: tagsArray,
+          createdAt: existingCreated
         },
         data
       };
@@ -973,10 +1817,11 @@
 
       const filterCategory = document.getElementById('filterCategory').value;
       const keyword = document.getElementById('searchName').value.trim().toLowerCase();
+      const sortMode = document.getElementById('charSort') ? document.getElementById('charSort').value : 'created_desc';
 
       listEl.innerHTML = "";
 
-      const entries = Object.entries(store.chars);
+      const entries = Object.entries(store.chars || {});
 
       // 收集分類
       const categorySet = new Set();
@@ -986,7 +1831,6 @@
         }
       });
 
-      // 填分類選單
       const filterSel = document.getElementById('filterCategory');
       if (filterSel) {
         const prev = filterSel.value;
@@ -999,6 +1843,26 @@
         });
         if (prev) filterSel.value = prev;
       }
+
+      // 排序
+      entries.sort((a, b) => {
+        const A = a[1];
+        const B = b[1];
+        const nameA = (A.meta?.name || '').toLowerCase();
+        const nameB = (B.meta?.name || '').toLowerCase();
+        const ca = A.meta?.createdAt || 0;
+        const cb = B.meta?.createdAt || 0;
+
+        if (sortMode === 'name_asc') {
+          if (nameA < nameB) return -1;
+          if (nameA > nameB) return 1;
+          return ca - cb;
+        } else if (sortMode === 'created_asc') {
+          return ca - cb;
+        } else { // created_desc
+          return cb - ca;
+        }
+      });
 
       entries.forEach(([id, item]) => {
         const name = item.meta?.name || "未命名角色";
@@ -1028,7 +1892,7 @@
       renderCharList(store);
     }
 
-    /* ========= 必填欄位提醒（不阻止生成） ========= */
+    /* ========= 必填欄位提醒 ========= */
     function validateRequired() {
       const requiredFields = [
         { id: 'charName', label: '姓名' },
@@ -1066,11 +1930,23 @@
     }
 
     /* ========= Prompt token & 果醬計算 ========= */
+    function estimateTextTokens(text) {
+      let total = 0;
+      for (const ch of text) {
+        if (/\s/.test(ch)) continue;
+        if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
+          total += 2;
+        } else {
+          total += 1;
+        }
+      }
+      return total;
+    }
+
     function estimatePromptTokens() {
       const role = (document.getElementById('promptRole').value || "");
       const guide = (document.getElementById('promptGuideline').value || "");
-      // 這裡用「字數 ≒ token」的概念，簡單估算
-      return role.length + guide.length;
+      return estimateTextTokens(role) + estimateTextTokens(guide);
     }
 
     function getSelectedModelBaseCost() {
@@ -1093,8 +1969,14 @@
       let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
       const totalJam = baseCost + extraJams;
 
-      tokenSpan.textContent = `預估 token：${totalTokens}（前 500 token 免費，字數僅供估算參考）`;
-      jamSpan.textContent = `模型基礎花費：${baseCost} 果醬　＋　額外 token 花費：${extraJams} 果醬　＝　預估合計：${totalJam} 果醬`;
+      tokenSpan.textContent =
+        `預估 token：${totalTokens}（超級不負責任估算：` +
+        `粗略把「一個中文字 ≈ 2 token、英文/數字/符號一字元 ≈ 1 token」，` +
+        `實際還是看各模型的 tokenizer，請量力參考就好 🙈）`;
+
+      jamSpan.textContent =
+        `模型基礎花費：約 ${baseCost} 果醬　＋　額外 token 花費：約 ${extraJams} 果醬　` +
+        `⇒ 預估合計：約 ${totalJam} 果醬（純估算，實際以平台計價為準）`;
     }
 
     /* ========= Markdown 生成 ========= */
@@ -1139,7 +2021,6 @@
 
       let md = [];
 
-      // 角色資訊
       md.push(`【角色資訊】\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (category) md.push(`- 分類：${category}`);
@@ -1166,26 +2047,22 @@
 
       md.push("");
 
-      // 基本資訊
       md.push(`【基本資訊】`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
-      // 性格
       md.push(`【性格】`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
-      // 說話風格與習慣
       md.push(`【說話風格與習慣】`);
       md.push(speech || "（尚未填寫）");
       md.push("");
 
-      // 模型與 Prompt
       if (modelValue || promptRole || promptGuideline) {
         md.push(`【模型與 Prompt 設定】`);
         if (modelLabel) md.push(`- 模型：${modelLabel}`);
-        md.push(`- 預估 token：${promptTokens}（前 500 token 免費，字數估算僅供參考）`);
+        md.push(`- 預估 token：${promptTokens}（內部以「中文字≈2、其他字元≈1」粗估，實際依平台為準）`);
         if (promptRole) {
           md.push(`- Role：`);
           md.push(promptRole);
@@ -1197,21 +2074,18 @@
         md.push("");
       }
 
-      // 第一次聊天場景
       if (firstScene) {
         md.push(`【第一次聊天場景】`);
         md.push(firstScene);
         md.push("");
       }
 
-      // 角色對話
       if (sampleDialogue) {
         md.push(`【角色對話】`);
         md.push(sampleDialogue);
         md.push("");
       }
 
-      // 喜好
       if (likes || dislikes) {
         md.push(`【喜好】`);
         if (likes) md.push(`- 喜歡：${likes}`);
@@ -1221,30 +2095,48 @@
 
       // 附加資訊
       md.push(`【附加資訊】`);
-      const extras = document.querySelectorAll(".extra-field");
-      if (extras.length === 0) {
+      const extraBlocks = document.querySelectorAll(".extra-block");
+      if (extraBlocks.length === 0) {
         md.push("- （尚未填寫）\n");
       } else {
-        extras.forEach((el, idx) => {
-          const txt = limitText(el.value, 500);
-          if (!txt) return;
+        extraBlocks.forEach((block, idx) => {
+          const titleEl = block.querySelector(".extra-title-field");
+          const textEl = block.querySelector(".extra-field");
+          const title = titleEl ? limitText(titleEl.value, 50) : "";
+          const txt = textEl ? limitText(textEl.value, 500) : "";
+          if (!title && !txt) return;
+
           md.push(`［附加資訊 ${idx + 1}］`);
-          md.push(txt);
+          if (title) {
+            md.push(`- 標題：${title}`);
+          }
+          if (txt) {
+            md.push(txt);
+          }
           md.push("");
         });
       }
 
       // 創作者事件
       md.push(`【創作者事件】`);
-      const events = document.querySelectorAll(".event-field");
-      if (events.length === 0) {
+      const eventBlocks = document.querySelectorAll(".event-block");
+      if (eventBlocks.length === 0) {
         md.push("- （尚未填寫）\n");
       } else {
-        events.forEach((el, idx) => {
-          const txt = limitText(el.value, 2000);
-          if (!txt) return;
+        eventBlocks.forEach((block, idx) => {
+          const titleEl = block.querySelector(".event-title-field");
+          const textEl = block.querySelector(".event-field");
+          const title = titleEl ? limitText(titleEl.value, 50) : "";
+          const txt = textEl ? limitText(textEl.value, 2000) : "";
+          if (!title && !txt) return;
+
           md.push(`［創作者事件 ${idx + 1}］`);
-          md.push(txt);
+          if (title) {
+            md.push(`- 標題：${title}`);
+          }
+          if (txt) {
+            md.push(txt);
+          }
           md.push("");
         });
       }
@@ -1252,14 +2144,13 @@
       document.getElementById('output').textContent = md.join("\n");
     }
 
-    /* ========= Markdown 解析成表單 ========= */
+    /* ========= Markdown 解析 ========= */
     function readBlockUntilHeading(lines, startIndex) {
       let i = startIndex;
       const buf = [];
       while (i < lines.length) {
         const t = lines[i];
         const trimmed = t.trim();
-        // 新格式：遇到「【」「［」都視為下一段開頭
         if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("［")) break;
         buf.push(t);
         i++;
@@ -1274,8 +2165,8 @@
       clearForm();
 
       const lines = md.split(/\r?\n/);
-      const extrasTexts = [];
-      const eventsTexts = [];
+      const extrasData = [];
+      const eventsData = [];
 
       for (let i = 0; i < lines.length; i++) {
         const raw = lines[i];
@@ -1316,7 +2207,6 @@
           i = res.nextIndex;
         }
 
-        // 基本資訊 / 性格 / 說話風格
         else if (line === "【基本資訊】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
@@ -1331,7 +2221,6 @@
           i = res.nextIndex;
         }
 
-        // 模型與 Prompt
         else if (line === "【模型與 Prompt 設定】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1349,22 +2238,21 @@
                 }
               }
             } else if (t.startsWith("- 預估 token")) {
-              // 忽略，不需要還原
+              // 忽略
             } else if (t.startsWith("- Role：")) {
-              const res = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptRole').value = res.text;
-              j = res.nextIndex;
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptRole').value = res2.text;
+              j = res2.nextIndex;
             } else if (t.startsWith("- Response Guideline：")) {
-              const res = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptGuideline').value = res.text;
-              j = res.nextIndex;
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptGuideline').value = res2.text;
+              j = res2.nextIndex;
             }
             j++;
           }
           i = j - 1;
         }
 
-        // 第一次聊天場景 / 角色對話
         else if (line === "【第一次聊天場景】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
@@ -1375,7 +2263,6 @@
           i = res.nextIndex;
         }
 
-        // 喜好
         else if (line === "【喜好】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1391,39 +2278,72 @@
           i = j - 1;
         }
 
-        // 附加資訊
         else if (line.startsWith("［附加資訊 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
-          if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
+          if (res.text && res.text !== "（尚未填寫）") {
+            let title = "";
+            let body = res.text;
+
+            const parts = res.text.split(/\r?\n/);
+            if (parts.length > 0) {
+              const first = parts[0].trim();
+              if (first.startsWith("- 標題：")) {
+                title = first.replace("- 標題：", "").trim();
+                body = parts.slice(1).join("\n").trim();
+              }
+            }
+            extrasData.push({ title, text: body });
+          }
           i = res.nextIndex;
-        }
-        // 創作者事件
-        else if (line.startsWith("［創作者事件 ")) {
+        } else if (line.startsWith("［創作者事件 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
-          if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
+          if (res.text && res.text !== "（尚未填寫）") {
+            let title = "";
+            let body = res.text;
+
+            const parts = res.text.split(/\r?\n/);
+            if (parts.length > 0) {
+              const first = parts[0].trim();
+              if (first.startsWith("- 標題：")) {
+                title = first.replace("- 標題：", "").trim();
+                body = parts.slice(1).join("\n").trim();
+              }
+            }
+            eventsData.push({ title, text: body });
+          }
           i = res.nextIndex;
         }
       }
 
-      if (extrasTexts.length > 0) {
-        extrasTexts.forEach(txt => {
+      if (extrasData.length > 0) {
+        extrasData.forEach(item => {
           addExtra();
-          const els = document.querySelectorAll(".extra-field");
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
+          const blocks = document.querySelectorAll(".extra-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".extra-title-field");
+          const textEl = lastBlock.querySelector(".extra-field");
+          if (titleEl) titleEl.value = item.title || "";
+          if (textEl) textEl.value = item.text || "";
         });
       }
 
-      if (eventsTexts.length > 0) {
-        eventsTexts.forEach(txt => {
+      if (eventsData.length > 0) {
+        eventsData.forEach(item => {
           addEvent();
-          const els = document.querySelectorAll(".event-field");
-          const last = els[els.length - 1];
-          if (last) last.value = txt;
+          const blocks = document.querySelectorAll(".event-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".event-title-field");
+          const textEl = lastBlock.querySelector(".event-field");
+          if (titleEl) titleEl.value = item.title || "";
+          if (textEl) textEl.value = item.text || "";
         });
       }
 
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
       saveCurrentChar();
     }
 
@@ -1469,6 +2389,65 @@
       URL.revokeObjectURL(url);
     }
 
+    function exportAllData() {
+      const store = getStore();
+      const text = JSON.stringify(store, null, 2);
+      const filename = `qing_all_${new Date().toISOString().slice(0,10)}.json`;
+
+      const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importAllData() {
+      const input = document.getElementById('allFile');
+      if (!input.files || !input.files[0]) {
+        alert("請先選擇一個 JSON 檔案喔～");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        try {
+          const content = e.target.result || "";
+          const parsed = JSON.parse(content);
+
+          if (!parsed || typeof parsed !== 'object') {
+            alert("匯入失敗：檔案內容不是有效的 JSON 物件 QQ");
+            return;
+          }
+          if (!parsed.chars || typeof parsed.chars !== 'object') {
+            alert("匯入失敗：看起來缺少 chars 欄位 QQ");
+            return;
+          }
+          if (!parsed.templates) {
+            parsed.templates = initEmptyTemplates();
+          } else {
+            ensureTemplateTypes(parsed.templates);
+          }
+
+          setStore(parsed);
+          loadInitialFromStore();
+
+          alert("匯入完成！已載入全部角色與模板～");
+        } catch (err) {
+          console.error(err);
+          alert("匯入失敗：無法解析這個 JSON 檔案 QQ");
+        }
+      };
+
+      reader.readAsText(file, "utf-8");
+    }
+
     /* ========= 清空單欄 ========= */
     function clearOne(id) {
       const el = document.getElementById(id);
@@ -1478,10 +2457,11 @@
       } else {
         el.value = '';
       }
-      if (id === 'promptRole' || id === 'promptGuideline') {
+      if (id === 'promptRole' || id === 'promptGuideline' || id === 'modelType') {
         updatePromptTokenInfo();
       }
       saveCurrentChar();
+      updateFieldCounter(el);
     }
 
     function clearGender() {
@@ -1500,11 +2480,23 @@
           if (el.id === 'promptRole' || el.id === 'promptGuideline') {
             updatePromptTokenInfo();
           }
+          if (el.tagName === 'TEXTAREA' ||
+              el.type === 'text' ||
+              el.type === 'search' ||
+              el.type === 'date') {
+            updateFieldCounter(el);
+          }
         });
         el.addEventListener('change', () => {
           saveCurrentChar();
           if (el.id === 'promptRole' || el.id === 'promptGuideline' || el.id === 'modelType') {
             updatePromptTokenInfo();
+          }
+          if (el.tagName === 'TEXTAREA' ||
+              el.type === 'text' ||
+              el.type === 'search' ||
+              el.type === 'date') {
+            updateFieldCounter(el);
           }
         });
       });
@@ -1524,6 +2516,9 @@
 
       renderCharList(store);
       updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
+      renderTemplateManager();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1532,5 +2527,6 @@
       loadInitialFromStore();
     });
   </script>
+
 </body>
 </html>
