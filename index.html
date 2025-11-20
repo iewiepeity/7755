@@ -312,10 +312,97 @@
     }
     
     /* 強制排版樣式 */
-    body.layout-mobile .layout-shell { flex-direction: column; }
-    body.layout-mobile .sidebar { width: 100%; flex: 0 0 auto; position: static; margin-bottom: 16px; }
-    body.layout-mobile .sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 5px; }
-    body.layout-mobile .sidebar-nav button { width: auto; white-space: nowrap; }
+/* =========================================
+       手機版排版專用優化 (修正靠左與選單問題)
+       ========================================= */
+    
+    /* 1. 強制手機版模式在電腦上看時，要置中且限制寬度 */
+    body.layout-mobile {
+      max-width: 680px !important; /* 限制寬度，模擬手機/平板 */
+      margin-left: auto !important;
+      margin-right: auto !important;
+      padding: 20px 12px; /* 手機版左右留白小一點 */
+    }
+
+    body.layout-mobile .layout-shell {
+      flex-direction: column;
+    }
+
+    /* 2. 側邊欄在手機版變成頂部導航列 */
+    body.layout-mobile .sidebar {
+      width: 100%;
+      flex: 0 0 auto;
+      position: sticky; /* 讓選單黏在最上面，不用一直往回捲 */
+      top: 10px;
+      z-index: 100;
+      margin-bottom: 16px;
+      padding: 10px;
+      border-radius: 16px;
+      /* 加上一點陰影區隔 */
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    /* 隱藏手機版側邊欄的標題 (節省空間) */
+    body.layout-mobile .sidebar-header, 
+    body.layout-mobile .sidebar-sub,
+    body.layout-mobile .sidebar-toggle-btn {
+      display: none !important; 
+    }
+
+    /* 3. 導航按鈕容器：橫向滑動優化 */
+    body.layout-mobile .sidebar-nav {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;     /* 允許左右滑動 */
+      overflow-y: hidden;
+      gap: 8px;
+      padding: 2px 4px;
+      
+      /* 隱藏捲軸但保留滑動功能 */
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+      
+      /* 讓滑動更順暢 */
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Chrome/Safari 隱藏捲軸 */
+    body.layout-mobile .sidebar-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 4. 導航按鈕：變成膠囊狀 (Pills) */
+    body.layout-mobile .sidebar-nav button {
+      flex: 0 0 auto;       /* 關鍵：不要讓按鈕被壓縮 */
+      width: auto;          /* 寬度隨文字自動撐開 */
+      white-space: nowrap;  /* 文字不換行 */
+      margin: 0;
+      padding: 6px 14px;
+      border-radius: 99px;  /* 圓弧膠囊 */
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid var(--border-color);
+    }
+
+    /* 修正 icon 位置 */
+    body.layout-mobile .sidebar-nav button span.btn-icon {
+      margin-right: 4px;
+    }
+
+    /* 選中或 Hover 的狀態 */
+    body.layout-mobile .sidebar-nav button:hover,
+    body.layout-mobile .sidebar-nav button:active {
+      background: var(--focus-color);
+      color: #fff;
+      border-color: var(--focus-color);
+      transform: translateY(0); /* 手機版不需要浮起動畫 */
+    }
+    
+    /* 手機版內容區塊調整 */
+    body.layout-mobile .section {
+      padding: 16px 16px; /* 縮小內距增加顯示空間 */
+    }
     
     body.layout-desktop .layout-shell { flex-direction: row; }
     body.layout-desktop .sidebar { flex: 0 0 260px; width: 260px; position: sticky; }
