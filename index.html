@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (遊戲版)</title>
+  <title>卿卿我我創角小幫手 (無限物語版)</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
@@ -75,6 +75,7 @@
     body.theme-sky { --page-bg: var(--bg-sky); --focus-color: #6ab0ff; --focus-rgb: var(--focus-rgb-sky); --btn-bg: #6ab0ff; }
     body.theme-lemon { --page-bg: var(--bg-lemon); --focus-color: #facc15; --focus-rgb: var(--focus-rgb-lemon); --btn-bg: #facc15; --btn-text: #5c4e00; }
     body.theme-grey { --page-bg: var(--bg-grey); --focus-color: #8d99ae; --focus-rgb: var(--focus-rgb-grey); --btn-bg: #8d99ae; }
+    
     body.theme-black { 
       --page-bg: var(--bg-black); 
       --card-bg: rgba(39, 39, 42, 0.95);
@@ -218,6 +219,15 @@
     .story-stage-content { display: none; animation: fadeIn 0.3s ease; }
     .story-stage-content.active { display: block; }
     
+    /* 故事卡片樣式 */
+    .story-card {
+      background: rgba(255,255,255,0.6); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 20px;
+      position: relative; transition: var(--transition);
+    }
+    body.theme-black .story-card { background: rgba(0,0,0,0.25); }
+    .story-card:hover { border-color: var(--focus-color); box-shadow: var(--shadow-sm); }
+    .story-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); font-weight: bold; color: var(--focus-color); }
+
     .option-card {
       background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-top: 12px;
       position: relative; transition: var(--transition);
@@ -414,7 +424,11 @@
         <h2><span>🧠 Prompt 優化</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row"><label>使用模型</label></div>
-          <select id="modelType"><option value="gemini-3">Gemini 3</option><option value="claude-sonnet">Claude Sonnet</option><option value="claude-Haiku">Claude Haiku</option></select>
+          <select id="modelType">
+            <option value="gemini-3-pro">Gemini 3 Pro</option>
+            <option value="claude-sonnet-4-5">Claude Sonnet 4.5</option>
+            <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+          </select>
           <div class="label-row" style="margin-top:16px;"><label>System Role</label></div>
           <textarea id="promptRole" placeholder="系統指令..."></textarea>
           <div class="label-row"><label>Response Guideline</label></div>
@@ -431,13 +445,13 @@
         <div class="section-body">
           <!-- 1. 基本資訊 -->
           <h3 style="font-size:1rem; border-left:4px solid var(--focus-color); padding-left:10px; margin-bottom:16px;">1. 遊戲介紹</h3>
-          <div class="label-row"><label>遊戲標題 (30字)</label></div>
-          <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入遊戲標題..." oninput="saveCurrentChar()" />
+          <div class="label-row"><label>角色標題 (30字)</label></div>
+          <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入能夠介紹角色的標題..." oninput="saveCurrentChar()" />
           <div class="label-row"><label>遊戲介紹 (30字)</label></div>
           <textarea id="gameIntro" data-maxlength="30" style="min-height:60px;" placeholder="簡短介紹..." oninput="saveCurrentChar()"></textarea>
 
           <!-- 2. 私密物語 -->
-          <h3 style="font-size:1rem; border-left:4px solid var(--focus-color); padding-left:10px; margin:30px 0 16px 0;">2. 私密物語</h3>
+          <h3 style="font-size:1rem; border-left:4px solid var(--focus-color); padding-left:10px; margin:30px 0 16px 0;">2. 私密物語 (無限新增)</h3>
           
           <!-- 階段切換 Tabs -->
           <div class="tabs-header">
@@ -448,7 +462,7 @@
             <button type="button" class="tab-btn" onclick="switchStoryTab(4)">結婚</button>
           </div>
 
-          <!-- 故事編輯區塊 (5個對應) -->
+          <!-- 故事編輯區塊 -->
           <div id="story-container">
             <!-- JS 會動態生成 5 個階段的編輯器 -->
           </div>
@@ -545,7 +559,7 @@
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v5'; 
+    const STORAGE_KEY = 'qing_char_game_v6_pro'; 
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
     const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
     
@@ -554,8 +568,7 @@
     /* ========= 初始化 ========= */
     window.addEventListener('DOMContentLoaded', () => {
       initLayoutByWidth();
-      // 初始化遊戲故事編輯器 UI
-      initStoryEditors();
+      initStoryEditors(); // 初始化 Tabs 與容器
       loadInitialFromStore();
       setupAutoSave();
       setupFieldUtils();
@@ -569,7 +582,7 @@
       });
     });
 
-    /* ========= 遊戲管理邏輯 ========= */
+    /* ========= 遊戲管理邏輯 (核心更新) ========= */
     function initStoryEditors() {
       const container = document.getElementById('story-container');
       container.innerHTML = '';
@@ -579,27 +592,10 @@
         div.className = `story-stage-content ${idx === 0 ? 'active' : ''}`;
         div.id = `story-stage-${idx}`;
         
+        // 每個 Tab 下面放一個列表容器 + 新增按鈕
         div.innerHTML = `
-          <div class="label-row"><label>解鎖提示語 (60字)</label></div>
-          <input type="text" id="storyHint_${idx}" data-maxlength="60" placeholder="例如：好感度達到20解鎖..." oninput="saveCurrentChar()">
-          
-          <div class="label-row"><label>故事標題 (30字)</label></div>
-          <input type="text" id="storyTitle_${idx}" data-maxlength="30" placeholder="標題..." oninput="saveCurrentChar()">
-          
-          <div class="label-row"><label>故事內容 (2000字)</label></div>
-          <textarea id="storyContent_${idx}" data-maxlength="2000" style="min-height:150px;" placeholder="撰寫劇情..." oninput="saveCurrentChar()"></textarea>
-          
-          <div style="margin-top:16px; padding:12px; background:rgba(0,0,0,0.03); border-radius:12px;">
-             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                <label style="margin:0;">🔀 啟用多重結局</label>
-                <input type="checkbox" id="storyMulti_${idx}" style="width:20px; height:20px; margin:0;" onchange="toggleOptions(${idx}); saveCurrentChar()">
-             </div>
-             
-             <div id="optionsContainer_${idx}" style="display:none; border-top:1px dashed var(--border-color); padding-top:12px; margin-top:8px;">
-                <div id="optionsList_${idx}"></div>
-                <button type="button" class="button-mini" style="margin-top:8px; width:100%;" onclick="addOption(${idx})">＋ 新增選項</button>
-             </div>
-          </div>
+          <div id="storyList_${idx}"></div>
+          <button type="button" class="button-secondary" style="margin-top:16px; width:100%; border-style:dashed;" onclick="addStoryBlock(${idx})">＋ 新增一個「${stage}」故事</button>
         `;
         container.appendChild(div);
       });
@@ -612,35 +608,86 @@
       document.querySelectorAll('.story-stage-content').forEach((d, i) => {
         if(i === idx) d.classList.add('active'); else d.classList.remove('active');
       });
-      // 切換時重新綁定字數統計
-      setupFieldUtils();
     }
-    
-    function toggleOptions(idx) {
-        const chk = document.getElementById(`storyMulti_${idx}`);
-        const con = document.getElementById(`optionsContainer_${idx}`);
+
+    // 新增故事區塊
+    function addStoryBlock(stageIdx, data = null) {
+        const list = document.getElementById(`storyList_${stageIdx}`);
+        const div = document.createElement('div');
+        div.className = 'story-card';
+        
+        const hint = data ? data.hint : '';
+        const title = data ? data.title : '';
+        const content = data ? data.content : '';
+        const isMulti = data ? data.multiEnding : false;
+        const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9);
+
+        div.innerHTML = `
+          <div class="story-card-header">
+             <span>故事設定</span>
+             <button type="button" class="button-mini" style="color:red; border-color:red;" onclick="if(confirm('確定刪除此故事？')) { this.closest('.story-card').remove(); saveCurrentChar(); }">刪除</button>
+          </div>
+
+          <div class="label-row"><label>解鎖提示語 (60字)</label></div>
+          <input type="text" class="story-hint" data-maxlength="60" value="${hint}" placeholder="例如：好感度達到20解鎖..." oninput="saveCurrentChar()">
+          
+          <div class="label-row"><label>故事標題 (30字)</label></div>
+          <input type="text" class="story-title" data-maxlength="30" value="${title}" placeholder="標題..." oninput="saveCurrentChar()">
+          
+          <div class="label-row"><label>故事內容 (2000字)</label></div>
+          <textarea class="story-content" data-maxlength="2000" style="min-height:150px;" placeholder="撰寫劇情..." oninput="saveCurrentChar()">${content}</textarea>
+          
+          <div style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.03); border-radius:12px;">
+             <div style="display:flex; align-items:center; justify-content:space-between;">
+                <label style="margin:0; font-size:0.9rem;">🔀 啟用多重結局選項</label>
+                <input type="checkbox" class="story-multi-check" id="chk_${uniqueId}" style="width:20px; height:20px; margin:0;" onchange="toggleOptionsContainer('${uniqueId}'); saveCurrentChar()">
+             </div>
+             
+             <div id="optCon_${uniqueId}" style="display:none; border-top:1px dashed var(--border-color); padding-top:12px; margin-top:8px;">
+                <div class="options-list"></div>
+                <button type="button" class="button-mini" style="margin-top:8px;" onclick="addOptionToStory(this)">＋ 新增選項</button>
+             </div>
+          </div>
+        `;
+        
+        list.appendChild(div);
+        
+        // 狀態復原
+        const checkbox = div.querySelector(`#chk_${uniqueId}`);
+        checkbox.checked = isMulti;
+        toggleOptionsContainer(uniqueId);
+
+        // 選項復原
+        if(data && data.options) {
+            const optList = div.querySelector('.options-list');
+            data.options.forEach(opt => addOptionToStory(null, optList, opt));
+        }
+
+        setupFieldUtils(div); // 綁定字數
+        saveCurrentChar();
+    }
+
+    function toggleOptionsContainer(uid) {
+        const chk = document.getElementById(`chk_${uid}`);
+        const con = document.getElementById(`optCon_${uid}`);
         con.style.display = chk.checked ? 'block' : 'none';
     }
-    
-    function addOption(stageIdx, data = null) {
-       const list = document.getElementById(`optionsList_${stageIdx}`);
+
+    function addOptionToStory(btn, containerRef = null, data = null) {
+       const list = containerRef || btn.previousElementSibling;
        const optDiv = document.createElement('div');
        optDiv.className = 'option-card';
-       const id = Date.now();
        
        const text = data ? data.text : '';
        const content = data ? data.content : '';
        const score = data ? data.score : 0;
 
        optDiv.innerHTML = `
-          <div class="option-header">選項設定 <span style="cursor:pointer; color:red;" onclick="this.parentElement.parentElement.remove(); saveCurrentChar()">刪除</span></div>
-          
+          <div class="option-header">選項 <span style="cursor:pointer; color:red;" onclick="this.closest('.option-card').remove(); saveCurrentChar()">刪除</span></div>
           <div class="label-row"><label style="font-size:0.8rem">選項文字 (100字)</label></div>
           <input type="text" class="opt-text" value="${text}" data-maxlength="100" placeholder="玩家看到的選項..." oninput="saveCurrentChar()">
-          
           <div class="label-row"><label style="font-size:0.8rem">顯示內容 (500字)</label></div>
           <textarea class="opt-content" data-maxlength="500" style="min-height:60px;" placeholder="選了之後發生的事..." oninput="saveCurrentChar()">${content}</textarea>
-          
           <div class="label-row" style="margin-bottom:0; align-items:center;">
              <label style="font-size:0.8rem">好感度增減 (-20 ~ +20)</label>
              <input type="number" class="opt-score" value="${score}" min="-20" max="20" style="width:80px;" oninput="saveCurrentChar()">
@@ -694,7 +741,7 @@
        
        const data = { fields: {}, extras: [], events: [], game: {} };
        // 1. 一般欄位
-       document.querySelectorAll('input:not(.tags-input):not([class*="opt-"]):not([id*="story"]), textarea:not([class*="opt-"]):not([id*="story"]), select').forEach(el => {
+       document.querySelectorAll('input:not(.tags-input):not([class*="opt-"]):not([class*="story-"]), textarea:not([class*="opt-"]):not([class*="story-"]), select').forEach(el => {
            if(el.id) data.fields[el.id] = el.value;
        });
        data.fields['charTags'] = document.getElementById('charTags').value;
@@ -709,30 +756,35 @@
            intro: document.getElementById('gameIntro').value,
            ageRating: document.getElementById('gameAgeRating').value,
            publicSetting: document.getElementById('gamePublicSetting').value,
-           stories: []
+           stories: [] // 這裡會變成扁平陣列，或者分組
        };
        
        STORY_STAGES.forEach((stage, idx) => {
-           const storyData = {
-               stage: stage,
-               hint: document.getElementById(`storyHint_${idx}`).value,
-               title: document.getElementById(`storyTitle_${idx}`).value,
-               content: document.getElementById(`storyContent_${idx}`).value,
-               multiEnding: document.getElementById(`storyMulti_${idx}`).checked,
-               options: []
-           };
+           const list = document.getElementById(`storyList_${idx}`);
+           const cards = list.querySelectorAll('.story-card');
            
-           if(storyData.multiEnding) {
-               const optCards = document.getElementById(`optionsList_${idx}`).querySelectorAll('.option-card');
-               optCards.forEach(card => {
-                   storyData.options.push({
-                       text: card.querySelector('.opt-text').value,
-                       content: card.querySelector('.opt-content').value,
-                       score: card.querySelector('.opt-score').value
+           cards.forEach(card => {
+               const storyData = {
+                   stage: stage, // 紀錄屬於哪個階段
+                   stageIdx: idx,
+                   hint: card.querySelector('.story-hint').value,
+                   title: card.querySelector('.story-title').value,
+                   content: card.querySelector('.story-content').value,
+                   multiEnding: card.querySelector('.story-multi-check').checked,
+                   options: []
+               };
+               
+               if(storyData.multiEnding) {
+                   card.querySelectorAll('.option-card').forEach(opt => {
+                       storyData.options.push({
+                           text: opt.querySelector('.opt-text').value,
+                           content: opt.querySelector('.opt-content').value,
+                           score: opt.querySelector('.opt-score').value
+                       });
                    });
-               });
-           }
-           data.game.stories.push(storyData);
+               }
+               data.game.stories.push(storyData);
+           });
        });
 
        store.chars[id] = { meta: { name: data.fields.charName || "未命名", createdAt: Date.now() }, data: data };
@@ -762,39 +814,32 @@
         if(data.extras) data.extras.forEach(ex => addExtraWithVal(ex.title, ex.text));
         if(data.events) data.events.forEach(ev => addEventWithVal(ev.title, ev.text));
         
-        // 遊戲管理資料回填
+        // 遊戲管理回填
         if(data.game) {
             if(document.getElementById('gameTitle')) document.getElementById('gameTitle').value = data.game.title || '';
             if(document.getElementById('gameIntro')) document.getElementById('gameIntro').value = data.game.intro || '';
             if(document.getElementById('gameAgeRating')) document.getElementById('gameAgeRating').value = data.game.ageRating || 'all';
             if(document.getElementById('gamePublicSetting')) document.getElementById('gamePublicSetting').value = data.game.publicSetting || 'free';
             
+            // 清空所有故事列表
+            STORY_STAGES.forEach((_, idx) => document.getElementById(`storyList_${idx}`).innerHTML = '');
+            
+            // 填入故事
             if(data.game.stories && Array.isArray(data.game.stories)) {
-                data.game.stories.forEach((s, idx) => {
-                    if(idx >= 5) return;
-                    document.getElementById(`storyHint_${idx}`).value = s.hint || '';
-                    document.getElementById(`storyTitle_${idx}`).value = s.title || '';
-                    document.getElementById(`storyContent_${idx}`).value = s.content || '';
-                    document.getElementById(`storyMulti_${idx}`).checked = s.multiEnding || false;
-                    toggleOptions(idx);
+                data.game.stories.forEach(s => {
+                    // 相容舊版資料 (如果沒有 stageIdx，嘗試用 stage 名字找，或預設 0)
+                    let idx = s.stageIdx;
+                    if(idx === undefined) idx = STORY_STAGES.indexOf(s.stage);
+                    if(idx === -1) idx = 0;
                     
-                    const list = document.getElementById(`optionsList_${idx}`);
-                    list.innerHTML = ''; // 先清空
-                    if(s.options) s.options.forEach(opt => addOption(idx, opt));
+                    addStoryBlock(idx, s);
                 });
             }
         } else {
-            // 清空遊戲欄位
+            // 清空
             document.getElementById('gameTitle').value = '';
             document.getElementById('gameIntro').value = '';
-            STORY_STAGES.forEach((_, idx) => {
-               document.getElementById(`storyHint_${idx}`).value = '';
-               document.getElementById(`storyTitle_${idx}`).value = '';
-               document.getElementById(`storyContent_${idx}`).value = '';
-               document.getElementById(`storyMulti_${idx}`).checked = false;
-               document.getElementById(`optionsList_${idx}`).innerHTML = '';
-               toggleOptions(idx);
-            });
+            STORY_STAGES.forEach((_, idx) => document.getElementById(`storyList_${idx}`).innerHTML = '');
         }
 
         initTagInput(); updateChatPreview(); updateProgress(); updatePromptTokenInfo();
@@ -828,21 +873,31 @@
       // 遊戲資料輸出
       if(game && game.title) {
           md += `\n---\n# 遊戲腳本設定\n\n`;
-          md += `## 遊戲資訊\n- 標題：${game.title}\n- 介紹：${game.intro}\n- 等級：${game.ageRating}\n- 價格：${game.publicSetting}\n\n`;
+          md += `## 角色資訊\n- 標題：${game.title}\n- 介紹：${game.intro}\n- 等級：${game.ageRating}\n- 價格：${game.publicSetting}\n\n`;
           
-          if(game.stories) {
+          if(game.stories && game.stories.length > 0) {
               md += `## 私密物語腳本\n`;
-              game.stories.forEach((s) => {
-                  if(!s.title && !s.content) return;
-                  md += `### [${s.stage}] ${s.title}\n`;
-                  md += `> 解鎖提示：${s.hint}\n\n`;
-                  md += `${s.content}\n\n`;
-                  if(s.multiEnding && s.options.length) {
-                      md += `**多重結局選項：**\n`;
-                      s.options.forEach((opt, k) => {
-                          md += `- 選項 ${k+1}：${opt.text} (好感 ${opt.score>0?'+':''}${opt.score})\n  回應：${opt.content}\n`;
+              // 為了美觀，稍微分組一下
+              const grouped = {};
+              STORY_STAGES.forEach(s => grouped[s] = []);
+              game.stories.forEach(s => { if(grouped[s.stage]) grouped[s.stage].push(s); });
+
+              STORY_STAGES.forEach(stage => {
+                  if(grouped[stage] && grouped[stage].length > 0) {
+                      md += `### 【${stage}】\n`;
+                      grouped[stage].forEach((s, i) => {
+                          md += `#### ${i+1}. ${s.title || '未命名故事'}\n`;
+                          md += `> 解鎖提示：${s.hint}\n\n`;
+                          md += `${s.content}\n\n`;
+                          if(s.multiEnding && s.options.length) {
+                              md += `**多重結局選項：**\n`;
+                              s.options.forEach((opt, k) => {
+                                  md += `- 選項 ${k+1}：${opt.text} (好感 ${opt.score>0?'+':''}${opt.score})\n  回應：${opt.content}\n`;
+                              });
+                              md += `\n`;
+                          }
+                          md += `---\n\n`;
                       });
-                      md += `\n`;
                   }
               });
           }
