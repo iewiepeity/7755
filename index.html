@@ -104,7 +104,60 @@
       gap: 16px;
       margin-top: 10px;
     }
+/* 側邊欄收合按鈕 */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
 
+.sidebar-toggle-btn {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+body.theme-black .sidebar-toggle-btn {
+  background: #333;
+  color: #ddd;
+  border-color: #666;
+}
+
+/* 收合後的樣式 */
+.sidebar.is-collapsed {
+  width: 40px;
+  min-width: 40px;
+  padding: 8px;
+}
+
+.sidebar.is-collapsed .sidebar-title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.8rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sidebar.is-collapsed .sidebar-sub,
+.sidebar.is-collapsed .sidebar-nav {
+  display: none;
+}
+
+.sidebar.is-collapsed .sidebar-header {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar.is-collapsed .sidebar-toggle-btn {
+  padding: 0 4px;
+  font-size: 0.7rem;
+}
     .sidebar {
       flex: 0 0 190px;
       position: sticky;
@@ -559,8 +612,15 @@
   <div class="layout-shell">
     <!-- 側邊功能選單 -->
     <aside class="sidebar">
-      <div class="sidebar-title">📎 功能選單</div>
-      <div class="sidebar-sub">點一下直接跳到該區塊，會自動幫你展開。</div>
+        <div class="sidebar-header">
+    <div class="sidebar-title">📎 功能選單</div>
+    <button type="button"
+            class="sidebar-toggle-btn"
+            onclick="toggleSidebar()">
+      收合
+    </button>
+  </div>
+  <div class="sidebar-sub">點一下直接跳到該區塊，會自動幫你展開。</div>
       <div class="sidebar-nav">
         <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-archive')">📂 角色存檔管理</button>
         <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-info')">💁‍♀️ 角色資訊</button>
@@ -1042,7 +1102,17 @@
         setLayout('desktop');
       }
     }
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  if (!sb) return;
+  sb.classList.toggle('is-collapsed');
 
+  // 順便改一下按鈕文字
+  const btn = sb.querySelector('.sidebar-toggle-btn');
+  if (btn) {
+    btn.textContent = sb.classList.contains('is-collapsed') ? '展開' : '收合';
+  }
+}
     /* ========= 側邊欄捲動 & 區塊收合 ========= */
     function scrollToSection(sectionId) {
       const sec = document.getElementById(sectionId);
