@@ -129,35 +129,7 @@ body.theme-black .sidebar-toggle-btn {
 }
 
 /* 收合後的樣式 */
-.sidebar.is-collapsed {
-  width: 40px;
-  min-width: 40px;
-  padding: 8px;
-}
 
-.sidebar.is-collapsed .sidebar-title {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 0.8rem;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.sidebar.is-collapsed .sidebar-sub,
-.sidebar.is-collapsed .sidebar-nav {
-  display: none;
-}
-
-.sidebar.is-collapsed .sidebar-header {
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.sidebar.is-collapsed .sidebar-toggle-btn {
-  padding: 0 4px;
-  font-size: 0.7rem;
-}
     .sidebar {
   flex: 0 0 auto;          /* ✅ 讓寬度跟著 width 走 */
   width: 240px;            /* 預設寬度 */
@@ -172,7 +144,8 @@ body.theme-black .sidebar-toggle-btn {
   box-shadow: 0 4px 10px rgba(255, 160, 195, 0.3);
   backdrop-filter: blur(4px);
   transition: width 0.25s ease;  /* 順便加在這裡 */
-}
+transition: width 0.25s ease, padding 0.25s ease;
+    }
 
     body.theme-black .sidebar {
       background: rgba(36,36,36,0.96);
@@ -580,12 +553,6 @@ body.theme-black .sidebar-toggle-btn {
       margin-bottom: 2px;
     }
 
-/* 右側主要內容 */
-.main-content {
-  flex: 1;
-  min-width: 0;
-}
-
 /* 收合狀態：左欄變窄 */
 .sidebar.is-collapsed {
   width: 48px;
@@ -594,14 +561,23 @@ body.theme-black .sidebar-toggle-btn {
   padding: 6px;
 }
 
-/* 收合時只顯示標題（變直向文字） */
+/* header 直向排版 */
+.sidebar.is-collapsed .sidebar-header {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 只顯示直立標題 */
 .sidebar.is-collapsed .sidebar-title {
   writing-mode: vertical-rl;
   text-orientation: upright;
   font-size: 0.85rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
-/* 收合時隱藏其他元素 */
+/* 隱藏副標＆導航 */
 .sidebar.is-collapsed .sidebar-sub,
 .sidebar.is-collapsed .sidebar-nav {
   display: none;
