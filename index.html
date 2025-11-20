@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>卿卿我我創角小幫手</title>
   <!-- 文藝風字體：Noto Serif TC（標題）、Noto Sans TC（內文） -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
       /* 背景色 */
@@ -49,14 +49,15 @@
     body {
       max-width: 960px;
       margin: 24px auto 40px;
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", 
-               system-ui, -apple-system, sans-serif;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+        system-ui, -apple-system, sans-serif;
       line-height: 1.6;
       color: var(--text-main);
       padding: 0 12px;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      transition: background-color 0.25s ease, color 0.25s ease, max-width 0.25s ease, font-size 0.25s ease;
     }
 
+    /* 主題色 */
     body.theme-pink { background-color: var(--bg-pink); }
     body.theme-cream { background-color: var(--bg-cream); }
     body.theme-mint { background-color: var(--bg-mint); }
@@ -65,25 +66,57 @@
     body.theme-lemon { background-color: var(--bg-lemon); }
     body.theme-grey { background-color: var(--bg-grey); }
     body.theme-black { background-color: var(--bg-black); color: #f5f5f5; }
-/* 說明文字統一風格 */
-.tagline,
-.sub-label,
-label {
-  font-family: "Noto Serif TC", serif;
-  font-weight: 400;
-}
+
+    /* 版面：電腦 / 手機 */
+    body.layout-desktop {
+      max-width: 960px;
+      font-size: 1rem;
+    }
+
+    body.layout-mobile {
+      max-width: 600px;
+      font-size: 0.9rem;
+    }
+
+    body.layout-mobile h1 {
+      font-size: 1.4rem;
+    }
+
+    body.layout-mobile h2 {
+      font-size: 1rem;
+    }
+
+    body.layout-mobile .section {
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    body.layout-mobile .top-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    /* 說明文字統一風格 */
+    .tagline,
+    .sub-label,
+    label {
+      font-family: "Noto Serif TC", serif;
+      font-weight: 400;
+    }
+
     h1 {
       margin-bottom: 0.25rem;
       font-size: 1.8rem;
-        font-family: "Noto Serif TC", serif;
-  letter-spacing: 0.5px;
+      font-family: "Noto Serif TC", serif;
+      letter-spacing: 0.5px;
     }
 
     h2 {
       margin-bottom: 0.3rem;
       font-size: 1.1rem;
-        font-family: "Noto Serif TC", serif;
-  letter-spacing: 0.5px;
+      font-family: "Noto Serif TC", serif;
+      letter-spacing: 0.5px;
     }
 
     p {
@@ -119,10 +152,12 @@ label {
       font-size: 0.9rem;
       background: #fff;
     }
-.label-row label {
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
+
+    .label-row label {
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
     select {
       width: 100%;
       padding: 8px 10px;
@@ -168,7 +203,7 @@ label {
       border: none;
       color: #fff;
       font-size: 0.9rem;
-       font-family: "Noto Serif TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", serif;
+      font-family: "Noto Serif TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", serif;
 
       display: inline-flex;
       align-items: center;
@@ -327,9 +362,13 @@ label {
       margin-bottom: 8px;
       flex-wrap: wrap;
     }
+
+    .prompt-stats {
+      margin-top: 6px;
+    }
   </style>
 </head>
-<body class="theme-pink">
+<body class="theme-pink layout-desktop">
   <div class="top-bar">
     <div>
       <h1>💕 卿卿我我創角小幫手</h1>
@@ -354,11 +393,12 @@ label {
     ※ 提醒：各欄位內容可自行使用 Markdown（# 標題、- 內容或清單等）撰寫，工具不會改動你寫的格式。
   </p>
   <p class="sub-label">
-    ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。使用localStorage存檔，若手動清除瀏覽資料、使用無痕模式、不同瀏覽器、不同裝置可能導致資料消失。
+    ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。使用 localStorage 存檔，若手動清除瀏覽資料、使用無痕模式、不同瀏覽器、不同裝置可能導致資料消失。
   </p>
   <p class="sub-label">
     ※ 提醒：匯出/匯入功能僅能匯出當下的角色，無法所有角色一起匯出。
   </p>
+
   <!-- 角色存檔管理區 -->
   <div class="section">
     <h2>📂 角色存檔管理</h2>
@@ -405,25 +445,25 @@ label {
       <label>年齡（必填，15字內）：</label>
       <button type="button" class="button-mini" onclick="clearOne('charAge')">清空</button>
     </div>
-    <input id="charAge" type="text" />
+    <input id="charAge" type="text" data-maxlength="15" />
 
     <div class="label-row">
       <label>職業（必填，15字內）：</label>
       <button type="button" class="button-mini" onclick="clearOne('charJob')">清空</button>
     </div>
-    <input id="charJob" type="text" />
+    <input id="charJob" type="text" data-maxlength="15" />
 
     <div class="label-row">
       <label>來自角色的一句話（必填，80字內）：</label>
       <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
     </div>
-    <textarea id="charQuote" style="min-height:60px;"></textarea>
+    <textarea id="charQuote" style="min-height:60px;" data-maxlength="80"></textarea>
 
     <div class="label-row">
       <label>敘述（選填，700字內）：</label>
       <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
     </div>
-    <textarea id="charDesc"></textarea>
+    <textarea id="charDesc" data-maxlength="700"></textarea>
 
     <div class="label-row">
       <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label>
@@ -435,7 +475,7 @@ label {
       <label>創作者筆記（選填，200字）：</label>
       <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
     </div>
-    <textarea id="creatorNote" style="min-height:70px;"></textarea>
+    <textarea id="creatorNote" style="min-height:70px;" data-maxlength="200"></textarea>
   </div>
 
   <div class="section">
@@ -457,7 +497,7 @@ label {
       <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
       <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
     </div>
-    <textarea id="basicInfo"></textarea>
+    <textarea id="basicInfo" data-maxlength="700"></textarea>
   </div>
 
   <div class="section">
@@ -466,7 +506,7 @@ label {
       <span class="sub-label">可描述角色性格。</span>
       <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
     </div>
-    <textarea id="personality"></textarea>
+    <textarea id="personality" data-maxlength="700"></textarea>
   </div>
 
   <div class="section">
@@ -475,7 +515,38 @@ label {
       <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
       <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
     </div>
-    <textarea id="speechStyle"></textarea>
+    <textarea id="speechStyle" data-maxlength="700"></textarea>
+  </div>
+
+  <!-- 新增：模型與 Prompt 設定 -->
+  <div class="section">
+    <h2>🧠 模型與 Prompt 設定</h2>
+
+    <div class="label-row">
+      <label>使用模型：</label>
+    </div>
+    <select id="modelType" onchange="updatePromptTokenInfo(); saveCurrentChar();">
+      <option value="claude-haiku" data-basecost="5">Claude Haiku（起價 5 果醬）</option>
+      <option value="claude-sonnet" data-basecost="15">Claude Sonnet（起價 15 果醬）</option>
+      <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
+    </select>
+
+    <div class="label-row" style="margin-top:8px;">
+      <label>Role（系統提示）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
+    </div>
+    <textarea id="promptRole" data-maxlength="2000" placeholder="例如：你是一位只對玩家溫柔、會主動帶話題的戀愛角色……"></textarea>
+
+    <div class="label-row">
+      <label>Response Guideline（回應規則）：</label>
+      <button type="button" class="button-mini" onclick="clearOne('promptGuideline')">清空</button>
+    </div>
+    <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI、每次回覆控制在……"></textarea>
+
+    <div class="prompt-stats">
+      <div id="promptTokenInfo" class="sub-label"></div>
+      <div id="promptJamInfo" class="sub-label"></div>
+    </div>
   </div>
 
   <div class="section">
@@ -488,13 +559,13 @@ label {
     <div class="sub-label">
       設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
     </div>
-    <textarea id="firstScene"></textarea>
+    <textarea id="firstScene" data-maxlength="800"></textarea>
 
     <div class="label-row">
       <label>角色對話（選填，800字）</label>
       <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
     </div>
-    <textarea id="sampleDialogue"></textarea>
+    <textarea id="sampleDialogue" data-maxlength="800"></textarea>
   </div>
 
   <div class="section">
@@ -504,13 +575,13 @@ label {
       <label>角色喜歡的東西（選填，50字）：</label>
       <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
     </div>
-    <input id="likes" type="text" />
+    <input id="likes" type="text" data-maxlength="50" />
 
     <div class="label-row">
       <label>不喜歡的東西（選填，50字）：</label>
       <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
     </div>
-    <input id="dislikes" type="text" />
+    <input id="dislikes" type="text" data-maxlength="50" />
 
     <div class="label-row">
       <label>生日（選填，西元日期）：</label>
@@ -552,6 +623,14 @@ label {
   <h2>📝 輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
 
+  <!-- 版面切換 -->
+  <div class="section">
+    <h2>📱 版面切換</h2>
+    <p class="sub-label">如果在手機上覺得排版太擠，可以切換成手機版；在電腦上想窄版閱讀也可以強制手機版。</p>
+    <button type="button" onclick="setLayout('desktop')">💻 電腦版排版</button>
+    <button type="button" onclick="setLayout('mobile')">📱 手機版排版</button>
+  </div>
+
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
@@ -560,8 +639,27 @@ label {
     /* ========= 主題切換 ========= */
     function changeTheme(theme) {
       const body = document.body;
-      body.className = "";
+      body.classList.remove(
+        'theme-pink','theme-cream','theme-mint',
+        'theme-lavender','theme-sky','theme-lemon',
+        'theme-grey','theme-black'
+      );
       body.classList.add(`theme-${theme}`);
+    }
+
+    /* ========= 版面切換 ========= */
+    function setLayout(mode) {
+      const body = document.body;
+      body.classList.remove('layout-desktop','layout-mobile');
+      body.classList.add(`layout-${mode}`);
+    }
+
+    function initLayoutByWidth() {
+      if (window.innerWidth <= 640) {
+        setLayout('mobile');
+      } else {
+        setLayout('desktop');
+      }
     }
 
     /* ========= 工具 ========= */
@@ -650,6 +748,7 @@ label {
 
       const textarea = document.createElement("textarea");
       textarea.className = "extra-field";
+      textarea.dataset.maxlength = "500";
       textarea.addEventListener('input', saveCurrentChar);
 
       block.appendChild(labelRow);
@@ -692,6 +791,7 @@ label {
 
       const textarea = document.createElement("textarea");
       textarea.className = "event-field";
+      textarea.dataset.maxlength = "2000";
       textarea.addEventListener('input', saveCurrentChar);
 
       block.appendChild(labelRow);
@@ -707,7 +807,8 @@ label {
       const fieldIds = [
         'charName','charCategory','charAge','charJob','charQuote','charDesc',
         'charTags','creatorNote','basicInfo','personality','speechStyle',
-        'firstScene','sampleDialogue','likes','dislikes','birthday','gender'
+        'firstScene','sampleDialogue','likes','dislikes','birthday','gender',
+        'modelType','promptRole','promptGuideline'
       ];
 
       const data = { fields: {}, extras: [], events: [] };
@@ -736,7 +837,8 @@ label {
       const ids = [
         'charName','charCategory','charAge','charJob','charQuote','charDesc',
         'charTags','creatorNote','basicInfo','personality','speechStyle',
-        'firstScene','sampleDialogue','likes','dislikes','birthday'
+        'firstScene','sampleDialogue','likes','dislikes','birthday',
+        'promptRole','promptGuideline'
       ];
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -746,10 +848,15 @@ label {
       const genderSel = document.getElementById('gender');
       if (genderSel) genderSel.value = '未設置';
 
+      const modelSel = document.getElementById('modelType');
+      if (modelSel) modelSel.value = 'gemini-3';
+
       const extraContainer = document.getElementById('extraContainer');
       const eventContainer = document.getElementById('eventContainer');
       if (extraContainer) extraContainer.innerHTML = "";
       if (eventContainer) eventContainer.innerHTML = "";
+
+      updatePromptTokenInfo();
     }
 
     function fillFormFromData(data) {
@@ -781,6 +888,8 @@ label {
           if (last) last.value = txt;
         });
       }
+
+      updatePromptTokenInfo();
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -836,7 +945,7 @@ label {
       store.currentId = ids.length ? ids[0] : null;
       setStore(store);
 
-      if (store.currentId) {
+      if (store.currentId && store.chars[store.currentId]) {
         const target = store.chars[store.currentId];
         fillFormFromData(target.data);
       } else {
@@ -950,10 +1059,42 @@ label {
 
       if (missing.length > 0) {
         alert("以下欄位為必填，目前尚未填寫：\n" +
-              missing.join("、") +
-              "\n\n仍然會幫你生成 Markdown，但建議補完再用喔～");
+          missing.join("、") +
+          "\n\n仍然會幫你生成 Markdown，但建議補完再用喔～");
       }
       return true;
+    }
+
+    /* ========= Prompt token & 果醬計算 ========= */
+    function estimatePromptTokens() {
+      const role = (document.getElementById('promptRole').value || "");
+      const guide = (document.getElementById('promptGuideline').value || "");
+      // 這裡用「字數 ≒ token」的概念，簡單估算
+      return role.length + guide.length;
+    }
+
+    function getSelectedModelBaseCost() {
+      const sel = document.getElementById('modelType');
+      if (!sel) return 0;
+      const opt = sel.options[sel.selectedIndex];
+      const base = parseInt(opt.dataset.basecost || "0", 10);
+      return isNaN(base) ? 0 : base;
+    }
+
+    function updatePromptTokenInfo() {
+      const tokenSpan = document.getElementById('promptTokenInfo');
+      const jamSpan = document.getElementById('promptJamInfo');
+      if (!tokenSpan || !jamSpan) return;
+
+      const totalTokens = estimatePromptTokens();
+      const baseCost = getSelectedModelBaseCost();
+
+      let extraTokens = Math.max(0, totalTokens - 500);
+      let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
+      const totalJam = baseCost + extraJams;
+
+      tokenSpan.textContent = `預估 token：${totalTokens}（前 500 token 免費，字數僅供估算參考）`;
+      jamSpan.textContent = `模型基礎花費：${baseCost} 果醬　＋　額外 token 花費：${extraJams} 果醬　＝　預估合計：${totalJam} 果醬`;
     }
 
     /* ========= Markdown 生成 ========= */
@@ -980,6 +1121,13 @@ label {
       const likes = limitText(document.getElementById('likes').value, 50);
       const dislikes = limitText(document.getElementById('dislikes').value, 50);
       const birthdayRaw = document.getElementById('birthday').value;
+
+      const modelSel = document.getElementById('modelType');
+      const modelValue = modelSel ? modelSel.value : "";
+      const modelLabel = modelSel ? modelSel.options[modelSel.selectedIndex].textContent : "";
+      const promptRole = document.getElementById('promptRole').value;
+      const promptGuideline = document.getElementById('promptGuideline').value;
+      const promptTokens = estimatePromptTokens();
 
       let birthdayText = birthdayRaw ? birthdayRaw : "";
 
@@ -1018,20 +1166,36 @@ label {
 
       md.push("");
 
-      // 一、基本資訊
+      // 基本資訊
       md.push(`【基本資訊】`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
-      // 二、性格
+      // 性格
       md.push(`【性格】`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
-      // 三、說話風格與習慣
+      // 說話風格與習慣
       md.push(`【說話風格與習慣】`);
       md.push(speech || "（尚未填寫）");
       md.push("");
+
+      // 模型與 Prompt
+      if (modelValue || promptRole || promptGuideline) {
+        md.push(`【模型與 Prompt 設定】`);
+        if (modelLabel) md.push(`- 模型：${modelLabel}`);
+        md.push(`- 預估 token：${promptTokens}（前 500 token 免費，字數估算僅供參考）`);
+        if (promptRole) {
+          md.push(`- Role：`);
+          md.push(promptRole);
+        }
+        if (promptGuideline) {
+          md.push(`- Response Guideline：`);
+          md.push(promptGuideline);
+        }
+        md.push("");
+      }
 
       // 第一次聊天場景
       if (firstScene) {
@@ -1095,7 +1259,8 @@ label {
       while (i < lines.length) {
         const t = lines[i];
         const trimmed = t.trim();
-        if (trimmed.startsWith("#")) break;
+        // 新格式：遇到「【」「［」都視為下一段開頭
+        if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("［")) break;
         buf.push(t);
         i++;
       }
@@ -1151,6 +1316,7 @@ label {
           i = res.nextIndex;
         }
 
+        // 基本資訊 / 性格 / 說話風格
         else if (line === "【基本資訊】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
@@ -1165,6 +1331,40 @@ label {
           i = res.nextIndex;
         }
 
+        // 模型與 Prompt
+        else if (line === "【模型與 Prompt 設定】") {
+          let j = i + 1;
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith("【")) break;
+            if (t.startsWith("- 模型：")) {
+              const label = t.replace("- 模型：", "").trim();
+              const sel = document.getElementById('modelType');
+              if (sel) {
+                for (let k = 0; k < sel.options.length; k++) {
+                  if (sel.options[k].textContent.indexOf(label) !== -1) {
+                    sel.value = sel.options[k].value;
+                    break;
+                  }
+                }
+              }
+            } else if (t.startsWith("- 預估 token")) {
+              // 忽略，不需要還原
+            } else if (t.startsWith("- Role：")) {
+              const res = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptRole').value = res.text;
+              j = res.nextIndex;
+            } else if (t.startsWith("- Response Guideline：")) {
+              const res = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptGuideline').value = res.text;
+              j = res.nextIndex;
+            }
+            j++;
+          }
+          i = j - 1;
+        }
+
+        // 第一次聊天場景 / 角色對話
         else if (line === "【第一次聊天場景】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
@@ -1175,11 +1375,12 @@ label {
           i = res.nextIndex;
         }
 
+        // 喜好
         else if (line === "【喜好】") {
           let j = i + 1;
           while (j < lines.length) {
             const t = lines[j].trim();
-            if (t.startsWith("#")) break;
+            if (t.startsWith("【") || t.startsWith("［")) break;
             if (t.startsWith("- 喜歡：")) {
               document.getElementById('likes').value = t.replace("- 喜歡：", "").trim();
             } else if (t.startsWith("- 不喜歡：")) {
@@ -1190,11 +1391,14 @@ label {
           i = j - 1;
         }
 
+        // 附加資訊
         else if (line.startsWith("【附加資訊】 ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
           i = res.nextIndex;
-        } else if (line.startsWith("【創作者事件】 ")) {
+        }
+        // 創作者事件
+        else if (line.startsWith("【創作者事件】] ")) {
           const res = readBlockUntilHeading(lines, i + 1);
           if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
           i = res.nextIndex;
@@ -1219,6 +1423,7 @@ label {
         });
       }
 
+      updatePromptTokenInfo();
       saveCurrentChar();
     }
 
@@ -1273,6 +1478,9 @@ label {
       } else {
         el.value = '';
       }
+      if (id === 'promptRole' || id === 'promptGuideline') {
+        updatePromptTokenInfo();
+      }
       saveCurrentChar();
     }
 
@@ -1287,8 +1495,18 @@ label {
     function setupAutoSave() {
       const els = document.querySelectorAll('input, textarea, select');
       els.forEach(el => {
-        el.addEventListener('input', saveCurrentChar);
-        el.addEventListener('change', saveCurrentChar);
+        el.addEventListener('input', () => {
+          saveCurrentChar();
+          if (el.id === 'promptRole' || el.id === 'promptGuideline') {
+            updatePromptTokenInfo();
+          }
+        });
+        el.addEventListener('change', () => {
+          saveCurrentChar();
+          if (el.id === 'promptRole' || el.id === 'promptGuideline' || el.id === 'modelType') {
+            updatePromptTokenInfo();
+          }
+        });
       });
     }
 
@@ -1305,9 +1523,11 @@ label {
       }
 
       renderCharList(store);
+      updatePromptTokenInfo();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      initLayoutByWidth();
       setupAutoSave();
       loadInitialFromStore();
     });
