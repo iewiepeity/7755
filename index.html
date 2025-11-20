@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (AI生成版)</title>
+  <title>卿卿我我創角小幫手 (AI全能版)</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
@@ -160,7 +160,6 @@
     .story-stage-content { display: none; animation: fadeIn 0.3s ease; }
     .story-stage-content.active { display: block; }
     
-    /* 故事卡片樣式 */
     .story-card {
       background: rgba(255,255,255,0.6); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 20px;
       position: relative; transition: var(--transition);
@@ -214,6 +213,16 @@
     .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4); filter: brightness(1.1); }
     .ai-btn.loading { opacity: 0.7; cursor: wait; }
     .ai-btn.loading::after { content: '...'; animation: blink 1s infinite; }
+    
+    /* 小型的 AI 按鈕，放在標籤旁 */
+    .label-ai-btn {
+        background: transparent; border: 1px solid var(--focus-color); color: var(--focus-color);
+        padding: 2px 8px; font-size: 0.75rem; border-radius: 8px; cursor: pointer;
+        margin-left: 6px; transition: all 0.2s; opacity: 0.8;
+    }
+    .label-ai-btn:hover { background: rgba(var(--focus-rgb), 0.1); opacity: 1; transform: translateY(-1px); }
+    .label-ai-btn.loading { cursor: wait; opacity: 0.5; }
+
     @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
     /* RWD */
@@ -312,7 +321,11 @@
 
       <!-- 角色資訊 -->
       <div class="section" id="sec-info">
-        <h2><span>💁‍♀️ 角色資訊</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button></h2>
+        <h2>
+          <span>💁‍♀️ 角色資訊</span>
+          <button type="button" class="ai-btn" style="font-size:0.8rem; padding:4px 10px;" onclick="aiGenerateProfile()">✨ AI 一鍵生成人設</button>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button>
+        </h2>
         <div class="section-body">
           <div class="label-row"><label>角色名稱 * (15字)</label><button type="button" class="button-mini" onclick="clearOne('charName')">清空</button></div>
           <input id="charName" type="text" data-maxlength="15" placeholder="例如：林月如" oninput="updateChatPreview()" />
@@ -328,10 +341,16 @@
           <div class="label-row"><label>角色分類</label></div>
           <input id="charCategory" type="text" placeholder="現代、奇幻..." />
 
-          <div class="label-row"><label>一句話介紹 * (80字)</label></div>
+          <div class="label-row">
+             <label>一句話介紹 * (80字)</label>
+             <button type="button" class="label-ai-btn" onclick="aiGenerateField('charQuote', '一句話介紹')">✨ AI 生成</button>
+          </div>
           <textarea id="charQuote" data-maxlength="80" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea>
 
-          <div class="label-row"><label>敘述 (700字)</label></div>
+          <div class="label-row">
+             <label>敘述 (700字)</label>
+             <button type="button" class="label-ai-btn" onclick="aiGenerateField('charDesc', '外貌與氣質敘述')">✨ AI 生成</button>
+          </div>
           <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
 
           <div class="label-row"><label>標籤</label></div>
@@ -356,7 +375,10 @@
       <div class="section" id="sec-basic">
         <h2><span>🌏 基本資訊 (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕</button></h2>
         <div class="section-body">
-           <div class="label-row" style="justify-content:flex-end;"><button type="button" class="button-mini" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button></div>
+           <div class="label-row" style="justify-content:flex-end;">
+              <button type="button" class="label-ai-btn" style="margin-right:auto;" onclick="aiGenerateField('basicInfo', '基本資訊(世界觀)')">✨ AI 生成</button>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button>
+          </div>
           <textarea id="basicInfo" data-maxlength="700" placeholder="必填。世界觀、背景故事..."></textarea>
         </div>
       </div>
@@ -364,7 +386,10 @@
       <div class="section" id="sec-personality">
         <h2><span>💗 性格特質 (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
         <div class="section-body">
-          <div class="label-row" style="justify-content:flex-end;"><button type="button" class="button-mini" onclick="saveTemplateFromField('personality','personality')">存為模板</button></div>
+          <div class="label-row" style="justify-content:flex-end;">
+              <button type="button" class="label-ai-btn" style="margin-right:auto;" onclick="aiGenerateField('personality', '性格特質')">✨ AI 生成</button>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('personality','personality')">存為模板</button>
+          </div>
           <textarea id="personality" data-maxlength="700" placeholder="必填。內在性格、對玩家的態度..."></textarea>
         </div>
       </div>
@@ -372,7 +397,10 @@
       <div class="section" id="sec-speech">
         <h2><span>🗣️ 說話風格 (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
         <div class="section-body">
-          <div class="label-row" style="justify-content:flex-end;"><button type="button" class="button-mini" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button></div>
+          <div class="label-row" style="justify-content:flex-end;">
+              <button type="button" class="label-ai-btn" style="margin-right:auto;" onclick="aiGenerateField('speechStyle', '說話風格')">✨ AI 生成</button>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button>
+          </div>
           <textarea id="speechStyle" data-maxlength="700" placeholder="必填。口頭禪、語氣..."></textarea>
         </div>
       </div>
@@ -386,7 +414,10 @@
             <option value="claude-sonnet-4-5">Claude Sonnet 4.5</option>
             <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
           </select>
-          <div class="label-row" style="margin-top:16px;"><label>System Role</label></div>
+          <div class="label-row" style="margin-top:16px;">
+             <label>System Role</label>
+             <button type="button" class="label-ai-btn" onclick="aiGeneratePrompt()">✨ AI 產生指令</button>
+          </div>
           <textarea id="promptRole" placeholder="系統指令..."></textarea>
           <div class="label-row"><label>Response Guideline</label></div>
           <textarea id="promptGuideline" placeholder="回應規則..."></textarea>
@@ -396,7 +427,7 @@
         </div>
       </div>
 
-      <!-- 遊戲管理 (AI版) -->
+      <!-- 遊戲管理 -->
       <div class="section" id="sec-game-mgr">
         <h2><span>🎮 遊戲管理</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-game-mgr')">⇕</button></h2>
         <div class="section-body">
@@ -428,15 +459,25 @@
       <div class="section" id="sec-first">
         <h2><span>🎬 開場與對話 (800字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
         <div class="section-body">
-          <div class="label-row"><label>第一次聊天場景</label></div>
+          <div class="label-row">
+              <label>第一次聊天場景</label>
+              <button type="button" class="label-ai-btn" onclick="aiGenerateField('firstScene', '第一次聊天場景(開場旁白)')">✨ AI 生成</button>
+          </div>
           <textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
-          <div class="label-row"><label>角色對話範例</label></div>
+          <div class="label-row">
+              <label>角色對話範例</label>
+              <button type="button" class="label-ai-btn" onclick="aiGenerateField('sampleDialogue', '角色對話範例')">✨ AI 生成</button>
+          </div>
           <textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
         </div>
       </div>
       
       <div class="section" id="sec-fav">
-        <h2><span>🎀 喜好與生日 (50字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
+        <h2>
+            <span>🎀 喜好與生日 (50字)</span>
+            <button type="button" class="label-ai-btn" onclick="aiGenerateLikes()">✨ AI 填寫喜好</button>
+            <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button>
+        </h2>
         <div class="section-body">
           <input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" />
           <input id="dislikes" type="text" data-maxlength="50" placeholder="討厭的東西" />
@@ -496,7 +537,7 @@
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v8_ai'; 
+    const STORAGE_KEY = 'qing_char_game_v9_ai_full'; 
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
     const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
     
@@ -533,11 +574,11 @@
         return localStorage.getItem('gemini_api_key');
     }
 
-    async function callGemini(promptText, targetElement, btn) {
+    async function callGemini(promptText, btn) {
         const apiKey = getApiKey();
         if(!apiKey) {
             alert("請先點擊右上角「設定 AI 金鑰」輸入您的 API Key 才能使用此功能。");
-            return;
+            return null;
         }
         
         if(btn) btn.classList.add('loading');
@@ -554,8 +595,7 @@
             const data = await response.json();
             if(data.error) throw new Error(data.error.message);
             
-            const text = data.candidates[0].content.parts[0].text;
-            return text;
+            return data.candidates[0].content.parts[0].text;
         } catch(e) {
             console.error(e);
             alert("AI 生成失敗：" + e.message);
@@ -565,78 +605,203 @@
         }
     }
 
-    /* AI: 自動生成遊戲介紹 */
-    async function aiGenerateGameIntro() {
-        const btn = document.querySelector('.ai-btn'); // 這裡只抓第一個當示範
-        const name = document.getElementById('charName').value;
-        const job = document.getElementById('charJob').value;
-        const basic = document.getElementById('basicInfo').value;
-        const personality = document.getElementById('personality').value;
-        
-        if(!name || !basic) { showToast("請先填寫角色名稱與基本資訊喔！", "warn"); return; }
+    // 取得目前角色上下文
+    function getCharContext() {
+        const name = document.getElementById('charName').value || "未命名角色";
+        const age = document.getElementById('charAge').value || "未知";
+        const job = document.getElementById('charJob').value || "未知";
+        const basic = document.getElementById('basicInfo').value || "";
+        const personality = document.getElementById('personality').value || "";
+        return `角色：${name} (年齡:${age}, 職業:${job})\n世界觀：${basic}\n性格：${personality}`;
+    }
+
+    /* AI: 一鍵生成人設 */
+    async function aiGenerateProfile() {
+        const btn = event.target;
+        const concept = prompt("請輸入角色概念 (例如：傲嬌的魔法學院大小姐)：");
+        if(!concept) return;
 
         const prompt = `
-            你是一位專業的戀愛遊戲劇本家。請根據以下角色資訊，構想一個吸引人的「遊戲標題」與「遊戲簡介」。
-            
-            角色：${name} (${job})
-            世界觀：${basic}
-            性格：${personality}
-            
-            請直接回傳 JSON 格式，不要有 Markdown 標記，格式如下：
-            { "title": "30字以內的標題", "intro": "30字以內的簡介" }
+            請根據概念「${concept}」創作一個動漫風格的角色設定。
+            請回傳 JSON 格式：
+            {
+                "name": "姓名",
+                "age": "年齡",
+                "job": "職業",
+                "quote": "一句話介紹(80字內)",
+                "desc": "外貌與氣質敘述(200字內)",
+                "tags": "標籤1 標籤2 標籤3"
+            }
         `;
         
-        const result = await callGemini(prompt, null, btn);
+        const result = await callGemini(prompt, btn);
         if(result) {
             try {
-                // 嘗試清除非 JSON 字元
                 const jsonStr = result.replace(/```json|```/g, '').trim();
                 const json = JSON.parse(jsonStr);
-                document.getElementById('gameTitle').value = json.title;
-                document.getElementById('gameIntro').value = json.intro;
+                document.getElementById('charName').value = json.name;
+                document.getElementById('charAge').value = json.age;
+                document.getElementById('charJob').value = json.job;
+                document.getElementById('charQuote').value = json.quote;
+                document.getElementById('charDesc').value = json.desc;
+                
+                // 處理標籤
+                const hiddenInput = document.getElementById('charTags');
+                hiddenInput.value = json.tags;
+                initTagInput(); // 重繪標籤
+
                 saveCurrentChar();
-                showToast("✨ AI 已生成遊戲介紹！");
-            } catch(e) {
-                // 如果 AI 沒回傳 JSON，直接填入 intro
-                document.getElementById('gameIntro').value = result.substring(0, 30);
-                showToast("AI 回應格式稍有不同，已填入簡介");
-            }
+                updateChatPreview();
+                showToast("✨ 人設已生成！");
+            } catch(e) { alert("生成失敗，AI 回傳格式錯誤。"); }
         }
     }
 
-    /* AI: 自動生成故事 (個別) */
-    async function aiGenerateStory(stageIdx, btn) {
-        const stageName = STORY_STAGES[stageIdx];
-        const name = document.getElementById('charName').value || "主角";
-        const basic = document.getElementById('basicInfo').value;
+    /* AI: 通用欄位生成 */
+    async function aiGenerateField(targetId, fieldName) {
+        const btn = event.target;
+        const context = getCharContext();
         
         const prompt = `
-            你是一位戀愛遊戲編劇。請為角色「${name}」撰寫一段「${stageName}」的劇情故事。
-            世界觀：${basic}
+            你是一位專業的遊戲編劇。請根據以下角色資訊，撰寫一段精彩的「${fieldName}」。
+            ${context}
             
-            請回傳 JSON 格式：
+            要求：
+            1. 符合角色性格與世界觀。
+            2. 直接提供內容，不要有解釋性文字。
+            3. 字數控制在 500 字以內。
+        `;
+        
+        const result = await callGemini(prompt, btn);
+        if(result) {
+            document.getElementById(targetId).value = result.trim();
+            saveCurrentChar();
+            updateChatPreview(); // 若是開場白，即時更新
+            // 手動觸發字數更新
+            updateFieldCounter(document.getElementById(targetId));
+            showToast(`✨ ${fieldName} 已生成！`);
+        }
+    }
+
+    /* AI: 生成喜好 */
+    async function aiGenerateLikes() {
+        const btn = event.target;
+        const context = getCharContext();
+        const prompt = `
+            請根據以下角色，推測他/她的喜好。
+            ${context}
+            回傳 JSON: { "likes": "3-5個喜歡的事物", "dislikes": "3-5個討厭的事物" }
+        `;
+        
+        const result = await callGemini(prompt, btn);
+        if(result) {
+            try {
+                const json = JSON.parse(result.replace(/```json|```/g, '').trim());
+                document.getElementById('likes').value = json.likes;
+                document.getElementById('dislikes').value = json.dislikes;
+                saveCurrentChar();
+                showToast("✨ 喜好已生成！");
+            } catch(e) {}
+        }
+    }
+
+    /* AI: 生成 Prompt 指令 */
+    async function aiGeneratePrompt() {
+        const btn = event.target;
+        const context = getCharContext();
+        const speech = document.getElementById('speechStyle').value;
+        
+        const prompt = `
+            請為這個 AI 角色扮演遊戲生成 System Prompt。
+            ${context}
+            說話風格：${speech}
+            
+            回傳 JSON: 
             { 
-              "hint": "解鎖提示語(60字內)", 
-              "title": "故事標題(30字內)", 
-              "content": "故事內容(500字左右)" 
+               "role": "System Role 指令 (包含角色定義、行為準則)", 
+               "guideline": "Response Guideline (包含對話格式、禁忌事項)" 
             }
         `;
         
-        const result = await callGemini(prompt, null, btn);
+        const result = await callGemini(prompt, btn);
         if(result) {
             try {
-                const jsonStr = result.replace(/```json|```/g, '').trim();
-                const json = JSON.parse(jsonStr);
-                // 呼叫新增故事函式並帶入資料
-                addStoryBlock(stageIdx, {
-                    hint: json.hint,
-                    title: json.title,
-                    content: json.content
-                });
-                showToast("✨ AI 已生成一則故事！");
-            } catch(e) {
-                 alert("生成失敗，AI 回傳了非標準格式。");
-            }
+                const json = JSON.parse(result.replace(/```json|```/g, '').trim());
+                document.getElementById('promptRole').value = json.role;
+                document.getElementById('promptGuideline').value = json.guideline;
+                saveCurrentChar();
+                updatePromptTokenInfo();
+                showToast("✨ 指令已生成！");
+            } catch(e) {}
+        }
+    }
+
+    /* AI: 生成動態欄位 (附加/事件) */
+    async function aiGenerateDynamic(btn, type) {
+        const context = getCharContext();
+        const block = btn.closest(type === 'extra' ? '.extra-block' : '.event-block');
+        const titleInput = block.querySelector(type === 'extra' ? '.extra-title-field' : '.event-title-field');
+        const contentInput = block.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+        
+        const fieldName = type === 'extra' ? '附加設定 (如: 特殊能力、人際關係)' : '關鍵事件 (如: 過去的創傷、重要回憶)';
+        
+        const prompt = `
+            請為這個角色構想一個「${fieldName}」。
+            ${context}
+            
+            回傳 JSON: { "title": "標題", "content": "詳細內容" }
+        `;
+        
+        const result = await callGemini(prompt, btn);
+        if(result) {
+            try {
+                const json = JSON.parse(result.replace(/```json|```/g, '').trim());
+                titleInput.value = json.title;
+                contentInput.value = json.content;
+                saveCurrentChar();
+                updateFieldCounter(contentInput);
+                showToast("✨ 內容已生成！");
+            } catch(e) {}
+        }
+    }
+
+    /* AI: 自動生成遊戲介紹 */
+    async function aiGenerateGameIntro() {
+        const btn = event.target;
+        const context = getCharContext();
+        const prompt = `
+            請根據以下角色資訊，構想一個戀愛遊戲的標題與簡介。
+            ${context}
+            回傳 JSON: { "title": "30字內標題", "intro": "30字內簡介" }
+        `;
+        const result = await callGemini(prompt, btn);
+        if(result) {
+            try {
+                const json = JSON.parse(result.replace(/```json|```/g, '').trim());
+                document.getElementById('gameTitle').value = json.title;
+                document.getElementById('gameIntro').value = json.intro;
+                saveCurrentChar();
+                showToast("✨ 遊戲介紹已生成！");
+            } catch(e) { document.getElementById('gameIntro').value = result.substring(0, 30); }
+        }
+    }
+
+    /* AI: 自動生成故事 */
+    async function aiGenerateStory(stageIdx, btn) {
+        const stageName = STORY_STAGES[stageIdx];
+        const context = getCharContext();
+        const prompt = `
+            請為角色撰寫一段「${stageName}」的劇情故事。
+            ${context}
+            回傳 JSON: { "hint": "解鎖提示(60字內)", "title": "標題(30字內)", "content": "內容(500字)" }
+        `;
+        const result = await callGemini(prompt, btn);
+        if(result) {
+            try {
+                const json = JSON.parse(result.replace(/```json|```/g, '').trim());
+                addStoryBlock(stageIdx, { hint: json.hint, title: json.title, content: json.content });
+                showToast("✨ 故事已生成！");
+            } catch(e) {}
         }
     }
 
@@ -730,12 +895,10 @@
         
         list.appendChild(div);
         
-        // 狀態復原
         const checkbox = div.querySelector(`#chk_${uniqueId}`);
         checkbox.checked = isMulti;
         toggleOptionsContainer(uniqueId);
 
-        // 選項復原
         if(data && data.options) {
             const optList = div.querySelector('.options-list');
             data.options.forEach(opt => addOptionToStory(null, optList, opt));
@@ -774,6 +937,38 @@
        list.appendChild(optDiv);
        setupFieldUtils(optDiv);
        saveCurrentChar();
+    }
+
+    /* ========= 動態欄位 (更新：支援 AI) ========= */
+    function addExtra() { addExtraWithVal('',''); }
+    function addExtraWithVal(title, text) {
+        const div = document.createElement('div'); div.className = 'extra-block';
+        div.innerHTML = `
+           <div class="label-row">
+              <label>標題</label>
+              <button type="button" class="label-ai-btn" onclick="aiGenerateDynamic(this, 'extra')">✨ AI 生成</button>
+              <input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()" style="flex:1; margin-left:8px;">
+           </div>
+           <textarea class="extra-field" data-maxlength="500" oninput="saveCurrentChar()">${text}</textarea>
+           <div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.extra-block').remove(); saveCurrentChar();">刪除</button></div>
+        `;
+        document.getElementById('extraContainer').appendChild(div);
+        setupFieldUtils(div); 
+    }
+    function addEvent() { addEventWithVal('',''); }
+    function addEventWithVal(title, text) {
+        const div = document.createElement('div'); div.className = 'event-block';
+        div.innerHTML = `
+           <div class="label-row">
+               <label>事件標題</label>
+               <button type="button" class="label-ai-btn" onclick="aiGenerateDynamic(this, 'event')">✨ AI 生成</button>
+               <input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()" style="flex:1; margin-left:8px;">
+           </div>
+           <textarea class="event-field" data-maxlength="2000" oninput="saveCurrentChar()">${text}</textarea>
+           <div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.event-block').remove(); saveCurrentChar();">刪除</button></div>
+        `;
+        document.getElementById('eventContainer').appendChild(div);
+        setupFieldUtils(div);
     }
 
     /* ========= 字數統計 ========= */
@@ -819,7 +1014,7 @@
        
        const data = { fields: {}, extras: [], events: [], game: {} };
        // 1. 一般欄位
-       document.querySelectorAll('input:not(.tags-input):not([class*="opt-"]):not([class*="story-"]), textarea:not([class*="opt-"]):not([class*="story-"]), select').forEach(el => {
+       document.querySelectorAll('input:not(.tags-input):not([class*="opt-"]):not([class*="story-"]):not([class*="extra-"]):not([class*="event-"]), textarea:not([class*="opt-"]):not([class*="story-"]):not([class*="extra-"]):not([class*="event-"]), select').forEach(el => {
            if(el.id) data.fields[el.id] = el.value;
        });
        data.fields['charTags'] = document.getElementById('charTags').value;
@@ -882,15 +1077,18 @@
     
     function fillFormFromData(data) {
         if(!data) return;
+        // 一般欄位
         for(let key in data.fields) {
             const el = document.getElementById(key);
             if(el) el.value = data.fields[key];
         }
+        // 動態欄位
         document.getElementById('extraContainer').innerHTML = '';
         document.getElementById('eventContainer').innerHTML = '';
         if(data.extras) data.extras.forEach(ex => addExtraWithVal(ex.title, ex.text));
         if(data.events) data.events.forEach(ev => addEventWithVal(ev.title, ev.text));
         
+        // 遊戲管理回填
         if(data.game) {
             if(document.getElementById('gameTitle')) document.getElementById('gameTitle').value = data.game.title || '';
             if(document.getElementById('gameIntro')) document.getElementById('gameIntro').value = data.game.intro || '';
@@ -983,19 +1181,7 @@
       showToast("Markdown 已生成！");
     }
 
-    /* ========= 輔助功能 ========= */
-    function addExtra() { addExtraWithVal('',''); }
-    function addExtraWithVal(title, text) {
-        const div = document.createElement('div'); div.className = 'extra-block';
-        div.innerHTML = `<div class="label-row"><label>標題</label><input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="extra-field" data-maxlength="500" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.extra-block').remove(); saveCurrentChar();">刪除</button></div>`;
-        document.getElementById('extraContainer').appendChild(div); setupFieldUtils(div); 
-    }
-    function addEvent() { addEventWithVal('',''); }
-    function addEventWithVal(title, text) {
-        const div = document.createElement('div'); div.className = 'event-block';
-        div.innerHTML = `<div class="label-row"><label>事件標題</label><input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="event-field" data-maxlength="2000" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.event-block').remove(); saveCurrentChar();">刪除</button></div>`;
-        document.getElementById('eventContainer').appendChild(div); setupFieldUtils(div);
-    }
+    /* ========= 輔助功能省略 (保持不變) ========= */
     function renderCharList(store) {
         const list = document.getElementById('charList'); list.innerHTML = '';
         Object.entries(store.chars).forEach(([id, item]) => {
