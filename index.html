@@ -413,7 +413,56 @@
     body.layout-desktop .sidebar { flex: 0 0 260px; width: 260px; position: sticky; }
     body.layout-desktop .sidebar.is-collapsed { flex: 0 0 68px; width: 68px; }
     body.layout-desktop .sidebar-nav { flex-direction: column; overflow-x: visible; }
+/* === 回到頁首按鈕 === */
+    #backToTopBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999;
+      
+      /* 預設隱藏，透過 JS 控制顯示 */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      
+      /* 內容置中 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+    }
 
+    /* 顯示狀態 */
+    #backToTopBtn.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    #backToTopBtn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    /* 手機版稍微調整位置，避免擋到手指或太靠邊 */
+    @media (max-width: 600px) {
+      #backToTopBtn {
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -856,7 +905,9 @@
 
     </main>
   </div>
+<button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
 
+<script>
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
@@ -2417,6 +2468,26 @@
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(initLayoutByWidth, 200);
       });
+    });
+  /* ========= 回到頁首功能 ========= */
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // 監聽捲動事件，控制按鈕顯示/隱藏
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('backToTopBtn');
+      if (!btn) return;
+      
+      // 當捲動超過 300px 時顯示按鈕
+      if (window.scrollY > 300) {
+        btn.classList.add('show');
+      } else {
+        btn.classList.remove('show');
+      }
     });
   </script>
 </body>
