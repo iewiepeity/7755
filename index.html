@@ -3,178 +3,533 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (完美單機版)</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <title>卿卿我我創角小幫手</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
-      --radius-md: 12px; --radius-lg: 20px;
-      --bg-pink: #fff5f8; --accent-pink: #ff7eb3; --focus-rgb-pink: 255, 126, 179;
-      --bg-cream: #fdfbf7; --accent-cream: #ffaa6e; --focus-rgb-cream: 255, 170, 110;
-      --bg-mint: #f2fffd; --accent-mint: #4cd9a4; --focus-rgb-mint: 76, 217, 164;
-      --bg-lavender: #f9f7ff; --accent-lavender: #b185ff; --focus-rgb-lavender: 177, 133, 255;
-      --bg-sky: #f4fbff; --accent-sky: #6ab0ff; --focus-rgb-sky: 106, 176, 255;
-      --bg-lemon: #fffffa; --accent-lemon: #facc15; --focus-rgb-lemon: 250, 204, 21;
+      /* === 核心變數 === */
+      --radius-md: 12px;
+      --radius-lg: 24px; /* 更圓潤 */
+      --radius-full: 999px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.15);
+      --shadow-glow: 0 0 15px rgba(var(--focus-rgb), 0.4);
+      --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      
+      /* 背景色系定義 */
+      --bg-pink: #fff0f5; --accent-pink: #ff7eb3; --focus-rgb-pink: 255, 126, 179;
+      --bg-cream: #fdfcf0; --accent-cream: #ffac6e; --focus-rgb-cream: 255, 172, 110;
+      --bg-mint: #f0fff9; --accent-mint: #4cd9a4; --focus-rgb-mint: 76, 217, 164;
+      --bg-lavender: #f7f2ff; --accent-lavender: #b185ff; --focus-rgb-lavender: 177, 133, 255;
+      --bg-sky: #f0f8ff; --accent-sky: #6ab0ff; --focus-rgb-sky: 106, 176, 255;
+      --bg-lemon: #fffff0; --accent-lemon: #facc15; --focus-rgb-lemon: 250, 204, 21;
       --bg-grey: #f8f9fa; --accent-grey: #8d99ae; --focus-rgb-grey: 141, 153, 174;
-      --bg-black: #1a1a1a; --accent-black: #71717a; --focus-rgb-black: 113, 113, 122;
+      --bg-black: #121212; --accent-black: #666; --focus-rgb-black: 100, 100, 100;
 
-      --page-bg: var(--bg-pink); --card-bg: rgba(255, 255, 255, 0.85); --sidebar-bg: rgba(255, 255, 255, 0.9);
-      --text-main: #475569; --text-sub: #64748b; --border-color: rgba(0,0,0,0.08);
-      --focus-color: var(--accent-pink); --focus-rgb: var(--focus-rgb-pink);
-      --btn-bg: var(--accent-pink); --btn-text: #fff;
-      --shadow-card: 0 4px 20px -4px rgba(0,0,0,0.06); --shadow-hover: 0 10px 25px -5px rgba(0,0,0,0.1);
-      --chat-bg: #20232a; --chat-bubble-sys: #3a3f4b;
+      /* 預設變數 (由 body class 覆寫) */
+      --page-bg: var(--bg-pink);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --sidebar-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #2c3e50;
+      --text-sub: #64748b;
+      --border-color: rgba(0,0,0,0.08);
+      --focus-color: var(--accent-pink);
+      --focus-rgb: var(--focus-rgb-pink);
+      --btn-bg: var(--accent-pink);
+      --btn-text: #fff;
+      
+      /* 聊天室變數 */
+      --chat-bg: #20232a;
+      --chat-bubble-sys: #3a3f4b;
+      --chat-bubble-user: var(--btn-bg);
+      --chat-text: #e0e0e0;
     }
+
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; font-family: "Noto Sans TC", system-ui, sans-serif; color: var(--text-main); background-color: var(--page-bg); background-image: radial-gradient(at top center, rgba(255,255,255,0.6) 0%, transparent 80%); background-attachment: fixed; min-height: 100vh; padding-bottom: 120px; line-height: 1.6; transition: background 0.5s ease; }
-    
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
+      color: var(--text-main);
+      background-color: var(--page-bg);
+      background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      transition: background 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+    }
+
+    /* === 主題色覆寫 === */
     body.theme-pink { --page-bg: var(--bg-pink); --focus-color: #ff7eb3; --focus-rgb: var(--focus-rgb-pink); --btn-bg: #ff7eb3; }
-    body.theme-cream { --page-bg: var(--bg-cream); --focus-color: #ffaa6e; --focus-rgb: var(--focus-rgb-cream); --btn-bg: #ffaa6e; }
+    body.theme-cream { --page-bg: var(--bg-cream); --focus-color: #ffac6e; --focus-rgb: var(--focus-rgb-cream); --btn-bg: #ffac6e; }
     body.theme-mint { --page-bg: var(--bg-mint); --focus-color: #4cd9a4; --focus-rgb: var(--focus-rgb-mint); --btn-bg: #4cd9a4; }
     body.theme-lavender { --page-bg: var(--bg-lavender); --focus-color: #b185ff; --focus-rgb: var(--focus-rgb-lavender); --btn-bg: #b185ff; }
     body.theme-sky { --page-bg: var(--bg-sky); --focus-color: #6ab0ff; --focus-rgb: var(--focus-rgb-sky); --btn-bg: #6ab0ff; }
     body.theme-lemon { --page-bg: var(--bg-lemon); --focus-color: #facc15; --focus-rgb: var(--focus-rgb-lemon); --btn-bg: #facc15; --btn-text: #5c4e00; }
     body.theme-grey { --page-bg: var(--bg-grey); --focus-color: #8d99ae; --focus-rgb: var(--focus-rgb-grey); --btn-bg: #8d99ae; }
-    body.theme-black { --page-bg: var(--bg-black); --card-bg: #27272a; --sidebar-bg: #27272a; --text-main: #e4e4e7; --text-sub: #a1a1aa; --border-color: rgba(255,255,255,0.1); --focus-color: #a1a1aa; --focus-rgb: 161, 161, 170; --btn-bg: #52525b; --btn-text: #fff; }
-
-    .progress-header { position: sticky; top: 0; z-index: 900; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); padding: 8px 20px; display: flex; justify-content: center; }
-    body.theme-black .progress-header { background: rgba(39, 39, 42, 0.9); }
-    .progress-container { width: 100%; max-width: 900px; display: flex; align-items: center; gap: 10px; }
-    .progress-label { font-size: 0.75rem; font-weight: 700; color: var(--focus-color); white-space: nowrap; }
-    .progress-track { flex: 1; height: 6px; background: rgba(0,0,0,0.05); border-radius: 99px; overflow: hidden; }
-    body.theme-black .progress-track { background: rgba(255,255,255,0.1); }
-    .progress-bar { height: 100%; width: 0%; background: var(--focus-color); border-radius: 99px; transition: width 0.5s ease; }
-
-    .layout-shell { display: flex; gap: 24px; max-width: 1000px; margin: 20px auto; padding: 0 20px; position: relative; }
-    .main-area { flex: 1; min-width: 0; }
-
-    .sidebar { flex: 0 0 240px; width: 240px; position: sticky; top: 60px; background: var(--sidebar-bg); backdrop-filter: blur(16px); padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-card); transition: all 0.3s ease; z-index: 100; }
-    .sidebar.is-collapsed { flex: 0 0 64px; width: 64px; padding: 16px 8px; }
-    .sidebar-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
-    .sidebar.is-collapsed .sidebar-header { justify-content: center; }
-    .sidebar.is-collapsed .sidebar-title, .sidebar.is-collapsed .sidebar-sub { display: none; }
-    .sidebar-title { font-weight: 700; font-size: 0.95rem; }
-    .sidebar-sub { font-size: 0.7rem; color: var(--text-sub); }
-    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-    .sidebar-nav button { width: 100%; text-align: left; background: transparent; color: var(--text-main); border: none; padding: 8px 12px; border-radius: 8px; transition: 0.2s; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-    .sidebar-nav button:hover { background: rgba(var(--focus-rgb), 0.08); color: var(--focus-color); }
-    .sidebar.is-collapsed .sidebar-nav button { justify-content: center; padding: 8px 0; }
-    .sidebar.is-collapsed .sidebar-nav button span.text { display: none; }
     
-    .top-bar { max-width: 1000px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
-    h1 { font-family: "Noto Serif TC", serif; font-size: 2rem; margin: 0; font-weight: 700; background: linear-gradient(120deg, var(--text-main), var(--focus-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .tagline { font-size: 0.9rem; color: var(--text-sub); margin-top: 4px; }
-
-    .section { background: var(--card-bg); backdrop-filter: blur(20px); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow-card); border: 1px solid rgba(255,255,255,0.5); transition: all 0.3s; }
-    body.theme-black .section { border-color: rgba(255,255,255,0.05); }
-    .section:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-    .section.collapsed { padding-bottom: 20px; opacity: 0.7; }
-    .section.collapsed .section-body { display: none; }
-    h2 { font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; margin: 0 0 16px 0; font-weight: 700; color: var(--text-main); opacity: 0.9; }
-    .section-body { animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    .field-group { margin-bottom: 16px; position: relative; }
-    .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
-    
-    input[type="text"], input[type="search"], input[type="date"], input[type="number"], select, textarea, .tags-container { width: 100%; padding: 10px 12px; font-size: 0.95rem; color: var(--text-main); background: rgba(255,255,255,0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: all 0.2s; outline: none; font-family: inherit; }
-    body.theme-black input, body.theme-black select, body.theme-black textarea, body.theme-black .tags-container { background: rgba(0,0,0,0.2); }
-    textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
-    input:focus, select:focus, textarea:focus, .tags-container:focus-within { background: #fff; border-color: var(--focus-color); box-shadow: 0 0 0 3px rgba(var(--focus-rgb), 0.15); }
-    body.theme-black input:focus, body.theme-black textarea:focus, body.theme-black .tags-container:focus-within { background: rgba(40,40,40,0.8); }
-
-    .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 4px; font-size: 0.75rem; color: var(--text-sub); }
-    .field-counter { margin-right: auto; opacity: 0.8; }
-    .field-counter.limit-reach { color: #ef4444; font-weight: bold; }
-
-    .icon-btn { background: transparent; border: none; color: var(--text-sub); cursor: pointer; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .icon-btn:hover { background: rgba(0,0,0,0.05); color: var(--focus-color); }
-    
-    button.main-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 8px 20px; border-radius: 99px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(var(--focus-rgb), 0.3); transition: 0.2s; }
-    button.main-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    button.sec-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 16px; border-radius: 99px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-    button.sec-btn:hover { border-color: var(--focus-color); color: var(--focus-color); background: rgba(255,255,255,0.5); }
-
-    .tags-container { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; cursor: text; }
-    .tag-pill { background: var(--focus-color); color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
-    .tag-remove { cursor: pointer; opacity: 0.8; } .tag-remove:hover { opacity: 1; }
-    .tags-input { border: none; background: transparent; outline: none; flex: 1; min-width: 60px; padding: 0; margin: 0; font-size: 0.9rem; }
-    
-    .story-card { background: rgba(255,255,255,0.4); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 16px; position: relative; }
-    .story-card:hover { border-color: var(--focus-color); }
-    .tabs-header { display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
-    .tab-btn { background: transparent; border: none; padding: 8px 14px; font-size: 0.85rem; color: var(--text-sub); cursor: pointer; border-radius: 8px 8px 0 0; transition: 0.2s; white-space: nowrap; }
-    .tab-btn.active { color: var(--focus-color); background: rgba(var(--focus-rgb), 0.1); font-weight: 700; }
-    .story-stage-content { display: none; animation: fadeIn 0.3s; }
-    .story-stage-content.active { display: block; }
-
-    .option-card { background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-top: 12px; position: relative; transition: var(--transition); }
-    body.theme-black .option-card { background: rgba(0,0,0,0.2); }
-    .option-card:hover { border-color: var(--focus-color); }
-    .option-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-sub); font-weight: bold; }
-
-    .chat-container { background: var(--chat-bg); border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); max-width: 400px; margin: 20px auto; overflow: hidden; font-family: -apple-system, sans-serif; }
-    .chat-header { padding: 12px; text-align: center; color: #fff; font-weight: 600; background: rgba(255,255,255,0.05); font-size: 0.9rem; }
-    .chat-body { padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; min-height: 280px; }
-    .msg-system { font-size: 0.75rem; color: #9ca3af; text-align: center; background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 99px; align-self: center; }
-    .msg-row { display: flex; gap: 10px; }
-    .msg-avatar { width: 36px; height: 36px; background: #4b5563; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 0.9rem; flex-shrink: 0; }
-    .msg-bubble { background: var(--chat-bubble-sys); color: #e0e0e0; padding: 10px 14px; border-radius: 4px 16px 16px 16px; font-size: 0.9rem; line-height: 1.5; }
-
-    .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-    .toast { background: rgba(0,0,0,0.8); color: #fff; padding: 8px 20px; border-radius: 99px; font-size: 0.85rem; pointer-events: auto; animation: toastIn 0.3s forwards; }
-    .toast.fade-out { animation: toastOut 0.3s forwards; }
-    @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes toastOut { to { opacity: 0; transform: translateY(10px); } }
-    
-    #backToTopBtn { position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px; border-radius: 50%; background: var(--btn-bg); color: #fff; font-size: 1.2rem; box-shadow: 0 8px 20px rgba(var(--focus-rgb), 0.3); border: none; cursor: pointer; opacity: 0; visibility: hidden; transition: 0.3s; z-index: 900; display: flex; justify-content: center; align-items: center; }
-    #backToTopBtn.show { opacity: 1; visibility: visible; transform: translateY(0); }
-    #backToTopBtn:hover { transform: translateY(-4px); }
-
-    @media (max-width: 850px) {
-      .layout-shell { flex-direction: column; padding: 0 16px; }
-      .sidebar { width: 100%; position: static; z-index: 1; }
-      .sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
-      .sidebar-nav button { white-space: nowrap; width: auto; background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); }
-      .sidebar-header { display: none; }
+    body.theme-black { 
+      --page-bg: var(--bg-black); 
+      --card-bg: rgba(30, 30, 30, 0.9);
+      --sidebar-bg: rgba(25, 25, 25, 0.95);
+      --text-main: #e0e0e0;
+      --text-sub: #9ca3af;
+      --border-color: rgba(255,255,255,0.12);
+      --focus-color: #aaa;
+      --focus-rgb: 170,170,170;
+      --btn-bg: #555;
+      --btn-text: #fff;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     }
-    body.layout-mobile .layout-shell { flex-direction: column; padding: 0 12px; }
-    body.layout-mobile .sidebar { width: 100%; position: sticky; top: 50px; z-index: 800; padding: 8px; border-radius: 16px; overflow: visible !important; }
-    body.layout-mobile .sidebar-nav { flex-direction: row; gap: 6px; }
+
+    /* === 佈局容器 === */
+    .layout-shell {
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .main-area {
+      flex: 1;
+      min-width: 0;
+      transition: var(--transition);
+    }
+
+    /* === 側邊欄 Sidebar === */
+    .sidebar {
+      flex: 0 0 260px;
+      width: 260px;
+      position: sticky;
+      top: 24px;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(255,255,255,0.5);
+      overflow: hidden;
+      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), flex-basis 0.4s ease;
+      z-index: 50;
+    }
     
-    /* Token Info Box */
-    #promptTokenInfo { font-size: 0.8rem; color: var(--text-main); line-height: 1.6; }
-    #promptTokenInfo strong { color: var(--focus-color); }
+    .sidebar.is-collapsed {
+      flex: 0 0 72px;
+      width: 72px;
+      padding: 20px 12px;
+    }
+    
+    .sidebar.is-collapsed .sidebar-title,
+    .sidebar.is-collapsed .sidebar-sub,
+    .sidebar.is-collapsed .btn-text {
+      display: none;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar.is-collapsed .sidebar-header { justify-content: center; }
+
+    .sidebar-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      letter-spacing: 0.02em;
+    }
+
+    .sidebar-sub {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-nav button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: var(--text-main);
+      box-shadow: none;
+      border: 1px solid transparent;
+      padding: 10px 14px;
+      border-radius: 12px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 0.9rem;
+    }
+
+    .sidebar-nav button:hover {
+      background: rgba(0,0,0,0.04);
+      color: var(--focus-color);
+      transform: translateX(4px);
+    }
+    body.theme-black .sidebar-nav button:hover { background: rgba(255,255,255,0.08); }
+    
+    .sidebar.is-collapsed .sidebar-nav button:hover { transform: none; }
+    .sidebar.is-collapsed .sidebar-nav button { justify-content: center; padding: 10px 0; }
+    .sidebar.is-collapsed .sidebar-nav button span.btn-icon { margin: 0; font-size: 1.4rem; }
+
+    .sidebar-nav button.sidebar-main { font-weight: 600; }
+    .sidebar-nav button.sidebar-subitem { font-size: 0.85rem; color: var(--text-sub); padding-left: 14px; }
+    .sidebar-nav button span.btn-icon { margin-right: 10px; width: 24px; text-align: center; font-size: 1.1rem; display: inline-block;}
+
+    /* === Typography & Layout === */
+    h1, h2, h3 { font-family: "Noto Serif TC", serif; margin-top: 0; color: var(--text-main); }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
+    
+    h2 { 
+      font-size: 1.2rem; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding-bottom: 12px; 
+      border-bottom: 1px solid var(--border-color); 
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    
+    .top-bar { max-width: 1100px; margin: 0 auto 32px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; }
+    .tagline { color: var(--text-sub); font-size: 1rem; margin-top: 4px; opacity: 0.9; }
+    .sub-label { font-size: 0.85rem; color: var(--text-sub); margin-top: 6px; line-height: 1.5; }
+
+    /* === Card Section === */
+    .section {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: var(--transition);
+    }
+    .section:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .section.collapsed { padding-bottom: 20px; opacity: 0.8; }
+    .section.collapsed .section-body { display: none; }
+    .section-body { margin-top: 24px; animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* === Inputs & Forms === */
+    .label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; flex-wrap: wrap; }
+    label { font-weight: 600; color: var(--text-main); margin-right: 8px; font-size: 0.95rem; letter-spacing: 0.02em; }
+
+    input[type="text"], input[type="search"], input[type="date"], select, textarea {
+      width: 100%; padding: 12px 16px; font-size: 1rem; font-family: inherit; color: var(--text-main);
+      background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      transition: var(--transition); margin-bottom: 16px; outline: none;
+      box-shadow: var(--shadow-xs);
+    }
+    body.theme-black input, body.theme-black select, body.theme-black textarea { background: rgba(0,0,0,0.3); color: #fff; border-color: #444; }
+    
+    textarea { min-height: 120px; line-height: 1.7; resize: vertical; }
+    
+    input:focus, select:focus, textarea:focus { 
+      background: #fff; 
+      border-color: var(--focus-color); 
+      box-shadow: 0 0 0 4px rgba(var(--focus-rgb), 0.15);
+    }
+    body.theme-black input:focus, body.theme-black textarea:focus { background: rgba(40,40,40,0.8); }
+
+    /* === Buttons === */
+    button {
+      cursor: pointer; border: none; border-radius: var(--radius-full); padding: 10px 20px; font-size: 0.95rem;
+      font-family: inherit; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+      background: var(--btn-bg); color: var(--btn-text);
+      box-shadow: 0 4px 12px rgba(var(--focus-rgb), 0.25);
+      transition: var(--transition); margin-right: 8px; margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    button:hover { filter: brightness(1.05); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(var(--focus-rgb), 0.35); }
+    button:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(var(--focus-rgb), 0.2); }
+    
+    .button-secondary, .button-mini { 
+      background: transparent; color: var(--text-main); border: 1px solid var(--border-color); 
+      box-shadow: var(--shadow-xs); 
+    }
+    .button-secondary:hover, .button-mini:hover { 
+      background: rgba(255,255,255,0.5); border-color: var(--focus-color); color: var(--focus-color); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    body.theme-black .button-secondary:hover, body.theme-black .button-mini:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    
+    .button-mini { padding: 4px 12px; font-size: 0.8rem; margin: 0; border-radius: 8px; }
+    
+    .sidebar-toggle-btn {
+      width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;
+      background: transparent; color: var(--text-sub); border-radius: 50%; margin: 0; box-shadow: none; border: 1px solid var(--border-color);
+    }
+    .sidebar-toggle-btn:hover { background: var(--focus-color); color: #fff; border-color: var(--focus-color); }
+
+    /* === Output Area === */
+    #output {
+      background: #1e1e1e; color: #f0f0f0; padding: 24px; border-radius: var(--radius-md);
+      font-family: "Menlo", "Monaco", "Consolas", monospace; font-size: 0.9rem; white-space: pre-wrap;
+      line-height: 1.6; box-shadow: inset 0 4px 12px rgba(0,0,0,0.4); margin-top: 20px; border: 1px solid #333;
+    }
+
+    /* === Template Card === */
+    .tpl-card { 
+      background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 12px; 
+      box-shadow: var(--shadow-xs); transition: var(--transition);
+    }
+    body.theme-black .tpl-card { background: #2a2a2a; }
+    .tpl-card:hover { border-color: var(--focus-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .tpl-name { font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+    .tpl-meta { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 8px; }
+    .tpl-preview { 
+      font-size: 0.85rem; color: var(--text-sub); background: rgba(0,0,0,0.03); padding: 10px; border-radius: 8px; 
+      white-space: pre-wrap; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; 
+    }
+
+    .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: -12px; margin-bottom: 20px; font-size: 0.75rem; color: var(--text-sub); }
+    .extra-block, .event-block { border-left: 4px solid var(--border-color); padding-left: 20px; margin-bottom: 32px; transition: border-color 0.3s; }
+    .extra-block:hover, .event-block:hover { border-left-color: var(--focus-color); }
+
+    /* === Toast Notification (吐司訊息) === */
+    .toast-container {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(30, 30, 30, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      pointer-events: auto;
+      min-width: 200px;
+      justify-content: center;
+    }
+
+    .toast.fade-out { animation: toastOut 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(20px) scale(0.9); }
+    }
+
+    /* === Chat Preview (聊天預覽) === */
+    .chat-container {
+      background: var(--chat-bg);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #333;
+      max-width: 500px;
+      margin: 20px auto 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .chat-header {
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+      border-bottom: 1px solid #333;
+      text-align: center;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .chat-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 300px;
+    }
+
+    .msg-system {
+      color: #888;
+      font-size: 0.85rem;
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      padding: 8px 16px;
+      border-radius: 12px;
+      align-self: center;
+      max-width: 90%;
+      line-height: 1.5;
+    }
+
+    .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .msg-avatar {
+      width: 40px;
+      height: 40px;
+      background: #555;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .msg-bubble {
+      background: var(--chat-bubble-sys);
+      color: var(--chat-text);
+      padding: 12px 16px;
+      border-radius: 4px 16px 16px 16px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 85%;
+      position: relative;
+    }
+    
+    /* 模擬用戶回覆 (靠右) - 雖然這裡只展示角色 */
+    .msg-row.user { flex-direction: row-reverse; }
+    .msg-row.user .msg-bubble {
+      background: var(--chat-bubble-user);
+      color: #fff; /* 如果按鈕色太淺，這可能要改 */
+      border-radius: 16px 4px 16px 16px;
+    }
+
+    /* === 回到頁首按鈕 === */
+    #backToTopBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--btn-bg);
+      color: #fff;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      border: none;
+    }
+    #backToTopBtn.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    #backToTopBtn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+
+    /* === RWD 響應式 === */
+    @media (max-width: 850px) {
+      .layout-shell { flex-direction: column; gap: 20px; }
+      .section { padding: 24px; }
+      .sidebar { width: 100%; flex: 0 0 auto; position: static; margin-bottom: 0; padding: 16px; display: flex; flex-direction: column; }
+      .sidebar-header { display: none; }
+      .sidebar-nav { flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 4px; scrollbar-width: none; }
+      .sidebar-nav::-webkit-scrollbar { display: none; }
+      .sidebar-nav button { white-space: nowrap; width: auto; background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 99px; }
+      .sidebar-nav button span.btn-icon { margin-right: 6px; }
+    }
+
+    /* 手機版排版專用優化 */
+    body.layout-mobile {
+      max-width: 680px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      padding: 16px 12px;
+    }
+    body.layout-mobile .layout-shell { flex-direction: column; gap: 16px; }
+    body.layout-mobile .sidebar {
+      width: 100%;
+      flex: 0 0 auto;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      overflow: visible !important;
+      transition: none !important;
+    }
+    body.layout-mobile .sidebar-header, 
+    body.layout-mobile .sidebar-sub,
+    body.layout-mobile .sidebar-toggle-btn { display: none !important; }
+    body.layout-mobile .sidebar-nav {
+      display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden;
+      gap: 8px; padding: 4px 8px;
+      -ms-overflow-style: none; scrollbar-width: none; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+    }
+    body.layout-mobile .sidebar-nav::-webkit-scrollbar { display: none; }
+    body.layout-mobile .sidebar-nav button {
+      flex: 0 0 auto; width: auto; white-space: nowrap; margin: 0; padding: 8px 18px;
+      border-radius: 99px; font-size: 0.9rem; background: rgba(255,255,255,0.8); border: 1px solid var(--border-color);
+    }
+    body.layout-mobile .sidebar-nav button span.btn-icon { margin-right: 6px; }
+    body.layout-mobile .sidebar-nav button:hover,
+    body.layout-mobile .sidebar-nav button:active {
+      background: var(--focus-color); color: #fff; border-color: var(--focus-color); transform: none;
+    }
+    body.layout-mobile .section { padding: 20px; border-radius: 20px; }
+    
   </style>
 </head>
 <body class="theme-pink layout-desktop">
 
-  <div class="progress-header">
-    <div class="progress-container">
-      <div class="progress-label">設定完成度 <span id="progressText">0%</span></div>
-      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
-    </div>
-  </div>
   <div class="toast-container" id="toastContainer"></div>
 
   <div class="top-bar">
     <div>
       <h1>💕 卿卿我我創角小幫手</h1>
-      <div class="tagline">填寫設定，紀錄你的角色卡。</div>
+      <div class="tagline">填寫設定，一鍵生成 AI 角色卡 Markdown，讓故事開始。</div>
     </div>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <div class="theme-select">
-        <select onchange="changeTheme(this.value)" style="padding:6px 10px; border-radius:99px; border:1px solid var(--border-color); cursor:pointer;">
-          <option value="pink" selected>🌸 櫻花粉</option>
-          <option value="cream">🍞 奶油白</option>
-          <option value="mint">🌿 薄荷綠</option>
-          <option value="lavender">🔮 薰衣草</option>
-          <option value="sky">☁️ 天空藍</option>
-          <option value="lemon">🍋 檸檬黃</option>
-          <option value="grey">🌫️ 極簡灰</option>
-          <option value="black">🌙 深夜黑</option>
-        </select>
-      </div>
+    <div class="theme-select">
+      <label style="font-size:0.9rem;">🎨 背景主題：</label>
+      <select onchange="changeTheme(this.value)" style="width:auto; display:inline-block; padding:8px 14px; margin-bottom:0; cursor:pointer;">
+        <option value="pink" selected>🌸 櫻花粉</option>
+        <option value="cream">🍞 奶油白</option>
+        <option value="mint">🌿 薄荷綠</option>
+        <option value="lavender">🔮 薰衣草</option>
+        <option value="sky">☁️ 天空藍</option>
+        <option value="lemon">🍋 檸檬黃</option>
+        <option value="grey">🌫️ 極簡灰</option>
+        <option value="black">🌙 深夜黑</option>
+      </select>
     </div>
   </div>
 
@@ -182,398 +537,1442 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-title">📎 功能導航</div>
-        <button class="icon-btn" onclick="toggleSidebar()">◀</button>
+        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="收合/展開">◀</button>
       </div>
-      <div class="sidebar-sub" style="margin-bottom:10px;">點擊快速跳轉</div>
+      
+      <div class="sidebar-sub">點擊快速跳轉</div>
+      
       <nav class="sidebar-nav">
-        <button onclick="scrollToSection('sec-archive')"><span class="icon">📂</span><span class="text">存檔管理</span></button>
-        <button onclick="scrollToSection('sec-info')"><span class="icon">💁‍♀️</span><span class="text">角色資訊</span></button>
-        <button onclick="scrollToSection('sec-basic')"><span class="icon">🌏</span><span class="text">基本資訊</span></button>
-        <button onclick="scrollToSection('sec-personality')"><span class="icon">💗</span><span class="text">性格特質</span></button>
-        <button onclick="scrollToSection('sec-speech')"><span class="icon">🗣️</span><span class="text">說話風格</span></button>
-        <button onclick="scrollToSection('sec-prompt')"><span class="icon">🧠</span><span class="text">Prompt</span></button>
-        <button onclick="scrollToSection('sec-game-mgr')"><span class="icon">🎮</span><span class="text">遊戲管理</span></button>
-        <button onclick="scrollToSection('sec-first')"><span class="icon">🎬</span><span class="text">開場對話</span></button>
-        <button onclick="scrollToSection('sec-output')"><span class="icon">📝</span><span class="text">輸出預覽</span></button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-archive')">
+          <span class="btn-icon">📂</span><span class="btn-text">角色存檔</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-info')">
+          <span class="btn-icon">💁‍♀️</span><span class="btn-text">角色資訊</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-gender')">
+          <span class="btn-icon">🚻</span><span class="btn-text">性別設定</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-basic')">
+          <span class="btn-icon">🌏</span><span class="btn-text">基本資訊</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-personality')">
+          <span class="btn-icon">💗</span><span class="btn-text">性格特質</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-speech')">
+          <span class="btn-icon">🗣️</span><span class="btn-text">說話風格</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-prompt')">
+          <span class="btn-icon">🧠</span><span class="btn-text">Prompt 設定</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-first')">
+          <span class="btn-icon">🎬</span><span class="btn-text">開場與對話</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-fav')">
+          <span class="btn-icon">🎀</span><span class="btn-text">喜好生日</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-extra')">
+          <span class="btn-icon">📌</span><span class="btn-text">附加資訊</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-event')">
+          <span class="btn-icon">📚</span><span class="btn-text">創作者事件</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-output')">
+          <span class="btn-icon">📝</span><span class="btn-text">輸出/預覽</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-template-center')">
+          <span class="btn-icon">🧰</span><span class="btn-text">模板管理</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-layout')">
+          <span class="btn-icon">📱</span><span class="btn-text">版面切換</span>
+        </button>
       </nav>
     </aside>
 
     <main class="main-area">
 
-      <!-- 存檔區 -->
       <div class="section" id="sec-archive">
-        <h2><span>📂 角色存檔</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-archive')">⇕</button></h2>
+        <h2>
+          <span>📂 角色存檔管理</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-archive')">⇕</button>
+        </h2>
         <div class="section-body">
           <div class="label-row">
-             <div style="flex:1; margin-right:12px;"><select id="filterCategory" onchange="refreshCharListFromStorage()"><option value="">全部分類</option></select></div>
-             <div style="flex:1;"><input id="searchName" type="search" placeholder="搜尋角色..." oninput="refreshCharListFromStorage()" /></div>
+             <div style="flex:1; margin-right:12px;">
+              <label>分類篩選</label>
+              <select id="filterCategory" onchange="refreshCharListFromStorage()">
+                <option value="">全部分類</option>
+              </select>
+            </div>
+            <div style="flex:1; margin-right:12px;">
+              <label>排序</label>
+              <select id="charSort" onchange="refreshCharListFromStorage()">
+                <option value="created_desc">新 ➝ 舊</option>
+                <option value="created_asc">舊 ➝ 新</option>
+                <option value="name_asc">名稱 A ➝ Z</option>
+              </select>
+            </div>
+             <div style="flex:1;">
+              <label>搜尋</label>
+              <input id="searchName" type="search" placeholder="輸入名字..." oninput="refreshCharListFromStorage()" />
+            </div>
           </div>
+
           <div id="charList" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; min-height:40px;"></div>
-          <div style="margin-top:20px; padding-top:20px; border-top:1px dashed var(--border-color); display:flex; gap:10px;">
-            <button class="main-btn" onclick="newCharacter()">➕ 新角色</button>
-            <button class="main-btn" onclick="saveCurrentChar()">💾 儲存</button>
-            <button class="sec-btn" onclick="deleteCurrentChar()" style="margin-left:auto; color:#ef4444; border-color:#fca5a5;">🗑 刪除</button>
+
+          <div style="margin-top:20px; border-top:1px dashed var(--border-color); padding-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="newCharacter()">➕ 新角色</button>
+            <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
+            <button type="button" class="button-secondary" onclick="deleteCurrentChar()" style="margin-left:auto;">🗑 刪除</button>
           </div>
         </div>
       </div>
 
-      <!-- 角色資訊 -->
       <div class="section" id="sec-info">
         <h2>
           <span>💁‍♀️ 角色資訊</span>
-          <button class="icon-btn" onclick="toggleSectionCollapse('sec-info')">⇕</button>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="field-group">
-            <div class="label-row">
-                <label>角色名稱 <span style="color:red">*</span> (15字)</label>
-                <button class="icon-btn" onclick="clearOne('charName')" title="清空">🗑️</button>
+          <div class="label-row">
+            <label>角色名稱 <span style="color:red;font-size:0.8em;">*</span></label>
+            <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
+          </div>
+          <input id="charName" type="text" placeholder="例如：林月如" />
+
+          <div class="label-row">
+            <label>角色分類</label>
+            <button type="button" class="button-mini" onclick="clearOne('charCategory')">清空</button>
+          </div>
+          <input id="charCategory" type="text" placeholder="例如：現代、奇幻、OC..." />
+
+          <div class="label-row">
+            <div style="flex:1; margin-right:16px;">
+               <label>年齡 <span style="color:red;font-size:0.8em;">*</span></label>
+               <input id="charAge" type="text" data-maxlength="15" placeholder="例如：18歲" />
             </div>
-            <input id="charName" type="text" data-maxlength="15" placeholder="例如：林月如" oninput="updateChatPreview()" />
-          </div>
-
-          <div style="display:flex; gap:16px;">
-            <div class="field-group" style="flex:1;">
-               <label style="margin-bottom:6px;">年齡 (15字)</label>
-               <input id="charAge" type="text" data-maxlength="15" placeholder="18歲" />
-            </div>
-            <div class="field-group" style="flex:1;">
-               <label style="margin-bottom:6px;">職業 (15字)</label>
-               <input id="charJob" type="text" data-maxlength="15" placeholder="學生" />
+            <div style="flex:1;">
+               <label>職業 <span style="color:red;font-size:0.8em;">*</span></label>
+               <input id="charJob" type="text" data-maxlength="15" placeholder="例如：學生" />
             </div>
           </div>
-          
-          <div class="field-group">
-             <label style="margin-bottom:6px;">角色分類</label>
-             <input id="charCategory" type="text" placeholder="現代、奇幻..." />
-          </div>
 
-          <div class="field-group">
-             <div class="label-row">
-                 <label>一句話介紹 <span style="color:red">*</span> (80字)</label>
-             </div>
-             <textarea id="charQuote" data-maxlength="80" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea>
+          <div class="label-row">
+            <label>來自角色的一句話 <span style="color:red;font-size:0.8em;">*</span></label>
+            <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
           </div>
+          <textarea id="charQuote" style="min-height:80px;" data-maxlength="80" placeholder="顯示在列表的短介紹"></textarea>
 
-          <div class="field-group">
-             <div class="label-row">
-                 <label>敘述 (700字)</label>
-             </div>
-             <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
+          <div class="label-row">
+             <label>敘述 (Description)</label>
+            <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
           </div>
+          <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
 
-          <div class="field-group">
-             <label style="margin-bottom:6px;">標籤 (輸入後按 Enter)</label>
-             <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
-                <input type="text" id="tagInput" class="tags-input" placeholder="輸入標籤..." />
-             </div>
-             <input type="hidden" id="charTags" />
+          <div class="label-row">
+            <label>標籤 (Hashtag)</label>
+            <button type="button" class="button-mini" onclick="clearOne('charTags')">清空</button>
           </div>
-          
-          <div class="field-group">
-             <label style="margin-bottom:6px;">創作者筆記 (200字)</label>
-             <textarea id="creatorNote" data-maxlength="200" style="min-height:80px;"></textarea>
+          <input id="charTags" type="text" placeholder="用空白或逗號分隔，如：傲嬌, 雙馬尾" />
+
+          <div class="label-row">
+            <label>創作者筆記</label>
+            <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
           </div>
+          <textarea id="creatorNote" style="min-height:80px;" data-maxlength="200"></textarea>
         </div>
       </div>
-      
+
       <div class="section" id="sec-gender">
-         <h2><span>🚻 性別</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-gender')">⇕</button></h2>
+         <h2>
+          <span>🚻 性別</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕</button>
+        </h2>
         <div class="section-body">
-          <select id="gender"><option value="未設置" selected>未設置</option><option value="男性">男性</option><option value="女性">女性</option><option value="無性別">無性別</option></select>
+          <select id="gender">
+            <option value="未設置" selected>未設置</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+          </select>
         </div>
       </div>
 
-      <!-- 核心設定 -->
       <div class="section" id="sec-basic">
         <h2>
-            <span>🌏 基本資訊 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-basic')">⇕</button>
+          <span>🌏 一、基本資訊</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕</button>
         </h2>
         <div class="section-body">
-           <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button></div>
-          <textarea id="basicInfo" data-maxlength="700" placeholder="必填。世界觀、背景故事..."></textarea>
+          <p class="sub-label">必填。建議 ≤700字。描述角色背景、世界觀、時間點、與玩家的關係等。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
+              <select data-template-type="basicInfo"
+                      onchange="applyTemplateSingle('basicInfo','basicInfo',this)"
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
+              </select>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
+          </div>
+          <textarea id="basicInfo" data-maxlength="700"></textarea>
         </div>
       </div>
 
       <div class="section" id="sec-personality">
         <h2>
-            <span>💗 性格特質 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
-        <div class="section-body">
-          <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('personality','personality')">存為模板</button></div>
-          <textarea id="personality" data-maxlength="700" placeholder="必填。內在性格、對玩家的態度..."></textarea>
-        </div>
-      </div>
-      
-      <div class="section" id="sec-speech">
-        <h2>
-            <span>🗣️ 說話風格 (700字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
-        <div class="section-body">
-          <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button></div>
-          <textarea id="speechStyle" data-maxlength="700" placeholder="必填。口頭禪、語氣、用詞習慣..."></textarea>
-        </div>
-      </div>
-      
-      <div class="section" id="sec-prompt">
-        <h2><span>🧠 Prompt 優化</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
-        <div class="section-body">
-          <div class="field-group">
-              <label style="margin-bottom:6px;">使用模型</label>
-              <select id="modelType" onchange="updatePromptTokenInfo()">
-                <option value="gemini-3-pro">Gemini 3 Pro (10醬)</option>
-                <option value="claude-sonnet-4-5">Claude Sonnet 4.5 (15醬)</option>
-                <option value="claude-haiku-4-5">Claude Haiku 4.5 (5醬)</option>
-              </select>
-          </div>
-          <div class="field-group">
-             <div class="label-row">
-                 <label>System Role</label>
-             </div>
-             <textarea id="promptRole" placeholder="系統指令..." oninput="updatePromptTokenInfo()"></textarea>
-          </div>
-          <div class="field-group">
-             <label style="margin-bottom:6px;">Response Guideline</label>
-             <textarea id="promptGuideline" placeholder="回應規則..." oninput="updatePromptTokenInfo()"></textarea>
-          </div>
-          <!-- Token 顯示區 -->
-          <div style="background:rgba(var(--focus-rgb), 0.08); padding:12px; border-radius:12px; border:1px solid rgba(var(--focus-rgb), 0.2);">
-            <div id="promptTokenInfo">
-                預估 Token：0<br>
-                果醬花費：10 醬 (基礎 10 + 超額 0)
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 遊戲管理 -->
-      <div class="section" id="sec-game-mgr">
-        <h2>
-            <span>🎮 遊戲管理</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-game-mgr')">⇕</button>
+          <span>💗 二、性格</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕</button>
         </h2>
         <div class="section-body">
-          <h3 style="font-size:0.95rem; font-weight:700; color:var(--focus-color); margin-bottom:12px;">1. 遊戲介紹</h3>
-          <div class="field-group">
-              <label style="margin-bottom:6px;">遊戲標題 (30字)</label>
-              <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入遊戲標題..." oninput="saveCurrentChar()" />
+           <p class="sub-label">必填。建議 ≤700字。描述對普通人 vs 對玩家的差異，或內心活動。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
+              <select data-template-type="personality"
+                      onchange="applyTemplateSingle('personality','personality',this)"
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
+              </select>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('personality','personality')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
           </div>
-          <div class="field-group">
-              <label style="margin-bottom:6px;">遊戲介紹 (30字)</label>
-              <textarea id="gameIntro" data-maxlength="30" style="min-height:60px;" placeholder="簡短介紹..." oninput="saveCurrentChar()"></textarea>
-          </div>
+          <textarea id="personality" data-maxlength="700"></textarea>
+        </div>
+      </div>
 
-          <h3 style="font-size:0.95rem; font-weight:700; color:var(--focus-color); margin:30px 0 12px 0;">2. 私密物語</h3>
-          <div class="tabs-header">
-            <button class="tab-btn active" onclick="switchStoryTab(0)">熟人</button>
-            <button class="tab-btn" onclick="switchStoryTab(1)">朋友</button>
-            <button class="tab-btn" onclick="switchStoryTab(2)">心動</button>
-            <button class="tab-btn" onclick="switchStoryTab(3)">戀人</button>
-            <button class="tab-btn" onclick="switchStoryTab(4)">結婚</button>
+      <div class="section" id="sec-speech">
+        <h2>
+          <span>🗣️ 三、說話風格與習慣</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕</button>
+        </h2>
+        <div class="section-body">
+          <p class="sub-label">必填。建議 ≤700字。例如：語氣、口頭禪、對玩家的稱呼。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
+              <select data-template-type="speechStyle"
+                      onchange="applyTemplateSingle('speechStyle','speechStyle',this)"
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
+              </select>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
           </div>
-          <div id="story-container"></div>
+          <textarea id="speechStyle" data-maxlength="700"></textarea>
+        </div>
+      </div>
+
+      <div class="section" id="sec-prompt">
+        <h2>
+          <span>🧠 模型與 Prompt 設定</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row"><label>使用模型</label></div>
+          <select id="modelType" onchange="updatePromptTokenInfo(); saveCurrentChar();">
+            <option value="claude-haiku" data-basecost="5">Claude Haiku（起價 5 果醬）</option>
+            <option value="claude-sonnet" data-basecost="15">Claude Sonnet（起價 15 果醬）</option>
+            <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
+          </select>
+
+          <div class="label-row" style="margin-top:20px;">
+            <label>Role（系統提示）</label>
+            <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
+          </div>
+          <textarea id="promptRole" data-maxlength="2000" placeholder="例如：你是一位只對玩家溫柔、會主動帶話題的戀愛角色……"></textarea>
+
+          <div class="label-row">
+            <label>Response Guideline（回應規則）</label>
+            <button type="button" class="button-mini" onclick="clearOne('promptGuideline')">清空</button>
+          </div>
+          <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI……"></textarea>
+
+          <div style="background:rgba(0,0,0,0.03); padding:16px; border-radius:12px; margin-top:16px;">
+            <div id="promptTokenInfo" class="sub-label" style="color:var(--text-main);"></div>
+            <div id="promptJamInfo" class="sub-label" style="font-weight:700; margin-top:4px;"></div>
+          </div>
         </div>
       </div>
 
       <div class="section" id="sec-first">
-        <h2><span>🎬 開場與對話 (800字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
+        <h2>
+          <span>🎬 開場與對話</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button>
+        </h2>
         <div class="section-body">
-          <div class="field-group">
-              <div class="label-row">
-                  <label>第一次聊天場景</label>
-              </div>
-              <textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
+          <div class="label-row">
+            <label>第一次聊天場景</label>
+            <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
           </div>
-          <div class="field-group">
-              <div class="label-row">
-                  <label>角色對話範例</label>
-              </div>
-              <textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
+          <textarea id="firstScene" data-maxlength="800" placeholder="設定開場情境（旁白）..." oninput="updateChatPreview()"></textarea>
+
+          <div class="label-row">
+            <label>角色對話範例</label>
+            <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
           </div>
+          <textarea id="sampleDialogue" data-maxlength="800" placeholder="角色可能會說的話..." oninput="updateChatPreview()"></textarea>
         </div>
       </div>
-      
+
       <div class="section" id="sec-fav">
         <h2>
-            <span>🎀 喜好與生日 (50字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
+          <span>🎀 喜好與生日</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button>
+        </h2>
         <div class="section-body">
-          <div class="field-group"><input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" /></div>
-          <div class="field-group"><input id="dislikes" type="text" data-maxlength="50" placeholder="討厭的東西" /></div>
-          <div class="field-group"><input id="birthday" type="date" /></div>
+          <div class="label-row">
+            <label>喜歡的東西</label>
+            <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
+          </div>
+          <input id="likes" type="text" data-maxlength="50" />
+
+          <div class="label-row">
+            <label>不喜歡的東西</label>
+            <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
+          </div>
+          <input id="dislikes" type="text" data-maxlength="50" />
+
+          <div class="label-row">
+            <label>生日</label>
+            <button type="button" class="button-mini" onclick="clearOne('birthday')">清空</button>
+          </div>
+          <input id="birthday" type="date" style="max-width:200px;" />
         </div>
       </div>
-      
+
       <div class="section" id="sec-extra">
-        <h2><span>📌 附加資訊 (500字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
+        <h2>
+          <span>📌 附加資訊</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕</button>
+        </h2>
         <div class="section-body">
-            <div id="extraContainer"></div>
-            <button class="sec-btn" onclick="addExtra()">＋ 新增一筆</button>
+          <p class="sub-label">最多 10 筆，可用於補充世界觀細節。</p>
+          <div id="extraContainer"></div>
+          
+          <div style="margin-top:16px;">
+              <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+              <button type="button" class="button-secondary" onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
+          </div>
         </div>
       </div>
-      
+
       <div class="section" id="sec-event">
-        <h2><span>📚 創作者事件 (2000字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
+        <h2>
+          <span>📚 創作者事件</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕</button>
+        </h2>
         <div class="section-body">
-            <div id="eventContainer"></div>
-            <button class="sec-btn" onclick="addEvent()">＋ 新增事件</button>
+          <p class="sub-label">最多 20 筆，用於紀錄故事片段。</p>
+          <div id="eventContainer"></div>
+
+          <div style="margin-top:16px;">
+            <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+            <button type="button" class="button-secondary" onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
+          </div>
         </div>
       </div>
 
       <div class="section" id="sec-output">
-        <h2><span>📝 輸出與預覽</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-output')">⇕</button></h2>
+        <h2>
+          <span>📝 輸出與預覽</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕</button>
+        </h2>
         <div class="section-body">
-           <div style="display:flex; justify-content:center; margin-bottom:30px;">
-             <button class="main-btn" style="width:100%; font-size:1.1rem;" onclick="generateMarkdown()">✨ 生成 Markdown 腳本</button>
-           </div>
-           <div class="chat-container">
-            <div class="chat-header"><span id="chatHeaderName">角色名稱</span></div>
+          <div class="actions-row" style="margin-bottom:24px;">
+             <button onclick="generateMarkdown()" style="width:100%; justify-content:center; padding:14px; font-size:1.1rem;">✨ 生成 Markdown 角色卡</button>
+          </div>
+          
+          <h3 style="margin-top:30px; border-left:4px solid var(--focus-color); padding-left:12px;">💬 情境模擬預覽</h3>
+          <p class="sub-label">這是根據你填寫的「第一次聊天場景」與「角色對話」生成的模擬畫面。</p>
+          
+          <div class="chat-container">
+            <div class="chat-header">
+              <span id="chatHeaderName">角色名稱</span>
+            </div>
             <div class="chat-body">
-              <div class="msg-system" id="previewScene">...</div>
-              <div class="msg-row"><div class="msg-avatar" id="previewAvatar">A</div><div class="msg-bubble" id="previewDialogue">...</div></div>
+              <div class="msg-system" id="previewScene">
+                （等待輸入場景...）
+              </div>
+              <div class="msg-row">
+                <div class="msg-avatar" id="previewAvatar">A</div>
+                <div class="msg-bubble" id="previewDialogue">
+                  （等待輸入對話...）
+                </div>
+              </div>
             </div>
           </div>
-          <div style="margin-top:30px; display:flex; gap:10px; flex-wrap:wrap;">
-             <button class="main-btn" style="background:#4b5563;" onclick="saveSelfHtml()">💾 儲存為獨立 App 檔 (推薦)</button>
-             <button class="sec-btn" onclick="downloadTxt()">⬇ 下載 .txt</button>
-             <button class="sec-btn" onclick="exportAllData()">📦 備份 JSON</button>
-             <label class="sec-btn" style="cursor:pointer; display:flex; align-items:center; margin:0;">
-                📂 匯入<input id="allFile" type="file" accept=".json,.html" style="display:none;" onchange="importAllData()" />
-             </label>
+
+          <div style="margin-top:32px; display:flex; flex-wrap:wrap; gap:20px;">
+             <div style="flex:1; min-width:280px;">
+                <label style="display:block; margin-bottom:8px;">單一角色操作 (.txt)</label>
+                <div style="display:flex; gap:10px;">
+                   <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 .txt</button>
+                   <label class="button-secondary" style="cursor:pointer; margin:0;">
+                      📂 匯入 .txt
+                      <input id="txtFile" type="file" accept=".txt" style="display:none;" onchange="importTxt()" />
+                   </label>
+                </div>
+             </div>
+             
+             <div style="flex:1; min-width:280px;">
+                <label style="display:block; margin-bottom:8px;">完整備份 (.json)</label>
+                <div style="display:flex; gap:10px;">
+                   <button class="button-secondary" type="button" onclick="exportAllData()">📦 備份全部</button>
+                   <label class="button-secondary" style="cursor:pointer; margin:0;">
+                      📥 還原備份
+                      <input id="allFile" type="file" accept=".json" style="display:none;" onchange="importAllData()" />
+                   </label>
+                </div>
+             </div>
           </div>
+
+          <h3 style="margin-top:32px; font-size:1rem;">🖨 輸出結果 (Markdown)</h3>
           <div id="output"></div>
         </div>
       </div>
-      
+
       <div class="section" id="sec-template-center">
-        <h2><span>🧰 模板管理</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-template-center')">⇕</button></h2>
-        <div class="section-body"><select id="tplFilter" onchange="renderTemplateManager()"><option value="">全部類型</option></select><div id="tplManagerList" style="margin-top:16px;"></div></div>
+        <h2>
+          <span>🧰 模板管理中心</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-template-center')">⇕</button>
+        </h2>
+        <div class="section-body">
+          <div class="label-row">
+            <label>篩選模板類型：</label>
+            <select id="tplFilter" onchange="renderTemplateManager()" style="width:auto;">
+              <option value="">全部類型</option>
+              <option value="basicInfo">一、基本資訊</option>
+              <option value="personality">二、性格</option>
+              <option value="speechStyle">三、說話風格與習慣</option>
+              <option value="extra">附加資訊</option>
+              <option value="event">創作者事件</option>
+            </select>
+          </div>
+          <div id="tplManagerList"></div>
+        </div>
       </div>
-      
+
       <div class="section" id="sec-layout">
-        <h2><span>📱 版面切換</span></h2>
-        <div class="section-body"><div style="display:flex; gap:10px;"><button class="sec-btn" onclick="setLayout('desktop')">💻 電腦版</button><button class="sec-btn" onclick="setLayout('mobile')">📱 手機版</button></div></div>
+        <h2>
+          <span>📱 版面切換</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-layout')">⇕</button>
+        </h2>
+        <div class="section-body">
+          <div style="display:flex; gap:12px;">
+              <button type="button" class="button-secondary" onclick="setLayout('desktop')">💻 電腦版</button>
+              <button type="button" class="button-secondary" onclick="setLayout('mobile')">📱 手機版</button>
+          </div>
+        </div>
       </div>
+
     </main>
   </div>
-
+  
   <button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
-  <!-- 這裡存放應用程式狀態 -->
-  <script id="app-state" type="application/json">/*__DATA__*/</script>
 
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v16_pure'; 
+    const STORAGE_KEY = 'qing_char_multi_v1';
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
-    const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
-    
-    const STORY_STAGES = ['熟人階段', '朋友階段', '心動階段', '戀人階段', '結婚階段'];
+    const TEMPLATE_TYPE_LABELS = {
+      basicInfo: '一、基本資訊',
+      personality: '二、性格',
+      speechStyle: '三、說話風格與習慣',
+      extra: '附加資訊',
+      event: '創作者事件'
+    };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      initLayoutByWidth();
-      initStoryEditors(); 
+    /* ========= Toast Notification ========= */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
       
-      // 檢查是否有嵌入資料 (單檔模式)
-      const stateEl = document.getElementById('app-state');
-      if(stateEl && stateEl.textContent.trim() !== '/*__DATA__*/' && stateEl.textContent.trim().length > 0) {
-          try {
-              const embeddedData = JSON.parse(stateEl.textContent);
-              setStore(embeddedData);
-              showToast("已載入檔案內建資料");
-          } catch(e) { console.error("Load embedded failed", e); }
+      let icon = '✅';
+      if(type === 'error') icon = '❌';
+      if(type === 'warn') icon = '⚠️';
+      
+      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      // 3秒後自動移除
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        toast.addEventListener('animationend', () => {
+          toast.remove();
+        });
+      }, 3000);
+    }
+
+    /* ========= 主題切換 ========= */
+    function changeTheme(theme) {
+      const body = document.body;
+      body.classList.remove(
+        'theme-pink','theme-cream','theme-mint',
+        'theme-lavender','theme-sky','theme-lemon',
+        'theme-grey','theme-black'
+      );
+      body.classList.add(`theme-${theme}`);
+    }
+
+    /* ========= 版面切換 ========= */
+    function setLayout(mode) {
+      const body = document.body;
+      body.classList.remove('layout-desktop','layout-mobile');
+      body.classList.add(`layout-${mode}`);
+    }
+
+    function initLayoutByWidth() {
+      if (window.innerWidth <= 850) {
+        setLayout('mobile');
+      } else {
+        setLayout('desktop');
+      }
+    }
+    
+    function toggleSidebar() {
+      const sb = document.querySelector('.sidebar');
+      if (!sb) return;
+      sb.classList.toggle('is-collapsed');
+      const btn = sb.querySelector('.sidebar-toggle-btn');
+      if (btn) {
+         btn.innerHTML = sb.classList.contains('is-collapsed') ? '▶' : '◀';
+      }
+    }
+
+    /* ========= 側邊欄捲動 & 區塊收合 ========= */
+    function scrollToSection(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      expandSection(sectionId);
+      const yOffset = -24; 
+      const y = sec.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
+
+    function toggleSectionCollapse(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      sec.classList.toggle('collapsed');
+    }
+
+    function expandSection(sectionId) {
+      const sec = document.getElementById(sectionId);
+      if (!sec) return;
+      sec.classList.remove('collapsed');
+    }
+    
+    /* ========= 聊天預覽 ========= */
+    function updateChatPreview() {
+        const name = document.getElementById('charName').value || "角色";
+        const scene = document.getElementById('firstScene').value || "（等待輸入場景...）";
+        const dialogue = document.getElementById('sampleDialogue').value || "（等待輸入對話...）";
+        
+        document.getElementById('chatHeaderName').textContent = name;
+        document.getElementById('previewAvatar').textContent = name.charAt(0);
+        
+        // 處理換行顯示
+        document.getElementById('previewScene').innerHTML = scene.replace(/\n/g, '<br>');
+        document.getElementById('previewDialogue').innerHTML = dialogue.replace(/\n/g, '<br>');
+    }
+
+    /* ========= 工具 ========= */
+    function limitText(text, max) {
+      text = text.trim();
+      if (text.length > max) {
+        return text.slice(0, max);
+      }
+      return text;
+    }
+
+    function initEmptyTemplates() {
+      const obj = {};
+      TEMPLATE_TYPES.forEach(t => obj[t] = []);
+      return obj;
+    }
+
+    function ensureTemplateTypes(tpls) {
+      TEMPLATE_TYPES.forEach(t => {
+        if (!Array.isArray(tpls[t])) tpls[t] = [];
+      });
+    }
+
+    function getStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') {
+          return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+        }
+        if (!parsed.chars) parsed.chars = {};
+        if (!parsed.templates) parsed.templates = initEmptyTemplates();
+        ensureTemplateTypes(parsed.templates);
+        return parsed;
+      } catch (e) {
+        console.warn('讀取存檔失敗，重置 store：', e);
+        return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+      }
+    }
+
+    function setStore(store) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch (e) {
+        console.warn('寫入存檔失敗：', e);
+      }
+    }
+
+    function newCharId() {
+      return 'char_' + Date.now();
+    }
+
+    /* ========= 模板相關 ========= */
+    function getTemplatesByType(type) {
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+      return store.templates[type] || [];
+    }
+
+    function refreshTemplateSelect(type) {
+      const selects = document.querySelectorAll(`select[data-template-type="${type}"]`);
+      const list = getTemplatesByType(type);
+      selects.forEach(sel => {
+        const currentValue = sel.value;
+        sel.innerHTML = '<option value="">✨ 套用模板…</option>';
+        list.forEach(tpl => {
+          const opt = document.createElement('option');
+          opt.value = tpl.id;
+          opt.textContent = tpl.name;
+          sel.appendChild(opt);
+        });
+        if (list.some(t => t.id === currentValue)) {
+          sel.value = currentValue;
+        }
+      });
+    }
+
+    function refreshAllTemplateSelects() {
+      TEMPLATE_TYPES.forEach(t => refreshTemplateSelect(t));
+    }
+
+    function saveTemplate(type, text) {
+      const content = (text || '').trim();
+      if (!content) {
+        showToast("目前欄位是空的，無法存成模板喔～", "warn");
+        return;
+      }
+      const name = prompt("請輸入這個模板的名稱（例如：標準世界觀模板）：");
+      if (!name) return;
+
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+
+      store.templates[type].push({
+        id: 'tpl_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+        name: name.trim(),
+        text: content
+      });
+
+      setStore(store);
+      refreshTemplateSelect(type);
+      renderTemplateManager();
+      showToast(`已儲存模板：「${name.trim()}」`);
+    }
+
+    function saveTemplateFromField(type, textareaId) {
+      const el = document.getElementById(textareaId);
+      if (!el) return;
+      saveTemplate(type, el.value);
+    }
+
+    function saveTemplateFromDynamicBlock(type, blockEl) {
+      if (!blockEl) return;
+      const textarea = blockEl.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!textarea) return;
+      saveTemplate(type, textarea.value);
+    }
+
+    function applyTemplateSingle(type, textareaId, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const ta = document.getElementById(textareaId);
+      if (!ta) return;
+      ta.value = tpl.text;
+      saveCurrentChar();
+      if (textareaId === 'promptRole' || textareaId === 'promptGuideline') {
+        updatePromptTokenInfo();
+      }
+      updateFieldCounter(ta);
+      selectEl.value = ""; // Reset select
+      showToast("已套用模板！");
+    }
+
+    function applyTemplateDynamic(type, selectEl) {
+      const tplId = selectEl.value;
+      if (!tplId) return;
+
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      const list = store.templates[type] || [];
+      const tpl = list.find(t => t.id === tplId);
+      if (!tpl) return;
+
+      const block = selectEl.closest(type === 'extra' ? '.extra-block' : '.event-block');
+      if (!block) return;
+      const ta = block.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
+      if (!ta) return;
+
+      ta.value = tpl.text;
+      saveCurrentChar();
+      updateFieldCounter(ta);
+      selectEl.value = "";
+      showToast("已套用模板！");
+    }
+
+    /* ========= 模板管理中心渲染 ========= */
+    function renderTemplateManager() {
+      const container = document.getElementById('tplManagerList');
+      if (!container) return;
+
+      const store = getStore();
+      if (!store.templates) store.templates = initEmptyTemplates();
+      ensureTemplateTypes(store.templates);
+
+      const filterSel = document.getElementById('tplFilter');
+      const filter = filterSel ? filterSel.value : '';
+
+      container.innerHTML = '';
+      let total = 0;
+
+      TEMPLATE_TYPES.forEach(type => {
+        if (filter && filter !== type) return;
+        const list = store.templates[type] || [];
+        if (!list.length) return;
+
+        const title = document.createElement('h3');
+        title.className = 'tpl-type-title';
+        title.style.fontSize = "1rem";
+        title.style.marginTop = "20px";
+        title.textContent = `${TEMPLATE_TYPE_LABELS[type]}（${list.length} 筆）`;
+        container.appendChild(title);
+
+        list.forEach(tpl => {
+          total++;
+          const card = document.createElement('div');
+          card.className = 'tpl-card';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'tpl-name';
+          nameEl.textContent = tpl.name || '（未命名模板）';
+
+          const metaEl = document.createElement('div');
+          metaEl.className = 'tpl-meta';
+          metaEl.textContent = `類型：${TEMPLATE_TYPE_LABELS[type]}`;
+
+          const previewEl = document.createElement('div');
+          previewEl.className = 'tpl-preview';
+          const txt = tpl.text || '';
+          previewEl.textContent = txt;
+
+          const btnRow = document.createElement('div');
+          btnRow.style.marginTop = "12px";
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'button-mini';
+          delBtn.textContent = '刪除此模板';
+          delBtn.onclick = () => deleteTemplate(type, tpl.id);
+          btnRow.appendChild(delBtn);
+
+          card.appendChild(nameEl);
+          card.appendChild(metaEl);
+          card.appendChild(previewEl);
+          card.appendChild(btnRow);
+
+          container.appendChild(card);
+        });
+      });
+
+      if (!total) {
+        container.innerHTML = '<p class="sub-label" style="text-align:center; padding:20px;">目前尚未建立任何模板，可以在各欄位按「存為模板」建立。</p>';
+      }
+    }
+
+    function deleteTemplate(type, id) {
+      if (!confirm('確定要刪除此模板嗎？刪除後無法復原喔～')) return;
+      const store = getStore();
+      if (!store.templates) return;
+      ensureTemplateTypes(store.templates);
+      store.templates[type] = (store.templates[type] || []).filter(t => t.id !== id);
+      setStore(store);
+      refreshTemplateSelect(type);
+      renderTemplateManager();
+      showToast("模板已刪除");
+    }
+
+    /* ========= 動態欄位：附加資訊 & 事件 ========= */
+    function renumberExtras() {
+      const blocks = document.querySelectorAll(".extra-block");
+      blocks.forEach((block, idx) => {
+        const labels = block.querySelectorAll("label");
+        if (labels.length >= 2) {
+          labels[1].textContent = `附加資訊 ${idx + 1}：`;
+        }
+      });
+    }
+
+    function renumberEvents() {
+      const blocks = document.querySelectorAll(".event-block");
+      blocks.forEach((block, idx) => {
+        const labels = block.querySelectorAll("label");
+        if (labels.length >= 2) {
+          labels[1].textContent = `創作者事件 ${idx + 1}：`;
+        }
+      });
+    }
+
+    function addExtra() {
+      const current = document.querySelectorAll(".extra-block").length;
+      if (current >= EXTRA_MAX) {
+        showToast("附加資訊最多只能 10 筆喔～", "warn");
+        return;
+      }
+      const container = document.getElementById("extraContainer");
+
+      const block = document.createElement("div");
+      block.className = "extra-block";
+
+      // 第一行：標題列
+      const titleRow = document.createElement("div");
+      titleRow.className = "label-row";
+
+      const titleLabel = document.createElement("label");
+      titleLabel.textContent = "標題";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.className = "extra-title-field";
+      titleInput.dataset.maxlength = "50";
+      titleInput.style.flex = "1";
+      titleInput.placeholder = "選填，例如：特殊能力";
+      titleInput.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(titleInput);
+      });
+
+      titleRow.appendChild(titleLabel);
+      titleRow.appendChild(titleInput);
+
+      // 第二行：內容標籤 + 模板/刪除
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
+      const label = document.createElement("label");
+      label.textContent = "附加資訊內容";
+
+      const controls = document.createElement("div");
+      controls.className = "label-controls";
+      controls.style.display = "flex";
+      controls.style.gap = "8px";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "button-mini";
+      tplSelect.style.width = "auto";
+      tplSelect.style.margin = "0";
+      tplSelect.dataset.templateType = "extra";
+      tplSelect.innerHTML = '<option value="">✨ 套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('extra', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('extra', block);
+      };
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-mini";
+      delBtn.textContent = "刪除";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberExtras();
+        saveCurrentChar();
+        updateAllFieldCounters();
+      };
+
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(controls);
+
+      // 內容欄位
+      const textarea = document.createElement("textarea");
+      textarea.className = "extra-field";
+      textarea.dataset.maxlength = "500";
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
+
+      block.appendChild(titleRow);
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberExtras();
+      saveCurrentChar();
+      refreshTemplateSelect('extra');
+      setupFieldUtils(block); 
+    }
+
+    function addEvent() {
+      const current = document.querySelectorAll(".event-block").length;
+      if (current >= EVENT_MAX) {
+        showToast("創作者事件最多只能 20 筆喔～", "warn");
+        return;
+      }
+      const container = document.getElementById("eventContainer");
+
+      const block = document.createElement("div");
+      block.className = "event-block";
+
+      // 第一行：標題列
+      const titleRow = document.createElement("div");
+      titleRow.className = "label-row";
+
+      const titleLabel = document.createElement("label");
+      titleLabel.textContent = "標題";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.className = "event-title-field";
+      titleInput.dataset.maxlength = "50";
+      titleInput.style.flex = "1";
+      titleInput.placeholder = "選填，例如：初次相遇";
+      titleInput.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(titleInput);
+      });
+
+      titleRow.appendChild(titleLabel);
+      titleRow.appendChild(titleInput);
+
+      // 第二行：內容標籤 + 模板/刪除
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
+      const label = document.createElement("label");
+      label.textContent = "事件內容";
+
+      const controls = document.createElement("div");
+      controls.style.display = "flex";
+      controls.style.gap = "8px";
+
+      const tplSelect = document.createElement("select");
+      tplSelect.className = "button-mini";
+      tplSelect.style.width = "auto";
+      tplSelect.style.margin = "0";
+      tplSelect.dataset.templateType = "event";
+      tplSelect.innerHTML = '<option value="">✨ 套用模板…</option>';
+      tplSelect.addEventListener('change', function () {
+        applyTemplateDynamic('event', this);
+      });
+
+      const saveTplBtn = document.createElement("button");
+      saveTplBtn.type = "button";
+      saveTplBtn.className = "button-mini";
+      saveTplBtn.textContent = "存為模板";
+      saveTplBtn.onclick = function () {
+        saveTemplateFromDynamicBlock('event', block);
+      };
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-mini";
+      delBtn.textContent = "刪除";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberEvents();
+        saveCurrentChar();
+        updateAllFieldCounters();
+      };
+
+      controls.appendChild(tplSelect);
+      controls.appendChild(saveTplBtn);
+      controls.appendChild(delBtn);
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(controls);
+
+      // 內容欄位
+      const textarea = document.createElement("textarea");
+      textarea.className = "event-field";
+      textarea.dataset.maxlength = "2000";
+      textarea.addEventListener('input', () => {
+        saveCurrentChar();
+        updateFieldCounter(textarea);
+      });
+
+      block.appendChild(titleRow);
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberEvents();
+      saveCurrentChar();
+      refreshTemplateSelect('event');
+      setupFieldUtils(block);
+    }
+
+    /* ========= 每個欄位：字數顯示 + 複製（有 id 的欄位）========= */
+    function copyFieldText(idOrEl) {
+      let el;
+      if (typeof idOrEl === 'string') {
+          el = document.getElementById(idOrEl);
+      } else {
+          const wrapper = idOrEl.closest('.field-utils');
+          if(wrapper) {
+              const prev = wrapper.previousElementSibling;
+              if(prev && (prev.tagName === 'INPUT' || prev.tagName === 'TEXTAREA')) {
+                  el = prev;
+              }
+          }
+      }
+      
+      if (!el) return;
+      const text = el.value || el.innerText || "";
+      if (!text) {
+        showToast('這個欄位目前是空的喔～', 'warn');
+        return;
       }
 
-      loadInitialFromStore();
-      setupAutoSave();
-      setupFieldUtils();
-      initTagInput();
-      updateProgress();
-      updatePromptTokenInfo(); // 初始化 Token
-      
-      let resizeTimer;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(initLayoutByWidth, 200);
-      });
-    });
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+               showToast('已複製內容！');
+          })
+          .catch(err => {
+            console.error(err);
+            fallbackCopy(el);
+          });
+      } else {
+        fallbackCopy(el);
+      }
+    }
 
-    /* ========= 單檔儲存核心 ========= */
-    function saveSelfHtml() {
-        const currentStore = getStore();
-        const dataStr = JSON.stringify(currentStore);
-        let htmlContent = document.documentElement.outerHTML;
+    function fallbackCopy(el) {
+      try {
+        el.select();
+        document.execCommand('copy');
+        showToast('已複製內容');
+      } catch (e) {
+        showToast('複製失敗，可能被瀏覽器擋住了', 'error');
+      }
+    }
+
+    function updateFieldCounter(el) {
+      let wrapper = el.nextElementSibling;
+      if (!wrapper || !wrapper.classList || !wrapper.classList.contains('field-utils')) {
+        return;
+      }
+      const counterSpan = wrapper.querySelector('.field-counter');
+      if (!counterSpan) return;
+
+      const max = el.dataset.maxlength ? parseInt(el.dataset.maxlength, 10) : null;
+      const len = el.value ? el.value.length : 0;
+      if (max) {
+        counterSpan.textContent = `${len} / ${max}`;
+        if(len >= max) counterSpan.style.color = "#ff4d4f";
+        else counterSpan.style.color = "inherit";
+      } else {
+        counterSpan.textContent = `${len} 字`;
+      }
+    }
+
+    function updateAllFieldCounters() {
+      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(updateFieldCounter);
+    }
+
+    function setupFieldUtils(scope = document) {
+      const fields = scope.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+      fields.forEach(el => {
+        const next = el.nextElementSibling;
+        if (next && next.classList && next.classList.contains('field-utils')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'field-utils';
+
+        const counter = document.createElement('span');
+        counter.className = 'field-counter';
         
-        const scriptOpen = '<script id="app-state" type="application/json">';
-        const scriptClose = '<' + '/script>'; 
-        const regex = /<script id="app-state" type="application\/json">([\s\S]*?)<\/script>/;
-        const safeData = dataStr.replace(/<\/script>/g, '<\\/script>'); 
-        const newScriptTag = `${scriptOpen}${safeData}${scriptClose}`;
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'button-mini field-copy';
+        copyBtn.textContent = '複製';
+        copyBtn.style.margin = "0";
+        copyBtn.onclick = (e) => copyFieldText(el);
+
+        wrapper.appendChild(counter);
+        wrapper.appendChild(copyBtn);
+        el.insertAdjacentElement('afterend', wrapper);
         
-        if (regex.test(htmlContent)) {
-            htmlContent = htmlContent.replace(regex, newScriptTag);
+        updateFieldCounter(el);
+      });
+    }
+
+    /* ========= 表單資料收集 & 填回 ========= */
+    function collectFormData() {
+      const fieldIds = [
+        'charName','charCategory','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday','gender',
+        'modelType','promptRole','promptGuideline'
+      ];
+
+      const data = { fields: {}, extras: [], events: [] };
+
+      fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT') {
+          data.fields[id] = el.value || "";
         } else {
-            htmlContent = htmlContent.replace('</body>', `${newScriptTag}</body>`);
+          data.fields[id] = el.value || "";
         }
+      });
 
-        const blob = new Blob([htmlContent], {type: 'text/html'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `卿卿我我角色備份_${new Date().toISOString().slice(0,10)}.html`;
-        a.click();
-        showToast("已儲存為獨立 HTML 檔！");
+      data.extras = [];
+      document.querySelectorAll('.extra-block').forEach(block => {
+        const titleEl = block.querySelector('.extra-title-field');
+        const textEl = block.querySelector('.extra-field');
+        const title = titleEl ? (titleEl.value || "") : "";
+        const text = textEl ? (textEl.value || "") : "";
+        if (title || text) {
+          data.extras.push({ title, text });
+        }
+      });
+
+      data.events = [];
+      document.querySelectorAll('.event-block').forEach(block => {
+        const titleEl = block.querySelector('.event-title-field');
+        const textEl = block.querySelector('.event-field');
+        const title = titleEl ? (titleEl.value || "") : "";
+        const text = textEl ? (textEl.value || "") : "";
+        if (title || text) {
+          data.events.push({ title, text });
+        }
+      });
+
+      return data;
     }
 
-    /* ========= 遊戲管理 UI ========= */
-    function initStoryEditors() {
-      const container = document.getElementById('story-container'); container.innerHTML = '';
-      STORY_STAGES.forEach((stage, idx) => {
-        const div = document.createElement('div'); div.className = `story-stage-content ${idx===0?'active':''}`; div.id = `story-stage-${idx}`;
-        div.innerHTML = `<div id="storyList_${idx}"></div><div style="display:flex; gap:10px; margin-top:16px;"><button type="button" class="sec-btn" style="flex:1; border-style:dashed;" onclick="addStoryBlock(${idx})">＋ 新增「${stage}」</button></div>`;
-        container.appendChild(div);
+    function clearForm() {
+      const ids = [
+        'charName','charCategory','charAge','charJob','charQuote','charDesc',
+        'charTags','creatorNote','basicInfo','personality','speechStyle',
+        'firstScene','sampleDialogue','likes','dislikes','birthday',
+        'promptRole','promptGuideline'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+      const genderSel = document.getElementById('gender');
+      if (genderSel) genderSel.value = '未設置';
+
+      const modelSel = document.getElementById('modelType');
+      if (modelSel) modelSel.value = 'gemini-3';
+
+      const extraContainer = document.getElementById('extraContainer');
+      const eventContainer = document.getElementById('eventContainer');
+      if (extraContainer) extraContainer.innerHTML = "";
+      if (eventContainer) eventContainer.innerHTML = "";
+
+      updatePromptTokenInfo();
+      updateChatPreview(); // 更新預覽
+    }
+
+    function fillFormFromData(data) {
+      clearForm();
+      if (!data || !data.fields) return;
+
+      Object.keys(data.fields).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = data.fields[id] || "";
+      });
+
+      if (Array.isArray(data.extras)) {
+        data.extras.forEach(item => {
+          let title = "";
+          let text = "";
+          if (typeof item === "string") {
+            text = item;
+          } else if (item && typeof item === "object") {
+            title = item.title || "";
+            text = item.text || "";
+          }
+
+          addExtra();
+          const blocks = document.querySelectorAll(".extra-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".extra-title-field");
+          const textEl = lastBlock.querySelector(".extra-field");
+          if (titleEl) titleEl.value = title;
+          if (textEl) textEl.value = text;
+        });
+      }
+
+      if (Array.isArray(data.events)) {
+        data.events.forEach(item => {
+          let title = "";
+          let text = "";
+          if (typeof item === "string") {
+            text = item;
+          } else if (item && typeof item === "object") {
+            title = item.title || "";
+            text = item.text || "";
+          }
+          
+          addEvent();
+          const blocks = document.querySelectorAll(".event-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".event-title-field");
+          const textEl = lastBlock.querySelector(".event-field");
+          if (titleEl) titleEl.value = title;
+          if (textEl) textEl.value = text;
+        });
+      }
+
+      updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      updateAllFieldCounters();
+      updateChatPreview(); // 更新預覽
+    }
+
+    /* ========= 角色存檔邏輯：多角色 ========= */
+    function saveCurrentChar() {
+      const store = getStore();
+      let id = store.currentId;
+      if (!id) {
+        id = newCharId();
+        store.currentId = id;
+      }
+
+      const existing = store.chars[id];
+      const existingCreated = existing && existing.meta && existing.meta.createdAt
+        ? existing.meta.createdAt
+        : Date.now();
+
+      const data = collectFormData();
+      const name = (document.getElementById('charName').value.trim() || "未命名角色");
+      const category = document.getElementById('charCategory').value.trim() || "";
+      const tagsArray = (document.getElementById('charTags').value.trim() || "")
+        .split(/[,，\s]+/).filter(Boolean);
+
+      store.chars[id] = {
+        meta: {
+          name,
+          category,
+          tags: tagsArray,
+          createdAt: existingCreated
+        },
+        data
+      };
+
+      setStore(store);
+      renderCharList(store);
+    }
+
+    function newCharacter() {
+      const store = getStore();
+      const id = newCharId();
+      store.currentId = id;
+      setStore(store);
+
+      clearForm();
+      document.getElementById('output').textContent = "";
+      saveCurrentChar();
+      
+      window.scrollTo({top:0, behavior:'smooth'});
+      showToast("已建立新角色");
+    }
+
+    function deleteCurrentChar() {
+      const store = getStore();
+      const id = store.currentId;
+      if (!id || !store.chars[id]) {
+        showToast("目前沒有選中的角色可以刪除哦～", "warn");
+        return;
+      }
+      if (!confirm("確定要刪除這個角色嗎？刪除後無法復原！")) return;
+
+      delete store.chars[id];
+      const ids = Object.keys(store.chars);
+      store.currentId = ids.length ? ids[0] : null;
+      setStore(store);
+
+      if (store.currentId && store.chars[store.currentId]) {
+        const target = store.chars[store.currentId];
+        fillFormFromData(target.data);
+      } else {
+        clearForm();
+        document.getElementById('output').textContent = "";
+      }
+      renderCharList(store);
+      showToast("角色已刪除");
+    }
+
+    function loadChar(id) {
+      const store = getStore();
+      const item = store.chars[id];
+      if (!item) return;
+      store.currentId = id;
+      setStore(store);
+
+      fillFormFromData(item.data);
+      document.getElementById('output').textContent = "";
+      renderCharList(store);
+      
+      // window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function renderCharList(store) {
+      const listEl = document.getElementById('charList');
+      if (!listEl) return;
+
+      const filterCategory = document.getElementById('filterCategory').value;
+      const keyword = document.getElementById('searchName').value.trim().toLowerCase();
+      const sortMode = document.getElementById('charSort') ? document.getElementById('charSort').value : 'created_desc';
+
+      listEl.innerHTML = "";
+
+      const entries = Object.entries(store.chars || {});
+
+      // 收集分類
+      const categorySet = new Set();
+      entries.forEach(([id, item]) => {
+        if (item.meta && item.meta.category) {
+          categorySet.add(item.meta.category);
+        }
+      });
+
+      const filterSel = document.getElementById('filterCategory');
+      if (filterSel) {
+        const prev = filterSel.value;
+        let html = '<option value="">全部分類</option>';
+        [...categorySet].sort().forEach(cat => {
+          html += `<option value="${cat}">${cat}</option>`;
+        });
+        filterSel.innerHTML = html;
+        if (prev) filterSel.value = prev;
+      }
+
+      // 排序
+      entries.sort((a, b) => {
+        const A = a[1];
+        const B = b[1];
+        const nameA = (A.meta?.name || '').toLowerCase();
+        const nameB = (B.meta?.name || '').toLowerCase();
+        const ca = A.meta?.createdAt || 0;
+        const cb = B.meta?.createdAt || 0;
+
+        if (sortMode === 'name_asc') {
+          if (nameA < nameB) return -1;
+          if (nameA > nameB) return 1;
+          return ca - cb;
+        } else if (sortMode === 'created_asc') {
+          return ca - cb;
+        } else { // created_desc
+          return cb - ca;
+        }
+      });
+
+      entries.forEach(([id, item]) => {
+        const name = item.meta?.name || "未命名角色";
+        const cat = item.meta?.category || "";
+
+        if (filterCategory && cat !== filterCategory) return;
+        if (keyword && !name.toLowerCase().includes(keyword)) return;
+
+        const btn = document.createElement('button');
+        btn.type = "button";
+        if (store.currentId === id) {
+          btn.className = "button-mini";
+          btn.style.background = "var(--focus-color)";
+          btn.style.color = "#fff";
+          btn.style.boxShadow = "0 4px 12px rgba(var(--focus-rgb), 0.4)";
+        } else {
+          btn.className = "button-secondary";
+        }
+        
+        btn.textContent = cat ? `${name} (${cat})` : name;
+        btn.onclick = () => loadChar(id);
+
+        listEl.appendChild(btn);
       });
     }
-    function switchStoryTab(idx) {
-      document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
-      document.querySelectorAll('.story-stage-content').forEach((d,i)=>d.classList.toggle('active',i===idx));
-    }
-    function addStoryBlock(idx, d=null) {
-        const list = document.getElementById(`storyList_${idx}`); const div = document.createElement('div'); div.className = 'story-card';
-        const uid = Date.now() + Math.random().toString(36).substr(2,9);
-        div.innerHTML = `
-          <div class="story-card-header"><span>故事設定</span><button type="button" class="icon-btn" style="color:#ef4444;" onclick="if(confirm('刪除?')){this.closest('.story-card').remove();saveCurrentChar();}">🗑️</button></div>
-          <div class="label-row" style="background:rgba(var(--focus-rgb),0.05); padding:8px; border-radius:8px; margin-bottom:12px;">
-              <div style="flex:1;"><label>等級</label><select class="story-age" onchange="saveCurrentChar()"><option value="all" ${d?.ageRating==='all'?'selected':''}>全齡</option><option value="adult" ${d?.ageRating==='adult'?'selected':''}>R18</option></select></div>
-              <div style="flex:1; margin-left:8px;"><label>付費</label><select class="story-public" onchange="saveCurrentChar()"><option value="free" ${d?.publicSetting==='free'?'selected':''}>免費</option><option value="paid" ${d?.publicSetting==='paid'?'selected':''}>付費</option></select></div>
-          </div>
-          <div class="field-group"><label>提示語 (60字)</label><input type="text" class="story-hint" data-maxlength="60" value="${d?.hint||''}" oninput="saveCurrentChar()"></div>
-          <div class="field-group"><label>標題 (30字)</label><input type="text" class="story-title" data-maxlength="30" value="${d?.title||''}" oninput="saveCurrentChar()"></div>
-          <div class="field-group"><label>內容 (2000字)</label><textarea class="story-content" data-maxlength="2000" style="min-height:150px;" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
-          <div style="margin-top:10px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px;">
-             <div style="display:flex; justify-content:space-between;"><label>🔀 多重結局</label><input type="checkbox" class="story-multi-check" id="chk_${uid}" style="width:18px; height:18px;" onchange="toggleOptionsContainer('${uid}');saveCurrentChar()"></div>
-             <div id="optCon_${uid}" style="display:none; margin-top:8px;"><div class="options-list"></div><button type="button" class="sec-btn" style="width:100%; font-size:0.8rem;" onclick="addOptionToStory(this)">＋ 選項</button></div>
-          </div>`;
-        list.appendChild(div);
-        div.querySelector(`#chk_${uid}`).checked = d?.multiEnding || false; toggleOptionsContainer(uid);
-        if(d?.options) d.options.forEach(o => addOptionToStory(null, div.querySelector('.options-list'), o));
-        setupFieldUtils(div); saveCurrentChar();
-    }
-    function toggleOptionsContainer(uid) { const c=document.getElementById(`chk_${uid}`); document.getElementById(`optCon_${uid}`).style.display=c.checked?'block':'none'; }
-    function addOptionToStory(btn, container=null, d=null) {
-       const list = container || btn.previousElementSibling; const div = document.createElement('div'); div.className = 'option-card';
-       div.innerHTML = `<div class="option-header">選項 <span style="cursor:pointer; color:#ef4444;" onclick="this.closest('.option-card').remove();saveCurrentChar()">×</span></div>
-          <div class="field-group"><label style="font-size:0.8rem">選項(100字)</label><input type="text" class="opt-text" data-maxlength="100" value="${d?.text||''}" placeholder="選項文字" oninput="saveCurrentChar()"></div>
-          <div class="field-group"><label style="font-size:0.8rem">回應(500字)</label><textarea class="opt-content" data-maxlength="500" placeholder="回應內容" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
-          <div class="label-row"><label>好感 (-20~+20)</label><input type="number" class="opt-score" value="${d?.score||0}" min="-20" max="20" style="width:60px;" oninput="saveCurrentChar()"></div>`;
-       list.appendChild(div); setupFieldUtils(div); saveCurrentChar();
+
+    function refreshCharListFromStorage() {
+      const store = getStore();
+      renderCharList(store);
     }
 
-    /* ========= Token & 果醬計算 (重要!) ========= */
+    /* ========= 必填欄位提醒 ========= */
+    function validateRequired() {
+      const requiredFields = [
+        { id: 'charName', label: '角色名稱' },
+        { id: 'charAge', label: '年齡' },
+        { id: 'charJob', label: '職業' },
+        { id: 'charQuote', label: '來自角色的一句話' },
+        { id: 'gender', label: '性別' },
+        { id: 'basicInfo', label: '一、基本資訊' },
+        { id: 'personality', label: '二、性格' },
+        { id: 'speechStyle', label: '三、說話風格與習慣' }
+      ];
+
+      const missing = [];
+
+      requiredFields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        let value = '';
+        value = el.value.trim();
+        if (!value || value === '未設置') {
+          missing.push(f.label);
+        }
+      });
+
+      if (missing.length > 0) {
+        showToast("還有必填欄位沒寫，建議補上喔！", "warn");
+      }
+      return true;
+    }
+
+    /* ========= Prompt token & 果醬計算 ========= */
     function estimateTextTokens(text) {
       let total = 0;
       for (const ch of text) {
+        if (/\s/.test(ch)) continue;
         if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
           total += 2;
         } else {
@@ -583,227 +1982,606 @@
       return total;
     }
 
+    function estimatePromptTokens() {
+      const role = (document.getElementById('promptRole').value || "");
+      const guide = (document.getElementById('promptGuideline').value || "");
+      return estimateTextTokens(role) + estimateTextTokens(guide);
+    }
+
+    function getSelectedModelBaseCost() {
+      const sel = document.getElementById('modelType');
+      if (!sel) return 0;
+      const opt = sel.options[sel.selectedIndex];
+      const base = parseInt(opt.dataset.basecost || "0", 10);
+      return isNaN(base) ? 0 : base;
+    }
+
     function updatePromptTokenInfo() {
-        const role = document.getElementById('promptRole').value || '';
-        const guide = document.getElementById('promptGuideline').value || '';
-        const totalTokens = estimateTextTokens(role) + estimateTextTokens(guide);
+      const tokenSpan = document.getElementById('promptTokenInfo');
+      const jamSpan = document.getElementById('promptJamInfo');
+      if (!tokenSpan || !jamSpan) return;
 
-        const modelSel = document.getElementById('modelType');
-        // 對照表
-        const baseCosts = {
-            'gemini-3-pro': 10,
-            'claude-sonnet-4-5': 15,
-            'claude-haiku-4-5': 5
-        };
-        const baseCost = baseCosts[modelSel.value] || 10; // 預設 10
+      const totalTokens = estimatePromptTokens();
+      const baseCost = getSelectedModelBaseCost();
 
-        let extraJams = 0;
-        if (totalTokens > 500) {
-            extraJams = Math.ceil((totalTokens - 500) / 500);
-        }
-        const totalCost = baseCost + extraJams;
+      let extraTokens = Math.max(0, totalTokens - 500);
+      let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
+      const totalJam = baseCost + extraJams;
 
-        const infoDiv = document.getElementById('promptTokenInfo');
-        infoDiv.innerHTML = `
-            <strong>預估 Token：</strong>${totalTokens}<br>
-            <strong>果醬花費：</strong>${totalCost} 醬 (基礎 ${baseCost} + 超額 ${extraJams})<br>
-            <span style="font-size:0.8em; opacity:0.7;">(規則：1~500 Token 不加價，之後每 500 Token +1 醬)</span>
-        `;
+      tokenSpan.textContent = `預估 Token：${totalTokens} (中文約 2, 英文約 1)`;
+      jamSpan.textContent = `預估花費：約 ${totalJam} 果醬 (基礎 ${baseCost} + 額外 ${extraJams})`;
     }
 
-    /* ========= 字數統計 ========= */
-    function updateFieldCounter(el) {
-      let wrapper = el.nextElementSibling; if(!wrapper || !wrapper.classList.contains('field-utils')) return;
-      const len = el.value.length; 
-      const max = el.getAttribute('data-maxlength') || el.getAttribute('maxlength');
-      
-      const counter = wrapper.querySelector('.field-counter');
-      if(counter) {
-          counter.textContent = max ? `${len} / ${max}` : `${len} 字`;
-          if(max && len>=max) counter.classList.add('limit-reach');
-          else counter.classList.remove('limit-reach');
-      }
-    }
-    
-    function setupFieldUtils(scope=document) {
-       scope.querySelectorAll('textarea, input[type="text"]').forEach(el => {
-           if(el.classList.contains('tags-input') || el.nextElementSibling?.classList.contains('field-utils')) return;
-           const div = document.createElement('div'); div.className = 'field-utils';
-           div.innerHTML = `<span class="field-counter">0 字</span><button type="button" class="icon-btn" title="複製" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.value);showToast('已複製')">📋</button>`;
-           el.parentNode.insertBefore(div, el.nextSibling);
-           el.addEventListener('input', ()=>updateFieldCounter(el)); 
-           updateFieldCounter(el); 
-       });
-    }
-    function addExtra() { addExtraWithVal('',''); }
-    function addExtraWithVal(title, text) {
-        const div = document.createElement('div'); div.className = 'field-group extra-block';
-        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="extra-field" data-maxlength="500" placeholder="內容(500字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.extra-block').remove();saveCurrentChar()">🗑️ 刪除</button></div>`;
-        document.getElementById('extraContainer').appendChild(div); setupFieldUtils(div);
-    }
-    function addEvent() { addEventWithVal('',''); }
-    function addEventWithVal(title, text) {
-        const div = document.createElement('div'); div.className = 'field-group event-block';
-        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="event-field" data-maxlength="2000" placeholder="內容(2000字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.event-block').remove();saveCurrentChar()">🗑️ 刪除</button></div>`;
-        document.getElementById('eventContainer').appendChild(div); setupFieldUtils(div);
-    }
-
-    // 基礎功能
-    function getStore() { const r=localStorage.getItem(STORAGE_KEY); try{return JSON.parse(r)||_emptyStore();}catch{return _emptyStore();} }
-    function _emptyStore(){ return { currentId: null, chars: {}, templates: {basicInfo:[], personality:[], speechStyle:[], extra:[], event:[]} }; }
-    function setStore(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-    function saveCurrentChar() {
-       const s = getStore(); const id = s.currentId || ('char_'+Date.now()); s.currentId = id;
-       const d = { fields:{}, extras:[], events:[], game:{title:'', intro:'', stories:[]} };
-       document.querySelectorAll('input[id], textarea[id], select[id]').forEach(el=>d.fields[el.id]=el.value);
-       d.fields['charTags'] = document.getElementById('charTags').value;
-       document.querySelectorAll('.extra-block').forEach(b => d.extras.push({title:b.querySelector('input').value, text:b.querySelector('textarea').value}));
-       document.querySelectorAll('.event-block').forEach(b => d.events.push({title:b.querySelector('input').value, text:b.querySelector('textarea').value}));
-       // 遊戲存檔
-       d.game.title = document.getElementById('gameTitle').value; d.game.intro = document.getElementById('gameIntro').value;
-       STORY_STAGES.forEach((st, idx) => {
-           const list = document.getElementById(`storyList_${idx}`); if(!list) return;
-           list.querySelectorAll('.story-card').forEach(c => {
-               const story = { stage:st, stageIdx:idx, hint:c.querySelector('.story-hint').value, title:c.querySelector('.story-title').value, content:c.querySelector('.story-content').value, ageRating:c.querySelector('.story-age').value, publicSetting:c.querySelector('.story-public').value, multiEnding:c.querySelector('.story-multi-check').checked, options:[] };
-               if(story.multiEnding) c.querySelectorAll('.option-card').forEach(o => story.options.push({ text:o.querySelector('.opt-text').value, content:o.querySelector('.opt-content').value, score:o.querySelector('.opt-score').value }));
-               d.game.stories.push(story);
-           });
-       });
-       s.chars[id] = { meta: { name: d.fields.charName||"未命名", createdAt: Date.now() }, data: d };
-       setStore(s); renderCharList(s); updateProgress(); updatePromptTokenInfo();
-    }
-    function loadInitialFromStore() { const s=getStore(); if(!s.currentId && Object.keys(s.chars).length) s.currentId=Object.keys(s.chars)[0]; if(s.currentId) fillFormFromData(s.chars[s.currentId].data); renderCharList(s); }
-    function fillFormFromData(d) {
-        if(!d) return;
-        for(let k in d.fields) { const el=document.getElementById(k); if(el) el.value=d.fields[k]; }
-        document.getElementById('extraContainer').innerHTML=''; if(d.extras) d.extras.forEach(e=>addExtraWithVal(e.title,e.text));
-        document.getElementById('eventContainer').innerHTML=''; if(d.events) d.events.forEach(e=>addEventWithVal(e.title,e.text));
-        if(d.game) {
-            document.getElementById('gameTitle').value=d.game.title||''; document.getElementById('gameIntro').value=d.game.intro||'';
-            STORY_STAGES.forEach((_,i)=>{ document.getElementById(`storyList_${i}`).innerHTML=''; });
-            if(d.game.stories) d.game.stories.forEach(s=>{
-                let idx = s.stageIdx!==undefined ? s.stageIdx : STORY_STAGES.indexOf(s.stage);
-                if(idx===-1) idx=0; addStoryBlock(idx, s);
-            });
-        }
-        initTagInput(); updateChatPreview(); updateProgress(); updatePromptTokenInfo(); setupFieldUtils();
-    }
-    
-    // Markdown 生成 (含截斷邏輯)
+    /* ========= Markdown 生成 ========= */
     function generateMarkdown() {
+      validateRequired();
       saveCurrentChar();
-      const d = getStore().chars[getStore().currentId].data.fields;
-      const extras = getStore().chars[getStore().currentId].data.extras;
-      const events = getStore().chars[getStore().currentId].data.events;
-      const game = getStore().chars[getStore().currentId].data.game;
-      
-      let md = `# 角色設定：${limitText(d.charName, 15)}\n\n## 基本檔案\n`;
-      if(d.charCategory) md += `- 分類：${d.charCategory}\n`;
-      if(d.gender) md += `- 性別：${d.gender}\n`;
-      if(d.charAge) md += `- 年齡：${limitText(d.charAge, 15)}\n`;
-      if(d.charJob) md += `- 職業：${limitText(d.charJob, 15)}\n`;
-      if(d.charTags) md += `- 標籤：${d.charTags}\n`;
-      
-      md += `\n## 核心設定\n### 簡介\n${limitText(d.charQuote, 80)}\n\n### 外貌與詳情\n${limitText(d.charDesc, 700)}\n\n### 性格特質\n${limitText(d.personality, 700)}\n\n`;
-      md += `## 世界觀\n${limitText(d.basicInfo, 700)}\n\n`;
-      md += `## 說話風格\n${limitText(d.speechStyle, 700)}\n\n`;
 
-      if(extras.length) { md += `## 附加設定\n`; extras.forEach((ex, i) => md += `### ${ex.title || `項目 ${i+1}`}\n${limitText(ex.text, 500)}\n\n`); }
-      if(events.length) { md += `## 關鍵事件\n`; events.forEach((ev, i) => md += `### ${ev.title || `事件 ${i+1}`}\n${limitText(ev.text, 2000)}\n\n`); }
-      if(d.firstScene) md += `## 開場情境\n${limitText(d.firstScene, 800)}\n\n`;
-      if(d.sampleDialogue) md += `## 對話範例\n${limitText(d.sampleDialogue, 800)}\n\n`;
-      if(d.creatorNote) md += `> 創作者筆記：${limitText(d.creatorNote, 200)}`;
-      
-      if(game && game.title) {
-          md += `\n---\n# 遊戲腳本設定\n\n`;
-          md += `## 遊戲資訊\n- 標題：${limitText(game.title, 30)}\n- 介紹：${limitText(game.intro, 30)}\n\n`;
-          
-          if(game.stories) {
-              md += `## 私密物語腳本\n`;
-              const grouped = {};
-              STORY_STAGES.forEach(s => grouped[s] = []);
-              game.stories.forEach(s => { if(grouped[s.stage]) grouped[s.stage].push(s); });
+      const name = document.getElementById('charName').value.trim();
+      const age = limitText(document.getElementById('charAge').value, 15);
+      const job = limitText(document.getElementById('charJob').value, 15);
+      const quote = limitText(document.getElementById('charQuote').value, 80);
+      const desc = limitText(document.getElementById('charDesc').value, 700);
+      const tagsRaw = document.getElementById('charTags').value.trim();
+      const creatorNote = limitText(document.getElementById('creatorNote').value, 200);
+      const gender = document.getElementById('gender').value.trim();
+      const category = limitText(document.getElementById('charCategory').value, 100);
 
-              STORY_STAGES.forEach(stage => {
-                  if(grouped[stage] && grouped[stage].length > 0) {
-                      md += `### 【${stage}】\n`;
-                      grouped[stage].forEach((s, i) => {
-                          const ageLabel = s.ageRating === 'adult' ? 'R18' : '全齡';
-                          const payLabel = s.publicSetting === 'paid' ? '付費' : '免費';
-                          md += `#### ${i+1}. ${limitText(s.title, 30) || '未命名'} (${ageLabel} / ${payLabel})\n`;
-                          md += `> 解鎖提示：${limitText(s.hint, 60)}\n\n`;
-                          md += `${limitText(s.content, 2000)}\n\n`;
-                          if(s.multiEnding && s.options.length) {
-                              md += `**多重結局選項：**\n`;
-                              s.options.forEach((opt, k) => {
-                                  md += `- 選項 ${k+1}：${limitText(opt.text, 100)} (好感 ${opt.score>0?'+':''}${opt.score})\n  回應：${limitText(opt.content, 500)}\n`;
-                              });
-                              md += `\n`;
-                          }
-                          md += `---\n\n`;
-                      });
-                  }
-              });
-          }
+      const basic = limitText(document.getElementById('basicInfo').value, 700);
+      const personality = limitText(document.getElementById('personality').value, 700);
+      const speech = limitText(document.getElementById('speechStyle').value, 700);
+
+      const firstScene = limitText(document.getElementById('firstScene').value, 800);
+      const sampleDialogue = limitText(document.getElementById('sampleDialogue').value, 800);
+      const likes = limitText(document.getElementById('likes').value, 50);
+      const dislikes = limitText(document.getElementById('dislikes').value, 50);
+      const birthdayRaw = document.getElementById('birthday').value;
+
+      const modelSel = document.getElementById('modelType');
+      const modelValue = modelSel ? modelSel.value : "";
+      const modelLabel = modelSel ? modelSel.options[modelSel.selectedIndex].textContent : "";
+      const promptRole = document.getElementById('promptRole').value;
+      const promptGuideline = document.getElementById('promptGuideline').value;
+      const promptTokens = estimatePromptTokens();
+
+      let birthdayText = birthdayRaw ? birthdayRaw : "";
+
+      let tagsFormatted = "";
+      if (tagsRaw) {
+        const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
+        tagsFormatted = parts.map(t => "#" + t.replace(/^#/, "")).join(" ");
       }
-      
-      document.getElementById('output').textContent = md;
-      scrollToSection('sec-output');
-      showToast("Markdown 已生成！");
+
+      let md = [];
+
+      md.push(`【角色資訊】`);
+      md.push(`- 名稱：${name || "（未命名）"}`);
+      if (category) md.push(`- 分類：${category}`);
+      if (gender && gender !== '未設置') md.push(`- 性別：${gender}`);
+      if (age) md.push(`- 年齡：${age}`);
+      if (job) md.push(`- 職業：${job}`);
+      if (birthdayText) md.push(`- 生日：${birthdayText}`);
+      if (tagsFormatted) md.push(`- 標籤：${tagsFormatted}`);
+
+      if (quote) {
+        md.push(`- 一句話：`);
+        md.push(quote);
+      }
+
+      if (desc) {
+        md.push(`- 敘述：`);
+        md.push(desc);
+      }
+
+      if (creatorNote) {
+        md.push(`- 創作者筆記：`);
+        md.push(creatorNote);
+      }
+
+      md.push("");
+
+      md.push(`【基本資訊】`);
+      md.push(basic || "（尚未填寫）");
+      md.push("");
+
+      md.push(`【性格】`);
+      md.push(personality || "（尚未填寫）");
+      md.push("");
+
+      md.push(`【說話風格與習慣】`);
+      md.push(speech || "（尚未填寫）");
+      md.push("");
+
+      if (modelValue || promptRole || promptGuideline) {
+        md.push(`【模型與 Prompt 設定】`);
+        if (modelLabel) md.push(`- 模型：${modelLabel}`);
+        md.push(`- 預估 token：${promptTokens}（僅供參考）`);
+        if (promptRole) {
+          md.push(`- Role：`);
+          md.push(promptRole);
+        }
+        if (promptGuideline) {
+          md.push(`- Response Guideline：`);
+          md.push(promptGuideline);
+        }
+        md.push("");
+      }
+
+      if (firstScene) {
+        md.push(`【第一次聊天場景】`);
+        md.push(firstScene);
+        md.push("");
+      }
+
+      if (sampleDialogue) {
+        md.push(`【角色對話】`);
+        md.push(sampleDialogue);
+        md.push("");
+      }
+
+      if (likes || dislikes) {
+        md.push(`【喜好】`);
+        if (likes) md.push(`- 喜歡：${likes}`);
+        if (dislikes) md.push(`- 不喜歡：${dislikes}`);
+        md.push("");
+      }
+
+      // 附加資訊
+      md.push(`【附加資訊】`);
+      const extraBlocks = document.querySelectorAll(".extra-block");
+      if (extraBlocks.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        extraBlocks.forEach((block, idx) => {
+          const titleEl = block.querySelector(".extra-title-field");
+          const textEl = block.querySelector(".extra-field");
+          const title = titleEl ? limitText(titleEl.value, 50) : "";
+          const txt = textEl ? limitText(textEl.value, 500) : "";
+          if (!title && !txt) return;
+
+          md.push(`［附加資訊 ${idx + 1}］`);
+          if (title) {
+            md.push(`- 標題：${title}`);
+          }
+          if (txt) {
+            md.push(txt);
+          }
+          md.push("");
+        });
+      }
+
+      // 創作者事件
+      md.push(`【創作者事件】`);
+      const eventBlocks = document.querySelectorAll(".event-block");
+      if (eventBlocks.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        eventBlocks.forEach((block, idx) => {
+          const titleEl = block.querySelector(".event-title-field");
+          const textEl = block.querySelector(".event-field");
+          const title = titleEl ? limitText(titleEl.value, 50) : "";
+          const txt = textEl ? limitText(textEl.value, 2000) : "";
+          if (!title && !txt) return;
+
+          md.push(`［創作者事件 ${idx + 1}］`);
+          if (title) {
+            md.push(`- 標題：${title}`);
+          }
+          if (txt) {
+            md.push(txt);
+          }
+          md.push("");
+        });
+      }
+
+      const outputBox = document.getElementById('output');
+      outputBox.textContent = md.join("\n");
+      // 滾動到輸出區
+      outputBox.scrollIntoView({behavior: "smooth", block: "center"});
+      showToast("已生成 Markdown！");
     }
 
-    function renderCharList(s) {
-       const l = document.getElementById('charList'); l.innerHTML='';
-       Object.entries(s.chars).forEach(([id, v]) => {
-           const b = document.createElement('button'); b.className = id===s.currentId ? 'main-btn' : 'sec-btn';
-           b.textContent = v.meta.name; b.onclick=()=>{ s.currentId=id; setStore(s); fillFormFromData(v.data); renderCharList(s); };
-           l.appendChild(b);
-       });
+    /* ========= Markdown 解析 ========= */
+    function readBlockUntilHeading(lines, startIndex) {
+      let i = startIndex;
+      const buf = [];
+      while (i < lines.length) {
+        const t = lines[i];
+        const trimmed = t.trim();
+        if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("［")) break;
+        buf.push(t);
+        i++;
+      }
+      while (buf.length && buf[buf.length - 1].trim() === "") {
+        buf.pop();
+      }
+      return { text: buf.join("\n").trim(), nextIndex: i - 1 };
     }
-    function newCharacter() { const s=getStore(); s.currentId='char_'+Date.now(); setStore(s); location.reload(); }
-    function deleteCurrentChar() { const s=getStore(); if(s.currentId && confirm("刪除?")) { delete s.chars[s.currentId]; s.currentId=Object.keys(s.chars)[0]||null; setStore(s); location.reload(); } }
-    function clearOne(id) { document.getElementById(id).value=''; saveCurrentChar(); }
-    function updateChatPreview() {
-        document.getElementById('chatHeaderName').textContent = document.getElementById('charName').value || '角色';
-        document.getElementById('previewAvatar').textContent = (document.getElementById('charName').value||'A')[0];
-        document.getElementById('previewScene').innerHTML = document.getElementById('firstScene').value.replace(/\n/g,'<br>');
-        document.getElementById('previewDialogue').innerHTML = document.getElementById('sampleDialogue').value.replace(/\n/g,'<br>');
-    }
-    
-    function initTagInput() {
-        const con = document.getElementById('tagsContainer'); const inp = document.getElementById('tagInput'); const hid = document.getElementById('charTags');
-        const render = () => {
-            con.querySelectorAll('.tag-pill').forEach(e=>e.remove());
-            hid.value.split(' ').filter(x=>x).forEach(t => {
-                const p = document.createElement('div'); p.className='tag-pill'; p.innerHTML=`<span>#${t}</span><span class="tag-remove" onclick="removeTag('${t}')">×</span>`; con.insertBefore(p, inp);
-            });
-        };
-        inp.addEventListener('keydown', e => {
-            if(e.key==='Enter') { e.preventDefault(); const v=inp.value.trim(); if(v){ let arr=hid.value.split(' ').filter(x=>x); if(!arr.includes(v)) arr.push(v); hid.value=arr.join(' '); render(); inp.value=''; saveCurrentChar(); } }
-            if(e.key==='Backspace' && !inp.value) { let arr=hid.value.split(' ').filter(x=>x); if(arr.length){ arr.pop(); hid.value=arr.join(' '); render(); saveCurrentChar(); } }
+
+    function parseMarkdownToForm(md) {
+      clearForm();
+
+      const lines = md.split(/\r?\n/);
+      const extrasData = [];
+      const eventsData = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const line = raw.trim();
+
+        if (line.startsWith("- 名稱：")) {
+          document.getElementById('charName').value = line.replace("- 名稱：", "").trim().replace(/^（未命名）$/, "");
+        } else if (line.startsWith("- 分類：")) {
+          document.getElementById('charCategory').value = line.replace("- 分類：", "").trim();
+        } else if (line.startsWith("- 性別：")) {
+          const v = line.replace("- 性別：", "").trim();
+          const genderSel = document.getElementById('gender');
+          if (genderSel && v) genderSel.value = v;
+        } else if (line.startsWith("- 年齡：")) {
+          document.getElementById('charAge').value = line.replace("- 年齡：", "").trim();
+        } else if (line.startsWith("- 職業：")) {
+          document.getElementById('charJob').value = line.replace("- 職業：", "").trim();
+        } else if (line.startsWith("- 生日：")) {
+          const v = line.replace("- 生日：", "").trim();
+          document.getElementById('birthday').value = v;
+        } else if (line.startsWith("- 標籤：")) {
+          const t = line.replace("- 標籤：", "").trim();
+          if (t) {
+            const parts = t.split(/\s+/).map(x => x.replace(/^#/, "")).filter(Boolean);
+            document.getElementById('charTags').value = parts.join(" ");
+          }
+        } else if (line.startsWith("- 一句話：")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('charQuote').value = res.text;
+          i = res.nextIndex;
+        } else if (line.startsWith("- 敘述：")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('charDesc').value = res.text;
+          i = res.nextIndex;
+        } else if (line.startsWith("- 創作者筆記：")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('creatorNote').value = res.text;
+          i = res.nextIndex;
+        }
+
+        else if (line === "【基本資訊】") {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
+          i = res.nextIndex;
+        } else if (line === "【性格】") {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('personality').value = res.text === "（尚未填寫）" ? "" : res.text;
+          i = res.nextIndex;
+        } else if (line === "【說話風格與習慣】") {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('speechStyle').value = res.text === "（尚未填寫）" ? "" : res.text;
+          i = res.nextIndex;
+        }
+
+        else if (line === "【模型與 Prompt 設定】") {
+          let j = i + 1;
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith("【")) break;
+            if (t.startsWith("- 模型：")) {
+              // 簡易匹配
+              const label = t.replace("- 模型：", "").trim();
+              const sel = document.getElementById('modelType');
+              if (sel) {
+                 // 嘗試部分匹配
+                 for(let opt of sel.options) {
+                     if(label.includes(opt.value) || opt.text.includes(label)) {
+                         sel.value = opt.value;
+                         break;
+                     }
+                 }
+              }
+            } else if (t.startsWith("- Role：")) {
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptRole').value = res2.text;
+              j = res2.nextIndex;
+            } else if (t.startsWith("- Response Guideline：")) {
+              const res2 = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptGuideline').value = res2.text;
+              j = res2.nextIndex;
+            }
+            j++;
+          }
+          i = j - 1;
+        }
+
+        else if (line === "【第一次聊天場景】") {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('firstScene').value = res.text;
+          i = res.nextIndex;
+        } else if (line.startsWith("【角色對話】")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          document.getElementById('sampleDialogue').value = res.text;
+          i = res.nextIndex;
+        }
+
+        else if (line === "【喜好】") {
+          let j = i + 1;
+          while (j < lines.length) {
+            const t = lines[j].trim();
+            if (t.startsWith("【") || t.startsWith("［")) break;
+            if (t.startsWith("- 喜歡：")) {
+              document.getElementById('likes').value = t.replace("- 喜歡：", "").trim();
+            } else if (t.startsWith("- 不喜歡：")) {
+              document.getElementById('dislikes').value = t.replace("- 不喜歡：", "").trim();
+            }
+            j++;
+          }
+          i = j - 1;
+        }
+
+        else if (line.startsWith("［附加資訊 ")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          if (res.text && res.text !== "（尚未填寫）") {
+            let title = "";
+            let body = res.text;
+
+            const parts = res.text.split(/\r?\n/);
+            if (parts.length > 0) {
+              const first = parts[0].trim();
+              if (first.startsWith("- 標題：")) {
+                title = first.replace("- 標題：", "").trim();
+                body = parts.slice(1).join("\n").trim();
+              }
+            }
+            extrasData.push({ title, text: body });
+          }
+          i = res.nextIndex;
+        } else if (line.startsWith("［創作者事件 ")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          if (res.text && res.text !== "（尚未填寫）") {
+            let title = "";
+            let body = res.text;
+
+            const parts = res.text.split(/\r?\n/);
+            if (parts.length > 0) {
+              const first = parts[0].trim();
+              if (first.startsWith("- 標題：")) {
+                title = first.replace("- 標題：", "").trim();
+                body = parts.slice(1).join("\n").trim();
+              }
+            }
+            eventsData.push({ title, text: body });
+          }
+          i = res.nextIndex;
+        }
+      }
+
+      if (extrasData.length > 0) {
+        extrasData.forEach(item => {
+          addExtra();
+          const blocks = document.querySelectorAll(".extra-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".extra-title-field");
+          const textEl = lastBlock.querySelector(".extra-field");
+          if (titleEl) titleEl.value = item.title || "";
+          if (textEl) textEl.value = item.text || "";
         });
-        window.removeTag = t => { let arr=hid.value.split(' ').filter(x=>x); hid.value=arr.filter(x=>x!==t).join(' '); render(); saveCurrentChar(); };
-        render();
+      }
+
+      if (eventsData.length > 0) {
+        eventsData.forEach(item => {
+          addEvent();
+          const blocks = document.querySelectorAll(".event-block");
+          const lastBlock = blocks[blocks.length - 1];
+          if (!lastBlock) return;
+          const titleEl = lastBlock.querySelector(".event-title-field");
+          const textEl = lastBlock.querySelector(".event-field");
+          if (titleEl) titleEl.value = item.title || "";
+          if (textEl) textEl.value = item.text || "";
+        });
+      }
+
+      updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      updateAllFieldCounters();
+      saveCurrentChar();
+      updateChatPreview(); // 更新預覽
     }
-    
-    function limitText(t,m){ return t.trim().slice(0,m); }
-    function showToast(m){ const c=document.getElementById('toastContainer'); const d=document.createElement('div'); d.className='toast'; d.textContent=m; c.appendChild(d); setTimeout(()=>{d.classList.add('fade-out'); d.addEventListener('animationend',()=>d.remove())},2000); }
-    function changeTheme(t) { document.body.className=`theme-${t} layout-desktop`; }
-    function setLayout(m) { document.body.classList.remove('layout-desktop','layout-mobile'); document.body.classList.add(`layout-${m}`); }
-    function toggleSidebar() { document.querySelector('.sidebar').classList.toggle('is-collapsed'); }
-    function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'}); }
-    function toggleSectionCollapse(id) { document.getElementById(id).classList.toggle('collapsed'); }
-    function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
-    window.addEventListener('scroll', () => { document.getElementById('backToTopBtn').classList.toggle('show', window.scrollY>300); });
-    
-    function renderTemplateManager() {}
-    function saveTemplateFromField(type, id) { 
-        const val = document.getElementById(id).value; if(!val) { showToast("欄位是空的", "warn"); return; }
-        const name = prompt("模板名稱："); if(name) { const store = getStore(); store.templates[type].push({id: Date.now(), name, text: val}); setStore(store); showToast("模板已儲存"); }
+
+    /* ========= 匯入 / 匯出 ========= */
+    function importTxt() {
+      const input = document.getElementById('txtFile');
+      if (!input.files || !input.files[0]) {
+        showToast("請先選擇一個 txt 檔案喔～", "warn");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const content = e.target.result || "";
+        document.getElementById('output').textContent = content;
+        parseMarkdownToForm(content);
+        showToast("已載入：" + file.name);
+      };
+
+      reader.readAsText(file, "utf-8");
     }
-    function downloadTxt() { /* ...略... */ showToast("已下載"); }
-    function exportAllData() { /* ...略... */ showToast("備份已下載"); }
-    function importAllData() { /* ...略... */ }
+
+    function downloadTxt() {
+      if (!document.getElementById('output').textContent.trim()) {
+        generateMarkdown();
+      }
+      const text = document.getElementById('output').textContent;
+      if (!text.trim()) return;
+
+      const name = document.getElementById('charName').value.trim() || "character";
+      const filename = `${name}_prompt.txt`;
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("已下載 .txt");
+    }
+
+    function exportAllData() {
+      const store = getStore();
+      const text = JSON.stringify(store, null, 2);
+      const filename = `qing_backup_${new Date().toISOString().slice(0,10)}.json`;
+
+      const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("已備份所有資料！");
+    }
+
+    function importAllData() {
+      const input = document.getElementById('allFile');
+      if (!input.files || !input.files[0]) {
+        showToast("請先選擇一個 JSON 檔案喔～", "warn");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        try {
+          const content = e.target.result || "";
+          const parsed = JSON.parse(content);
+
+          if (!parsed || typeof parsed !== 'object') {
+            showToast("匯入失敗：檔案格式錯誤", "error");
+            return;
+          }
+          if (!parsed.chars || typeof parsed.chars !== 'object') {
+            showToast("匯入失敗：缺少 chars 資料", "error");
+            return;
+          }
+          if (!parsed.templates) {
+            parsed.templates = initEmptyTemplates();
+          } else {
+            ensureTemplateTypes(parsed.templates);
+          }
+
+          setStore(parsed);
+          loadInitialFromStore();
+
+          showToast("匯入完成！已還原所有資料。");
+        } catch (err) {
+          console.error(err);
+          showToast("匯入失敗：無法解析 JSON", "error");
+        }
+      };
+
+      reader.readAsText(file, "utf-8");
+    }
+
+    /* ========= 清空單欄 ========= */
+    function clearOne(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT' && id === 'gender') {
+        el.value = '未設置';
+      } else {
+        el.value = '';
+      }
+      if (id === 'promptRole' || id === 'promptGuideline' || id === 'modelType') {
+        updatePromptTokenInfo();
+      }
+      saveCurrentChar();
+      updateFieldCounter(el);
+      updateChatPreview(); // 如果是聊天相關欄位，更新預覽
+    }
+
+    /* ========= 自動暫存 ========= */
+    function setupAutoSave() {
+      const els = document.querySelectorAll('input, textarea, select');
+      els.forEach(el => {
+        el.addEventListener('input', () => {
+          saveCurrentChar();
+          if (el.id === 'promptRole' || el.id === 'promptGuideline') {
+            updatePromptTokenInfo();
+          }
+          if (el.tagName === 'TEXTAREA' ||
+              el.type === 'text' ||
+              el.type === 'search' ||
+              el.type === 'date') {
+            updateFieldCounter(el);
+          }
+        });
+        // select change 也要存
+        el.addEventListener('change', () => {
+           saveCurrentChar();
+           if(el.tagName === 'SELECT') updatePromptTokenInfo();
+        });
+      });
+    }
+
+    function loadInitialFromStore() {
+      const store = getStore();
+      const ids = Object.keys(store.chars);
+      if (!store.currentId && ids.length) {
+        store.currentId = ids[0];
+        setStore(store);
+      }
+
+      if (store.currentId && store.chars[store.currentId]) {
+        fillFormFromData(store.chars[store.currentId].data);
+      }
+
+      renderCharList(store);
+      updatePromptTokenInfo();
+      refreshAllTemplateSelects();
+      setupFieldUtils();
+      renderTemplateManager();
+      updateChatPreview(); // 初始化預覽
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initLayoutByWidth();
+      loadInitialFromStore();
+      setupAutoSave();
+      
+      // 監聽視窗大小改變
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(initLayoutByWidth, 200);
+      });
+    });
+    
+    /* ========= 回到頁首功能 ========= */
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // 監聽捲動事件，控制按鈕顯示/隱藏
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('backToTopBtn');
+      if (!btn) return;
+      
+      if (window.scrollY > 300) {
+        btn.classList.add('show');
+      } else {
+        btn.classList.remove('show');
+      }
+    });
   </script>
 </body>
 </html>
