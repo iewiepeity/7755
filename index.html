@@ -329,19 +329,24 @@
     }
 
     /* 2. 側邊欄在手機版變成頂部導航列 */
+/* 2. 側邊欄在手機版變成頂部導航列 (修正版) */
     body.layout-mobile .sidebar {
       width: 100%;
       flex: 0 0 auto;
-      position: sticky; /* 讓選單黏在最上面，不用一直往回捲 */
+      position: sticky;
       top: 10px;
       z-index: 100;
       margin-bottom: 16px;
-      padding: 10px;
+      padding: 6px; /* 稍微縮小內距，讓按鈕更滿 */
       border-radius: 16px;
-      /* 加上一點陰影區隔 */
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      
+      /* 關鍵修正：解除電腦版的 hidden 設定，讓子元素可以滑動 */
+      overflow: visible !important; 
+      
+      /* 避免電腦版的高度動畫影響手機版 */
+      transition: none !important; 
     }
-
     /* 隱藏手機版側邊欄的標題 (節省空間) */
     body.layout-mobile .sidebar-header, 
     body.layout-mobile .sidebar-sub,
