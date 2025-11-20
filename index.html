@@ -204,18 +204,19 @@ transition: width 0.25s ease, padding 0.25s ease;
       width: 100%;
       box-shadow: none;
       margin-bottom: 8px;
-      overflow-x: auto;
+      overflow-x: visible;
     }
 
     body.layout-mobile .sidebar-nav {
-      flex-direction: row;
+      flex-direction: column;
       flex-wrap: nowrap;
       gap: 6px;
     }
 
     body.layout-mobile .sidebar-nav button {
-      flex: 0 0 auto;
-      white-space: nowrap;
+      flex: 1 1 auto;
+      width: 100%;
+      white-space: normal;
     }
 
     /* 說明文字統一風格 */
