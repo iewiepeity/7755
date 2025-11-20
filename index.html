@@ -366,23 +366,6 @@
     .prompt-stats {
       margin-top: 6px;
     }
-        .field-utils {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      margin: -2px 0 6px;
-      gap: 4px;
-    }
-
-    .field-counter {
-      opacity: 0.7;
-    }
-
-    .field-copy {
-      margin-left: auto;
-    }
-
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -512,82 +495,28 @@
     <h2>🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span></h2>
     <div class="label-row">
       <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
-      <div>
-        <!-- 套用模板 -->
-        <select data-template-type="basicInfo"
-                onchange="applyTemplateSingle('basicInfo','basicInfo',this)"
-                class="tpl-select button-mini">
-          <option value="">套用模板…</option>
-        </select>
-        <!-- 存為模板 -->
-        <button type="button"
-                class="button-mini"
-                onclick="saveTemplateFromField('basicInfo','basicInfo')">
-          存為模板
-        </button>
-        <!-- 清空 -->
-        <button type="button"
-                class="button-mini"
-                onclick="clearOne('basicInfo')">
-          清空
-        </button>
-      </div>
+      <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
     </div>
     <textarea id="basicInfo" data-maxlength="700"></textarea>
   </div>
-
 
   <div class="section">
     <h2>💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span></h2>
     <div class="label-row">
       <span class="sub-label">可描述角色性格。</span>
-      <div>
-        <select data-template-type="personality"
-                onchange="applyTemplateSingle('personality','personality',this)"
-                class="tpl-select button-mini">
-          <option value="">套用模板…</option>
-        </select>
-        <button type="button"
-                class="button-mini"
-                onclick="saveTemplateFromField('personality','personality')">
-          存為模板
-        </button>
-        <button type="button"
-                class="button-mini"
-                onclick="clearOne('personality')">
-          清空
-        </button>
-      </div>
+      <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
     </div>
     <textarea id="personality" data-maxlength="700"></textarea>
   </div>
-
 
   <div class="section">
     <h2>🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span></h2>
     <div class="label-row">
       <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
-      <div>
-        <select data-template-type="speechStyle"
-                onchange="applyTemplateSingle('speechStyle','speechStyle',this)"
-                class="tpl-select button-mini">
-          <option value="">套用模板…</option>
-        </select>
-        <button type="button"
-                class="button-mini"
-                onclick="saveTemplateFromField('speechStyle','speechStyle')">
-          存為模板
-        </button>
-        <button type="button"
-                class="button-mini"
-                onclick="clearOne('speechStyle')">
-          清空
-        </button>
-      </div>
+      <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
     </div>
     <textarea id="speechStyle" data-maxlength="700"></textarea>
   </div>
-
 
   <!-- 新增：模型與 Prompt 設定 -->
   <div class="section">
@@ -661,76 +590,35 @@
     <input id="birthday" type="date" style="max-width:220px;" />
   </div>
 
-<div class="section">
-  <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
-
-  <div style="margin-bottom:6px;">
-    <select data-template-type="extra"
-            onchange="/* 此下拉選單不會直接套用，因為要指定欄位，僅作為模板管理入口 */"
-            class="tpl-select button-mini">
-      <option value="">（模板列表顯示在新增欄位中）</option>
-    </select>
+  <div class="section">
+    <h2>📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span></h2>
+    <div id="extraContainer"></div>
+    <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
     <button type="button"
-            class="button-mini"
-            onclick="alert('模板須在「新增後的每一筆附加資訊欄位」中套用');">
-      如何套用模板？
+            class="button-secondary"
+            onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
+      清空所有附加資訊
     </button>
   </div>
 
-  <div id="extraContainer"></div>
-
-  <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
-  <button type="button"
-          class="button-secondary"
-          onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
-    清空所有附加資訊
-  </button>
-</div>
-
-
-<div class="section">
-  <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
-
-  <div style="margin-bottom:6px;">
-    <select data-template-type="event"
-            onchange=""
-            class="tpl-select button-mini">
-      <option value="">（模板列表會在事件欄位內顯示）</option>
-    </select>
+  <div class="section">
+    <h2>📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span></h2>
+    <div id="eventContainer"></div>
+    <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
     <button type="button"
-            class="button-mini"
-            onclick="alert('模板需在事件欄位內套用喔～');">
-      如何套用模板？
+            class="button-secondary"
+            onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
+      清空所有創作者事件
     </button>
   </div>
 
-  <div id="eventContainer"></div>
+  <div class="actions-row">
+    <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
+    <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
 
-  <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
-  <button type="button"
-          class="button-secondary"
-          onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
-    清空所有創作者事件
-  </button>
-</div>
-
-
-<div class="actions-row">
-  <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
-  <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔</button>
-
-  <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
-  <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
-</div>
-
-<!-- 在這裡下面多加一塊「整包備份」 -->
-<div class="actions-row">
-  <button class="button-secondary" type="button" onclick="exportAllData()">📦 匯出全部設定（JSON）</button>
-
-  <input id="allFile" type="file" accept=".json" style="max-width:220px;" />
-  <button class="button-secondary" type="button" onclick="importAllData()">📥 匯入全部設定（覆蓋）</button>
-</div>
-
+    <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
+    <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
+  </div>
 
   <h2>📝 輸出結果（Markdown，可直接複製）</h2>
   <div id="output"></div>
@@ -747,7 +635,6 @@
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
     const STORAGE_KEY = 'qing_char_multi_v1';
-    const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
 
     /* ========= 主題切換 ========= */
     function changeTheme(theme) {
@@ -784,33 +671,19 @@
       return text;
     }
 
-    function initEmptyTemplates() {
-      const obj = {};
-      TEMPLATE_TYPES.forEach(t => obj[t] = []);
-      return obj;
-    }
-
-    function ensureTemplateTypes(tpls) {
-      TEMPLATE_TYPES.forEach(t => {
-        if (!Array.isArray(tpls[t])) tpls[t] = [];
-      });
-    }
-
     function getStore() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+        if (!raw) return { currentId: null, chars: {} };
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') {
-          return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+          return { currentId: null, chars: {} };
         }
         if (!parsed.chars) parsed.chars = {};
-        if (!parsed.templates) parsed.templates = initEmptyTemplates();
-        ensureTemplateTypes(parsed.templates);
         return parsed;
       } catch (e) {
         console.warn('讀取存檔失敗，重置 store：', e);
-        return { currentId: null, chars: {}, templates: initEmptyTemplates() };
+        return { currentId: null, chars: {} };
       }
     }
 
@@ -826,413 +699,107 @@
       return 'char_' + Date.now();
     }
 
-    /* ========= 模板相關 ========= */
-    function getTemplatesByType(type) {
-      const store = getStore();
-      if (!store.templates) store.templates = initEmptyTemplates();
-      ensureTemplateTypes(store.templates);
-      return store.templates[type] || [];
-    }
-
-    function refreshTemplateSelect(type) {
-      const selects = document.querySelectorAll(`select[data-template-type="${type}"]`);
-      const list = getTemplatesByType(type);
-      selects.forEach(sel => {
-        const currentValue = sel.value;
-        sel.innerHTML = '<option value="">套用模板…</option>';
-        list.forEach(tpl => {
-          const opt = document.createElement('option');
-          opt.value = tpl.id;
-          opt.textContent = tpl.name;
-          sel.appendChild(opt);
-        });
-        if (list.some(t => t.id === currentValue)) {
-          sel.value = currentValue;
-        }
-      });
-    }
-
-    function refreshAllTemplateSelects() {
-      TEMPLATE_TYPES.forEach(t => refreshTemplateSelect(t));
-    }
-
-    function saveTemplate(type, text) {
-      const content = (text || '').trim();
-      if (!content) {
-        alert("目前欄位是空的，無法存成模板喔～");
-        return;
-      }
-      const name = prompt("請輸入這個模板的名稱（例如：標準世界觀模板）：");
-      if (!name) return;
-
-      const store = getStore();
-      if (!store.templates) store.templates = initEmptyTemplates();
-      ensureTemplateTypes(store.templates);
-
-      store.templates[type].push({
-        id: 'tpl_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
-        name: name.trim(),
-        text: content
-      });
-
-      setStore(store);
-      refreshTemplateSelect(type);
-      alert("已儲存模板：「" + name.trim() + "」");
-    }
-
-    function saveTemplateFromField(type, textareaId) {
-      const el = document.getElementById(textareaId);
-      if (!el) return;
-      saveTemplate(type, el.value);
-    }
-
-    function saveTemplateFromDynamicBlock(type, blockEl) {
-      if (!blockEl) return;
-      const textarea = blockEl.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
-      if (!textarea) return;
-      saveTemplate(type, textarea.value);
-    }
-
-    function applyTemplateSingle(type, textareaId, selectEl) {
-      const tplId = selectEl.value;
-      if (!tplId) return;
-
-      const store = getStore();
-      if (!store.templates) return;
-      ensureTemplateTypes(store.templates);
-      const list = store.templates[type] || [];
-      const tpl = list.find(t => t.id === tplId);
-      if (!tpl) return;
-
-      const ta = document.getElementById(textareaId);
-      if (!ta) return;
-      ta.value = tpl.text;
-      saveCurrentChar();
-      if (textareaId === 'promptRole' || textareaId === 'promptGuideline') {
-        updatePromptTokenInfo();
-      }
-      updateFieldCounter(ta);
-    }
-
-    function applyTemplateDynamic(type, selectEl) {
-      const tplId = selectEl.value;
-      if (!tplId) return;
-
-      const store = getStore();
-      if (!store.templates) return;
-      ensureTemplateTypes(store.templates);
-      const list = store.templates[type] || [];
-      const tpl = list.find(t => t.id === tplId);
-      if (!tpl) return;
-
-      const block = selectEl.closest(type === 'extra' ? '.extra-block' : '.event-block');
-      if (!block) return;
-      const ta = block.querySelector(type === 'extra' ? '.extra-field' : '.event-field');
-      if (!ta) return;
-
-      ta.value = tpl.text;
-      saveCurrentChar();
-      updateFieldCounter(ta);
-    }
-
     /* ========= 動態欄位：附加資訊 & 事件 ========= */
-function renumberExtras() {
-  const blocks = document.querySelectorAll(".extra-block");
-  blocks.forEach((block, idx) => {
-    const labels = block.querySelectorAll("label");
-    // labels[0] 是「標題（選填）」，labels[1] 才是「附加資訊」
-    if (labels.length >= 2) {
-      labels[1].textContent = `附加資訊 ${idx + 1}：`;
-    }
-  });
-}
-
-function renumberEvents() {
-  const blocks = document.querySelectorAll(".event-block");
-  blocks.forEach((block, idx) => {
-    const labels = block.querySelectorAll("label");
-    // labels[0] 是「標題（選填）」，labels[1] 才是「創作者事件」
-    if (labels.length >= 2) {
-      labels[1].textContent = `創作者事件 ${idx + 1}：`;
-    }
-  });
-}
-
-
-function addExtra() {
-  const current = document.querySelectorAll(".extra-block").length;
-  if (current >= EXTRA_MAX) {
-    alert("附加資訊最多只能 10 筆喔～");
-    return;
-  }
-  const container = document.getElementById("extraContainer");
-
-  const block = document.createElement("div");
-  block.className = "extra-block";
-
-  // 第一行：標題列
-  const titleRow = document.createElement("div");
-  titleRow.className = "label-row";
-
-  const titleLabel = document.createElement("label");
-  titleLabel.textContent = "標題（選填）：";
-
-  const titleInput = document.createElement("input");
-  titleInput.type = "text";
-  titleInput.className = "extra-title-field";
-  titleInput.dataset.maxlength = "50";
-  titleInput.style.flex = "1";
-  titleInput.addEventListener('input', () => {
-    saveCurrentChar();
-    updateFieldCounter(titleInput);
-  });
-
-  titleRow.appendChild(titleLabel);
-  titleRow.appendChild(titleInput);
-
-  // 第二行：內容標籤 + 模板/刪除
-  const labelRow = document.createElement("div");
-  labelRow.className = "label-row";
-
-  const label = document.createElement("label");
-  label.textContent = "附加資訊 ：";
-
-  const controls = document.createElement("div");
-  controls.className = "label-controls";
-
-  const tplSelect = document.createElement("select");
-  tplSelect.className = "tpl-select";
-  tplSelect.dataset.templateType = "extra";
-  tplSelect.innerHTML = '<option value="">套用模板…</option>';
-  tplSelect.addEventListener('change', function () {
-    applyTemplateDynamic('extra', this);
-  });
-
-  const saveTplBtn = document.createElement("button");
-  saveTplBtn.type = "button";
-  saveTplBtn.className = "button-mini";
-  saveTplBtn.textContent = "存為模板";
-  saveTplBtn.onclick = function () {
-    saveTemplateFromDynamicBlock('extra', block);
-  };
-
-  const delBtn = document.createElement("button");
-  delBtn.type = "button";
-  delBtn.className = "button-mini";
-  delBtn.textContent = "刪除此項";
-  delBtn.onclick = function () {
-    block.remove();
-    renumberExtras();
-    saveCurrentChar();
-    updateAllFieldCounters();
-  };
-
-  controls.appendChild(tplSelect);
-  controls.appendChild(saveTplBtn);
-  controls.appendChild(delBtn);
-
-  labelRow.appendChild(label);
-  labelRow.appendChild(controls);
-
-  // 內容欄位
-  const textarea = document.createElement("textarea");
-  textarea.className = "extra-field";
-  textarea.dataset.maxlength = "500";
-  textarea.addEventListener('input', () => {
-    saveCurrentChar();
-    updateFieldCounter(textarea);
-  });
-
-  block.appendChild(titleRow);
-  block.appendChild(labelRow);
-  block.appendChild(textarea);
-  container.appendChild(block);
-
-  renumberExtras();
-  saveCurrentChar();
-  refreshTemplateSelect('extra');
-  setupFieldUtils(); // 給新欄位加上字數＆複製
-}
-
-
-function addEvent() {
-  const current = document.querySelectorAll(".event-block").length;
-  if (current >= EVENT_MAX) {
-    alert("創作者事件最多只能 20 筆喔～");
-    return;
-  }
-  const container = document.getElementById("eventContainer");
-
-  const block = document.createElement("div");
-  block.className = "event-block";
-
-  // 第一行：標題列
-  const titleRow = document.createElement("div");
-  titleRow.className = "label-row";
-
-  const titleLabel = document.createElement("label");
-  titleLabel.textContent = "標題（選填）：";
-
-  const titleInput = document.createElement("input");
-  titleInput.type = "text";
-  titleInput.className = "event-title-field";
-  titleInput.dataset.maxlength = "50";
-  titleInput.style.flex = "1";
-  titleInput.addEventListener('input', () => {
-    saveCurrentChar();
-    updateFieldCounter(titleInput);
-  });
-
-  titleRow.appendChild(titleLabel);
-  titleRow.appendChild(titleInput);
-
-  // 第二行：內容標籤 + 模板/刪除
-  const labelRow = document.createElement("div");
-  labelRow.className = "label-row";
-
-  const label = document.createElement("label");
-  label.textContent = "創作者事件 ：";
-
-  const controls = document.createElement("div");
-  controls.className = "label-controls";
-
-  const tplSelect = document.createElement("select");
-  tplSelect.className = "tpl-select";
-  tplSelect.dataset.templateType = "event";
-  tplSelect.innerHTML = '<option value="">套用模板…</option>';
-  tplSelect.addEventListener('change', function () {
-    applyTemplateDynamic('event', this);
-  });
-
-  const saveTplBtn = document.createElement("button");
-  saveTplBtn.type = "button";
-  saveTplBtn.className = "button-mini";
-  saveTplBtn.textContent = "存為模板";
-  saveTplBtn.onclick = function () {
-    saveTemplateFromDynamicBlock('event', block);
-  };
-
-  const delBtn = document.createElement("button");
-  delBtn.type = "button";
-  delBtn.className = "button-mini";
-  delBtn.textContent = "刪除此項";
-  delBtn.onclick = function () {
-    block.remove();
-    renumberEvents();
-    saveCurrentChar();
-    updateAllFieldCounters();
-  };
-
-  controls.appendChild(tplSelect);
-  controls.appendChild(saveTplBtn);
-  controls.appendChild(delBtn);
-
-  labelRow.appendChild(label);
-  labelRow.appendChild(controls);
-
-  // 內容欄位
-  const textarea = document.createElement("textarea");
-  textarea.className = "event-field";
-  textarea.dataset.maxlength = "2000";
-  textarea.addEventListener('input', () => {
-    saveCurrentChar();
-    updateFieldCounter(textarea);
-  });
-
-  block.appendChild(titleRow);
-  block.appendChild(labelRow);
-  block.appendChild(textarea);
-  container.appendChild(block);
-
-  renumberEvents();
-  saveCurrentChar();
-  refreshTemplateSelect('event');
-  setupFieldUtils();
-}
-
-    /* ========= 每個欄位：字數顯示 + 複製 ========= */
-    function copyFieldText(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const text = el.value || el.innerText || "";
-      if (!text) {
-        alert('這個欄位目前是空的喔～');
-        return;
-      }
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text)
-          .then(() => alert('已複製這個欄位的內容！'))
-          .catch(err => {
-            console.error(err);
-            fallbackCopy(el);
-          });
-      } else {
-        fallbackCopy(el);
-      }
-    }
-
-    function fallbackCopy(el) {
-      try {
-        el.select();
-        document.execCommand('copy');
-        alert('已複製內容（使用相容模式）');
-      } catch (e) {
-        alert('複製失敗，可能被瀏覽器擋住了 QQ');
-      }
-    }
-
-    function updateFieldCounter(el) {
-      const id = el.id;
-      if (!id) return;
-      let wrapper = el.nextElementSibling;
-      if (!wrapper || !wrapper.classList || !wrapper.classList.contains('field-utils')) {
-        return;
-      }
-      const counterSpan = wrapper.querySelector('.field-counter');
-      if (!counterSpan) return;
-
-      const max = el.dataset.maxlength ? parseInt(el.dataset.maxlength, 10) : null;
-      const len = el.value ? el.value.length : 0;
-      if (max) {
-        counterSpan.textContent = `目前 ${len} / ${max} 字`;
-      } else {
-        counterSpan.textContent = `目前 ${len} 字`;
-      }
-    }
-
-    function updateAllFieldCounters() {
-      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
-      fields.forEach(updateFieldCounter);
-    }
-
-    function setupFieldUtils() {
-      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
-      fields.forEach(el => {
-        const id = el.id;
-        if (!id) return;
-        const next = el.nextElementSibling;
-        if (next && next.classList && next.classList.contains('field-utils')) return;
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'field-utils';
-
-        const counter = document.createElement('span');
-        counter.className = 'field-counter';
-        counter.dataset.targetId = id;
-
-        const copyBtn = document.createElement('button');
-        copyBtn.type = 'button';
-        copyBtn.className = 'button-mini field-copy';
-        copyBtn.textContent = '複製內容';
-        copyBtn.addEventListener('click', () => copyFieldText(id));
-
-        wrapper.appendChild(counter);
-        wrapper.appendChild(copyBtn);
-        el.insertAdjacentElement('afterend', wrapper);
+    function renumberExtras() {
+      const blocks = document.querySelectorAll(".extra-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `附加資訊 ${idx + 1}：`;
       });
+    }
 
-      updateAllFieldCounters();
+    function renumberEvents() {
+      const blocks = document.querySelectorAll(".event-block");
+      blocks.forEach((block, idx) => {
+        const label = block.querySelector("label");
+        label.textContent = `創作者事件 ${idx + 1}：`;
+      });
+    }
+
+    function addExtra() {
+      const current = document.querySelectorAll(".extra-block").length;
+      if (current >= EXTRA_MAX) {
+        alert("附加資訊最多只能 10 筆喔～");
+        return;
+      }
+      const container = document.getElementById("extraContainer");
+
+      const block = document.createElement("div");
+      block.className = "extra-block";
+
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
+      const label = document.createElement("label");
+      label.textContent = "附加資訊 ：";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-mini";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberExtras();
+        saveCurrentChar();
+      };
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "extra-field";
+      textarea.dataset.maxlength = "500";
+      textarea.addEventListener('input', saveCurrentChar);
+
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberExtras();
+      saveCurrentChar();
+    }
+
+    function addEvent() {
+      const current = document.querySelectorAll(".event-block").length;
+      if (current >= EVENT_MAX) {
+        alert("創作者事件最多只能 20 筆喔～");
+        return;
+      }
+      const container = document.getElementById("eventContainer");
+
+      const block = document.createElement("div");
+      block.className = "event-block";
+
+      const labelRow = document.createElement("div");
+      labelRow.className = "label-row";
+
+      const label = document.createElement("label");
+      label.textContent = "創作者事件 ：";
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "button-mini";
+      delBtn.textContent = "刪除此項";
+      delBtn.onclick = function () {
+        block.remove();
+        renumberEvents();
+        saveCurrentChar();
+      };
+
+      labelRow.appendChild(label);
+      labelRow.appendChild(delBtn);
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "event-field";
+      textarea.dataset.maxlength = "2000";
+      textarea.addEventListener('input', saveCurrentChar);
+
+      block.appendChild(labelRow);
+      block.appendChild(textarea);
+      container.appendChild(block);
+
+      renumberEvents();
+      saveCurrentChar();
     }
 
     /* ========= 表單資料收集 & 填回 ========= */
@@ -1256,28 +823,12 @@ function addEvent() {
         }
       });
 
-data.extras = [];
-document.querySelectorAll('.extra-block').forEach(block => {
-  const titleEl = block.querySelector('.extra-title-field');
-  const textEl = block.querySelector('.extra-field');
-  const title = titleEl ? (titleEl.value || "") : "";
-  const text = textEl ? (textEl.value || "") : "";
-  if (title || text) {
-    data.extras.push({ title, text });
-  }
-});
-
-data.events = [];
-document.querySelectorAll('.event-block').forEach(block => {
-  const titleEl = block.querySelector('.event-title-field');
-  const textEl = block.querySelector('.event-field');
-  const title = titleEl ? (titleEl.value || "") : "";
-  const text = textEl ? (textEl.value || "") : "";
-  if (title || text) {
-    data.events.push({ title, text });
-  }
-});
-
+      document.querySelectorAll('.extra-field').forEach(el => {
+        data.extras.push(el.value || "");
+      });
+      document.querySelectorAll('.event-field').forEach(el => {
+        data.events.push(el.value || "");
+      });
 
       return data;
     }
@@ -1306,7 +857,6 @@ document.querySelectorAll('.event-block').forEach(block => {
       if (eventContainer) eventContainer.innerHTML = "";
 
       updatePromptTokenInfo();
-      setupFieldUtils();
     }
 
     function fillFormFromData(data) {
@@ -1319,57 +869,27 @@ document.querySelectorAll('.event-block').forEach(block => {
         el.value = data.fields[id] || "";
       });
 
-if (Array.isArray(data.extras)) {
-  data.extras.forEach(item => {
-    // 兼容舊版：只有文字
-    let title = "";
-    let text = "";
-    if (typeof item === "string") {
-      text = item;
-    } else if (item && typeof item === "object") {
-      title = item.title || "";
-      text = item.text || "";
-    }
-    if (!title && !text) return;
+      if (Array.isArray(data.extras)) {
+        data.extras.forEach(txt => {
+          if (!txt) return;
+          addExtra();
+          const els = document.querySelectorAll('.extra-field');
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
 
-    addExtra();
-    const blocks = document.querySelectorAll(".extra-block");
-    const lastBlock = blocks[blocks.length - 1];
-    if (!lastBlock) return;
-    const titleEl = lastBlock.querySelector(".extra-title-field");
-    const textEl = lastBlock.querySelector(".extra-field");
-    if (titleEl) titleEl.value = title;
-    if (textEl) textEl.value = text;
-  });
-}
-
-if (Array.isArray(data.events)) {
-  data.events.forEach(item => {
-    let title = "";
-    let text = "";
-    if (typeof item === "string") {
-      text = item;
-    } else if (item && typeof item === "object") {
-      title = item.title || "";
-      text = item.text || "";
-    }
-    if (!title && !text) return;
-
-    addEvent();
-    const blocks = document.querySelectorAll(".event-block");
-    const lastBlock = blocks[blocks.length - 1];
-    if (!lastBlock) return;
-    const titleEl = lastBlock.querySelector(".event-title-field");
-    const textEl = lastBlock.querySelector(".event-field");
-    if (titleEl) titleEl.value = title;
-    if (textEl) textEl.value = text;
-  });
-}
-
+      if (Array.isArray(data.events)) {
+        data.events.forEach(txt => {
+          if (!txt) return;
+          addEvent();
+          const els = document.querySelectorAll('.event-field');
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
 
       updatePromptTokenInfo();
-      refreshAllTemplateSelects();
-      setupFieldUtils();
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -1458,6 +978,7 @@ if (Array.isArray(data.events)) {
 
       const entries = Object.entries(store.chars);
 
+      // 收集分類
       const categorySet = new Set();
       entries.forEach(([id, item]) => {
         if (item.meta && item.meta.category) {
@@ -1465,6 +986,7 @@ if (Array.isArray(data.events)) {
         }
       });
 
+      // 填分類選單
       const filterSel = document.getElementById('filterCategory');
       if (filterSel) {
         const prev = filterSel.value;
@@ -1506,7 +1028,7 @@ if (Array.isArray(data.events)) {
       renderCharList(store);
     }
 
-    /* ========= 必填欄位提醒 ========= */
+    /* ========= 必填欄位提醒（不阻止生成） ========= */
     function validateRequired() {
       const requiredFields = [
         { id: 'charName', label: '姓名' },
@@ -1544,25 +1066,11 @@ if (Array.isArray(data.events)) {
     }
 
     /* ========= Prompt token & 果醬計算 ========= */
-
-    // 超隨便的估算：中文字 ≈ 2 token，其他字元 ≈ 1 token（空白不算）
-    function estimateTextTokens(text) {
-      let total = 0;
-      for (const ch of text) {
-        if (/\s/.test(ch)) continue;
-        if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
-          total += 2; // 中文雙倍
-        } else {
-          total += 1; // 英文、數字、符號先當 1
-        }
-      }
-      return total;
-    }
-
     function estimatePromptTokens() {
       const role = (document.getElementById('promptRole').value || "");
       const guide = (document.getElementById('promptGuideline').value || "");
-      return estimateTextTokens(role) + estimateTextTokens(guide);
+      // 這裡用「字數 ≒ token」的概念，簡單估算
+      return role.length + guide.length;
     }
 
     function getSelectedModelBaseCost() {
@@ -1585,14 +1093,8 @@ if (Array.isArray(data.events)) {
       let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
       const totalJam = baseCost + extraJams;
 
-      tokenSpan.textContent =
-        `預估 token：${totalTokens}（超級不負責任估算：` +
-        `粗略把「一個中文字 ≈ 2 token、英文/數字/符號一字元 ≈ 1 token」，` +
-        `實際還是看各模型的 tokenizer，請量力參考就好 🙈）`;
-
-      jamSpan.textContent =
-        `模型基礎花費：約 ${baseCost} 果醬　＋　額外 token 花費：約 ${extraJams} 果醬　` +
-        `⇒ 預估合計：約 ${totalJam} 果醬（純估算，實際以平台計價為準）`;
+      tokenSpan.textContent = `預估 token：${totalTokens}（前 500 token 免費，字數僅供估算參考）`;
+      jamSpan.textContent = `模型基礎花費：${baseCost} 果醬　＋　額外 token 花費：${extraJams} 果醬　＝　預估合計：${totalJam} 果醬`;
     }
 
     /* ========= Markdown 生成 ========= */
@@ -1637,6 +1139,7 @@ if (Array.isArray(data.events)) {
 
       let md = [];
 
+      // 角色資訊
       md.push(`【角色資訊】\n`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (category) md.push(`- 分類：${category}`);
@@ -1663,22 +1166,26 @@ if (Array.isArray(data.events)) {
 
       md.push("");
 
+      // 基本資訊
       md.push(`【基本資訊】`);
       md.push(basic || "（尚未填寫）");
       md.push("");
 
+      // 性格
       md.push(`【性格】`);
       md.push(personality || "（尚未填寫）");
       md.push("");
 
+      // 說話風格與習慣
       md.push(`【說話風格與習慣】`);
       md.push(speech || "（尚未填寫）");
       md.push("");
 
+      // 模型與 Prompt
       if (modelValue || promptRole || promptGuideline) {
         md.push(`【模型與 Prompt 設定】`);
         if (modelLabel) md.push(`- 模型：${modelLabel}`);
-        md.push(`- 預估 token：${promptTokens}（內部以「中文字≈2、其他字元≈1」粗估，實際依平台為準）`);
+        md.push(`- 預估 token：${promptTokens}（前 500 token 免費，字數估算僅供參考）`);
         if (promptRole) {
           md.push(`- Role：`);
           md.push(promptRole);
@@ -1690,18 +1197,21 @@ if (Array.isArray(data.events)) {
         md.push("");
       }
 
+      // 第一次聊天場景
       if (firstScene) {
         md.push(`【第一次聊天場景】`);
         md.push(firstScene);
         md.push("");
       }
 
+      // 角色對話
       if (sampleDialogue) {
         md.push(`【角色對話】`);
         md.push(sampleDialogue);
         md.push("");
       }
 
+      // 喜好
       if (likes || dislikes) {
         md.push(`【喜好】`);
         if (likes) md.push(`- 喜歡：${likes}`);
@@ -1709,65 +1219,47 @@ if (Array.isArray(data.events)) {
         md.push("");
       }
 
-// 附加資訊
-md.push(`【附加資訊】`);
-const extraBlocks = document.querySelectorAll(".extra-block");
-if (extraBlocks.length === 0) {
-  md.push("- （尚未填寫）\n");
-} else {
-  extraBlocks.forEach((block, idx) => {
-    const titleEl = block.querySelector(".extra-title-field");
-    const textEl = block.querySelector(".extra-field");
-    const title = titleEl ? limitText(titleEl.value, 50) : "";
-    const txt = textEl ? limitText(textEl.value, 500) : "";
-    if (!title && !txt) return;
+      // 附加資訊
+      md.push(`【附加資訊】`);
+      const extras = document.querySelectorAll(".extra-field");
+      if (extras.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        extras.forEach((el, idx) => {
+          const txt = limitText(el.value, 500);
+          if (!txt) return;
+          md.push(`［附加資訊 ${idx + 1}］`);
+          md.push(txt);
+          md.push("");
+        });
+      }
 
-    md.push(`［附加資訊 ${idx + 1}］`);
-    if (title) {
-      md.push(`- 標題：${title}`);
-    }
-    if (txt) {
-      md.push(txt);
-    }
-    md.push("");
-  });
-}
-
-// 創作者事件
-md.push(`【創作者事件】`);
-const eventBlocks = document.querySelectorAll(".event-block");
-if (eventBlocks.length === 0) {
-  md.push("- （尚未填寫）\n");
-} else {
-  eventBlocks.forEach((block, idx) => {
-    const titleEl = block.querySelector(".event-title-field");
-    const textEl = block.querySelector(".event-field");
-    const title = titleEl ? limitText(titleEl.value, 50) : "";
-    const txt = textEl ? limitText(textEl.value, 2000) : "";
-    if (!title && !txt) return;
-
-    md.push(`［創作者事件 ${idx + 1}］`);
-    if (title) {
-      md.push(`- 標題：${title}`);
-    }
-    if (txt) {
-      md.push(txt);
-    }
-    md.push("");
-  });
-}
-
+      // 創作者事件
+      md.push(`【創作者事件】`);
+      const events = document.querySelectorAll(".event-field");
+      if (events.length === 0) {
+        md.push("- （尚未填寫）\n");
+      } else {
+        events.forEach((el, idx) => {
+          const txt = limitText(el.value, 2000);
+          if (!txt) return;
+          md.push(`［創作者事件 ${idx + 1}］`);
+          md.push(txt);
+          md.push("");
+        });
+      }
 
       document.getElementById('output').textContent = md.join("\n");
     }
 
-    /* ========= Markdown 解析 ========= */
+    /* ========= Markdown 解析成表單 ========= */
     function readBlockUntilHeading(lines, startIndex) {
       let i = startIndex;
       const buf = [];
       while (i < lines.length) {
         const t = lines[i];
         const trimmed = t.trim();
+        // 新格式：遇到「【」「［」都視為下一段開頭
         if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("［")) break;
         buf.push(t);
         i++;
@@ -1782,9 +1274,8 @@ if (eventBlocks.length === 0) {
       clearForm();
 
       const lines = md.split(/\r?\n/);
-const extrasData = [];
-const eventsData = [];
-
+      const extrasTexts = [];
+      const eventsTexts = [];
 
       for (let i = 0; i < lines.length; i++) {
         const raw = lines[i];
@@ -1825,6 +1316,7 @@ const eventsData = [];
           i = res.nextIndex;
         }
 
+        // 基本資訊 / 性格 / 說話風格
         else if (line === "【基本資訊】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('basicInfo').value = res.text === "（尚未填寫）" ? "" : res.text;
@@ -1839,6 +1331,7 @@ const eventsData = [];
           i = res.nextIndex;
         }
 
+        // 模型與 Prompt
         else if (line === "【模型與 Prompt 設定】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1856,21 +1349,22 @@ const eventsData = [];
                 }
               }
             } else if (t.startsWith("- 預估 token")) {
-              // 忽略
+              // 忽略，不需要還原
             } else if (t.startsWith("- Role：")) {
-              const res2 = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptRole').value = res2.text;
-              j = res2.nextIndex;
+              const res = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptRole').value = res.text;
+              j = res.nextIndex;
             } else if (t.startsWith("- Response Guideline：")) {
-              const res2 = readBlockUntilHeading(lines, j + 1);
-              document.getElementById('promptGuideline').value = res2.text;
-              j = res2.nextIndex;
+              const res = readBlockUntilHeading(lines, j + 1);
+              document.getElementById('promptGuideline').value = res.text;
+              j = res.nextIndex;
             }
             j++;
           }
           i = j - 1;
         }
 
+        // 第一次聊天場景 / 角色對話
         else if (line === "【第一次聊天場景】") {
           const res = readBlockUntilHeading(lines, i + 1);
           document.getElementById('firstScene').value = res.text;
@@ -1881,6 +1375,7 @@ const eventsData = [];
           i = res.nextIndex;
         }
 
+        // 喜好
         else if (line === "【喜好】") {
           let j = i + 1;
           while (j < lines.length) {
@@ -1896,74 +1391,39 @@ const eventsData = [];
           i = j - 1;
         }
 
-    else if (line.startsWith("［附加資訊 ")) {
-  const res = readBlockUntilHeading(lines, i + 1);
-  if (res.text && res.text !== "（尚未填寫）") {
-    let title = "";
-    let body = res.text;
-
-    const parts = res.text.split(/\r?\n/);
-    if (parts.length > 0) {
-      const first = parts[0].trim();
-      if (first.startsWith("- 標題：")) {
-        title = first.replace("- 標題：", "").trim();
-        body = parts.slice(1).join("\n").trim();
-      }
-    }
-    extrasData.push({ title, text: body });
-  }
-  i = res.nextIndex;
-} else if (line.startsWith("［創作者事件 ")) {
-  const res = readBlockUntilHeading(lines, i + 1);
-  if (res.text && res.text !== "（尚未填寫）") {
-    let title = "";
-    let body = res.text;
-
-    const parts = res.text.split(/\r?\n/);
-    if (parts.length > 0) {
-      const first = parts[0].trim();
-      if (first.startsWith("- 標題：")) {
-        title = first.replace("- 標題：", "").trim();
-        body = parts.slice(1).join("\n").trim();
-      }
-    }
-    eventsData.push({ title, text: body });
-  }
-  i = res.nextIndex;
-}
-
+        // 附加資訊
+        else if (line.startsWith("［附加資訊 ")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          if (res.text && res.text !== "（尚未填寫）") extrasTexts.push(res.text);
+          i = res.nextIndex;
+        }
+        // 創作者事件
+        else if (line.startsWith("［創作者事件 ")) {
+          const res = readBlockUntilHeading(lines, i + 1);
+          if (res.text && res.text !== "（尚未填寫）") eventsTexts.push(res.text);
+          i = res.nextIndex;
+        }
       }
 
-  if (extrasData.length > 0) {
-  extrasData.forEach(item => {
-    addExtra();
-    const blocks = document.querySelectorAll(".extra-block");
-    const lastBlock = blocks[blocks.length - 1];
-    if (!lastBlock) return;
-    const titleEl = lastBlock.querySelector(".extra-title-field");
-    const textEl = lastBlock.querySelector(".extra-field");
-    if (titleEl) titleEl.value = item.title || "";
-    if (textEl) textEl.value = item.text || "";
-  });
-}
+      if (extrasTexts.length > 0) {
+        extrasTexts.forEach(txt => {
+          addExtra();
+          const els = document.querySelectorAll(".extra-field");
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
 
-if (eventsData.length > 0) {
-  eventsData.forEach(item => {
-    addEvent();
-    const blocks = document.querySelectorAll(".event-block");
-    const lastBlock = blocks[blocks.length - 1];
-    if (!lastBlock) return;
-    const titleEl = lastBlock.querySelector(".event-title-field");
-    const textEl = lastBlock.querySelector(".event-field");
-    if (titleEl) titleEl.value = item.title || "";
-    if (textEl) textEl.value = item.text || "";
-  });
-}
-
+      if (eventsTexts.length > 0) {
+        eventsTexts.forEach(txt => {
+          addEvent();
+          const els = document.querySelectorAll(".event-field");
+          const last = els[els.length - 1];
+          if (last) last.value = txt;
+        });
+      }
 
       updatePromptTokenInfo();
-      refreshAllTemplateSelects();
-      setupFieldUtils();
       saveCurrentChar();
     }
 
@@ -2008,68 +1468,6 @@ if (eventsData.length > 0) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
-function exportAllData() {
-  const store = getStore();   // 把 currentId + chars + templates 全抓出來
-
-  const text = JSON.stringify(store, null, 2);  // 美化縮排方便自己看
-  const filename = `qing_all_${new Date().toISOString().slice(0,10)}.json`;
-
-  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-function importAllData() {
-  const input = document.getElementById('allFile');
-  if (!input.files || !input.files[0]) {
-    alert("請先選擇一個 JSON 檔案喔～");
-    return;
-  }
-
-  const file = input.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function (e) {
-    try {
-      const content = e.target.result || "";
-      const parsed = JSON.parse(content);
-
-      // 簡單檢查一下格式，避免亂檔案炸掉 localStorage
-      if (!parsed || typeof parsed !== 'object') {
-        alert("匯入失敗：檔案內容不是有效的 JSON 物件 QQ");
-        return;
-      }
-      if (!parsed.chars || typeof parsed.chars !== 'object') {
-        alert("匯入失敗：看起來缺少 chars 欄位 QQ");
-        return;
-      }
-      if (!parsed.templates) {
-        parsed.templates = initEmptyTemplates();
-      } else {
-        ensureTemplateTypes(parsed.templates);
-      }
-
-      // 覆蓋原本 localStorage
-      setStore(parsed);
-
-      // 重新載入畫面上的欄位 & 角色列表
-      loadInitialFromStore();
-
-      alert("匯入完成！已載入全部角色與模板～");
-    } catch (err) {
-      console.error(err);
-      alert("匯入失敗：無法解析這個 JSON 檔案 QQ");
-    }
-  };
-
-  reader.readAsText(file, "utf-8");
-}
 
     /* ========= 清空單欄 ========= */
     function clearOne(id) {
@@ -2080,11 +1478,10 @@ function importAllData() {
       } else {
         el.value = '';
       }
-      if (id === 'promptRole' || id === 'promptGuideline' || id === 'modelType') {
+      if (id === 'promptRole' || id === 'promptGuideline') {
         updatePromptTokenInfo();
       }
       saveCurrentChar();
-      updateFieldCounter(el);
     }
 
     function clearGender() {
@@ -2103,23 +1500,11 @@ function importAllData() {
           if (el.id === 'promptRole' || el.id === 'promptGuideline') {
             updatePromptTokenInfo();
           }
-          if (el.tagName === 'TEXTAREA' ||
-              el.type === 'text' ||
-              el.type === 'search' ||
-              el.type === 'date') {
-            updateFieldCounter(el);
-          }
         });
         el.addEventListener('change', () => {
           saveCurrentChar();
           if (el.id === 'promptRole' || el.id === 'promptGuideline' || el.id === 'modelType') {
             updatePromptTokenInfo();
-          }
-          if (el.tagName === 'TEXTAREA' ||
-              el.type === 'text' ||
-              el.type === 'search' ||
-              el.type === 'date') {
-            updateFieldCounter(el);
           }
         });
       });
@@ -2139,8 +1524,6 @@ function importAllData() {
 
       renderCharList(store);
       updatePromptTokenInfo();
-      refreshAllTemplateSelects();
-      setupFieldUtils();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -2149,6 +1532,5 @@ function importAllData() {
       loadInitialFromStore();
     });
   </script>
-
 </body>
 </html>
