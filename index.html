@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (無限物語版)</title>
+  <title>卿卿我我創角小幫手 (發佈優化版)</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
@@ -445,8 +445,8 @@
         <div class="section-body">
           <!-- 1. 基本資訊 -->
           <h3 style="font-size:1rem; border-left:4px solid var(--focus-color); padding-left:10px; margin-bottom:16px;">1. 遊戲介紹</h3>
-          <div class="label-row"><label>角色標題 (30字)</label></div>
-          <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入能夠介紹角色的標題..." oninput="saveCurrentChar()" />
+          <div class="label-row"><label>遊戲標題 (30字)</label></div>
+          <input id="gameTitle" type="text" data-maxlength="30" placeholder="輸入遊戲標題..." oninput="saveCurrentChar()" />
           <div class="label-row"><label>遊戲介紹 (30字)</label></div>
           <textarea id="gameIntro" data-maxlength="30" style="min-height:60px;" placeholder="簡短介紹..." oninput="saveCurrentChar()"></textarea>
 
@@ -467,24 +467,7 @@
             <!-- JS 會動態生成 5 個階段的編輯器 -->
           </div>
 
-          <!-- 3. 發佈設定 -->
-          <h3 style="font-size:1rem; border-left:4px solid var(--focus-color); padding-left:10px; margin:30px 0 16px 0;">3. 發佈設定</h3>
-          <div class="label-row" style="align-items:center;">
-            <div style="flex:1; margin-right:16px;">
-              <label>使用等級</label>
-              <select id="gameAgeRating" onchange="saveCurrentChar()">
-                <option value="all">所有年齡層</option>
-                <option value="adult">成人限定 (R18)</option>
-              </select>
-            </div>
-            <div style="flex:1;">
-               <label>公開設定</label>
-               <select id="gamePublicSetting" onchange="saveCurrentChar()">
-                 <option value="free">免費</option>
-                 <option value="paid">付費 (10果醬)</option>
-               </select>
-            </div>
-          </div>
+          <!-- 3. 發佈設定 (已移除) -->
         </div>
       </div>
 
@@ -559,7 +542,7 @@
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v6_pro'; 
+    const STORAGE_KEY = 'qing_char_game_v7_release'; 
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
     const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
     
@@ -610,7 +593,7 @@
       });
     }
 
-    // 新增故事區塊
+    // 新增故事區塊 (更新：加入發佈設定)
     function addStoryBlock(stageIdx, data = null) {
         const list = document.getElementById(`storyList_${stageIdx}`);
         const div = document.createElement('div');
@@ -620,12 +603,32 @@
         const title = data ? data.title : '';
         const content = data ? data.content : '';
         const isMulti = data ? data.multiEnding : false;
+        const ageRating = data ? data.ageRating : 'all';
+        const publicSetting = data ? data.publicSetting : 'free';
         const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9);
 
         div.innerHTML = `
           <div class="story-card-header">
              <span>故事設定</span>
              <button type="button" class="button-mini" style="color:red; border-color:red;" onclick="if(confirm('確定刪除此故事？')) { this.closest('.story-card').remove(); saveCurrentChar(); }">刪除</button>
+          </div>
+          
+          <!-- 發佈設定 -->
+          <div class="label-row" style="background:rgba(var(--focus-rgb), 0.05); padding:8px; border-radius:8px; margin-bottom:12px; align-items:center;">
+              <div style="flex:1; margin-right:8px;">
+                  <label style="font-size:0.85rem; margin-bottom:4px; display:block;">使用等級</label>
+                  <select class="story-age" style="margin:0; padding:6px; font-size:0.9rem;" onchange="saveCurrentChar()">
+                      <option value="all" ${ageRating === 'all' ? 'selected' : ''}>所有年齡層</option>
+                      <option value="adult" ${ageRating === 'adult' ? 'selected' : ''}>成人限定 (R18)</option>
+                  </select>
+              </div>
+              <div style="flex:1;">
+                  <label style="font-size:0.85rem; margin-bottom:4px; display:block;">公開設定</label>
+                  <select class="story-public" style="margin:0; padding:6px; font-size:0.9rem;" onchange="saveCurrentChar()">
+                      <option value="free" ${publicSetting === 'free' ? 'selected' : ''}>免費</option>
+                      <option value="paid" ${publicSetting === 'paid' ? 'selected' : ''}>付費 (10果醬)</option>
+                  </select>
+              </div>
           </div>
 
           <div class="label-row"><label>解鎖提示語 (60字)</label></div>
@@ -754,9 +757,7 @@
        data.game = {
            title: document.getElementById('gameTitle').value,
            intro: document.getElementById('gameIntro').value,
-           ageRating: document.getElementById('gameAgeRating').value,
-           publicSetting: document.getElementById('gamePublicSetting').value,
-           stories: [] // 這裡會變成扁平陣列，或者分組
+           stories: [] 
        };
        
        STORY_STAGES.forEach((stage, idx) => {
@@ -770,6 +771,9 @@
                    hint: card.querySelector('.story-hint').value,
                    title: card.querySelector('.story-title').value,
                    content: card.querySelector('.story-content').value,
+                   // 新增發佈設定
+                   ageRating: card.querySelector('.story-age').value,
+                   publicSetting: card.querySelector('.story-public').value,
                    multiEnding: card.querySelector('.story-multi-check').checked,
                    options: []
                };
@@ -818,8 +822,6 @@
         if(data.game) {
             if(document.getElementById('gameTitle')) document.getElementById('gameTitle').value = data.game.title || '';
             if(document.getElementById('gameIntro')) document.getElementById('gameIntro').value = data.game.intro || '';
-            if(document.getElementById('gameAgeRating')) document.getElementById('gameAgeRating').value = data.game.ageRating || 'all';
-            if(document.getElementById('gamePublicSetting')) document.getElementById('gamePublicSetting').value = data.game.publicSetting || 'free';
             
             // 清空所有故事列表
             STORY_STAGES.forEach((_, idx) => document.getElementById(`storyList_${idx}`).innerHTML = '');
@@ -827,7 +829,7 @@
             // 填入故事
             if(data.game.stories && Array.isArray(data.game.stories)) {
                 data.game.stories.forEach(s => {
-                    // 相容舊版資料 (如果沒有 stageIdx，嘗試用 stage 名字找，或預設 0)
+                    // 相容舊版資料
                     let idx = s.stageIdx;
                     if(idx === undefined) idx = STORY_STAGES.indexOf(s.stage);
                     if(idx === -1) idx = 0;
@@ -873,11 +875,10 @@
       // 遊戲資料輸出
       if(game && game.title) {
           md += `\n---\n# 遊戲腳本設定\n\n`;
-          md += `## 角色資訊\n- 標題：${game.title}\n- 介紹：${game.intro}\n- 等級：${game.ageRating}\n- 價格：${game.publicSetting}\n\n`;
+          md += `## 遊戲資訊\n- 標題：${game.title}\n- 介紹：${game.intro}\n\n`;
           
           if(game.stories && game.stories.length > 0) {
               md += `## 私密物語腳本\n`;
-              // 為了美觀，稍微分組一下
               const grouped = {};
               STORY_STAGES.forEach(s => grouped[s] = []);
               game.stories.forEach(s => { if(grouped[s.stage]) grouped[s.stage].push(s); });
@@ -886,7 +887,11 @@
                   if(grouped[stage] && grouped[stage].length > 0) {
                       md += `### 【${stage}】\n`;
                       grouped[stage].forEach((s, i) => {
-                          md += `#### ${i+1}. ${s.title || '未命名故事'}\n`;
+                          // 顯示發佈設定
+                          const ageLabel = s.ageRating === 'adult' ? 'R18' : '全齡';
+                          const payLabel = s.publicSetting === 'paid' ? '付費' : '免費';
+                          
+                          md += `#### ${i+1}. ${s.title || '未命名故事'} (${ageLabel} / ${payLabel})\n`;
                           md += `> 解鎖提示：${s.hint}\n\n`;
                           md += `${s.content}\n\n`;
                           if(s.multiEnding && s.options.length) {
