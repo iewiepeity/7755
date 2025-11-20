@@ -2,183 +2,239 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>卿卿我我創角小幫手</title>
-  <!-- 文藝風字體：Noto Serif TC（標題）、Noto Sans TC（內文） -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
   <style>
     :root {
-      /* 背景色 */
-      --bg-pink: #ffe6f0;
-      --bg-cream: #fff7ea;
-      --bg-mint: #e8fff5;
-      --bg-lavender: #f4e8ff;
-      --bg-sky: #e6f5ff;
-      --bg-lemon: #fffde6;
-      --bg-grey: #f2f2f2;
-      --bg-black: #1a1a1a;
+      /* === 核心變數 === */
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-full: 999px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+      --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.12);
+      --shadow-lg: 0 12px 40px -8px rgba(0,0,0,0.18);
+      --transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+      
+      /* 背景色系定義 */
+      --bg-pink: #ffeef5; --accent-pink: #ff8ebf;
+      --bg-cream: #fffbf2; --accent-cream: #ffad6b;
+      --bg-mint: #f0fffa; --accent-mint: #5cd6ad;
+      --bg-lavender: #f9f2ff; --accent-lavender: #c4a3ff;
+      --bg-sky: #f0f9ff; --accent-sky: #7ac0ff;
+      --bg-lemon: #fffeec; --accent-lemon: #ffe066;
+      --bg-grey: #f7f7f7; --accent-grey: #999;
+      --bg-black: #1a1a1a; --accent-black: #666;
 
-      /* 文字主色 */
-      --text-main: #3d2b3b;
-
-      /* 按鈕主題色 */
-      --btn-pink: #ff6fa8;
-      --btn-pink-dark: #e3548e;
-
-      --btn-cream: #ff9c4a;
-      --btn-cream-dark: #d47829;
-
-      --btn-mint: #42c79a;
-      --btn-mint-dark: #2b9470;
-
-      --btn-lavender: #b48cff;
-      --btn-lavender-dark: #8c5ee0;
-
-      --btn-sky: #58a9ff;
-      --btn-sky-dark: #357dd6;
-
-      --btn-lemon: #ffd93b;
-      --btn-lemon-dark: #c7a400;
-
-      --btn-grey: #b0b0b0;
-      --btn-grey-dark: #8f8f8f;
-
-      --btn-black: #444;
-      --btn-black-dark: #222;
+      /* 預設變數 (由 body class 覆寫) */
+      --page-bg: var(--bg-pink);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --sidebar-bg: rgba(255, 255, 255, 0.9);
+      --text-main: #4a3b45;
+      --text-sub: #7a6b75;
+      --border-color: rgba(0,0,0,0.08);
+      --focus-color: var(--accent-pink);
+      --btn-bg: var(--accent-pink);
+      --btn-text: #fff;
     }
+
+    /* === 全局設定 === */
+    * { box-sizing: border-box; }
 
     body {
-      max-width: 1120px;
-      margin: 24px auto 40px;
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
-        system-ui, -apple-system, sans-serif;
-      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      font-family: "Noto Sans TC", system-ui, sans-serif;
+      line-height: 1.7;
       color: var(--text-main);
-      padding: 0 12px;
-      transition: background-color 0.25s ease, color 0.25s ease, max-width 0.25s ease, font-size 0.25s ease;
+      background-color: var(--page-bg);
+      /* 加入細微的背景紋理 */
+      background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
     }
 
-    /* 主題色 */
-    body.theme-pink { background-color: var(--bg-pink); }
-    body.theme-cream { background-color: var(--bg-cream); }
-    body.theme-mint { background-color: var(--bg-mint); }
-    body.theme-lavender { background-color: var(--bg-lavender); }
-    body.theme-sky { background-color: var(--bg-sky); }
-    body.theme-lemon { background-color: var(--bg-lemon); }
-    body.theme-grey { background-color: var(--bg-grey); }
-    body.theme-black { background-color: var(--bg-black); color: #f5f5f5; }
-
-    /* 版面：電腦 / 手機 */
-    body.layout-desktop {
-      max-width: 1120px;
-      font-size: 1rem;
+    /* === 主題色覆寫 === */
+    body.theme-pink { --page-bg: var(--bg-pink); --focus-color: #ff8ebf; --btn-bg: #ff6fa8; }
+    body.theme-cream { --page-bg: var(--bg-cream); --focus-color: #ffad6b; --btn-bg: #ff9c4a; }
+    body.theme-mint { --page-bg: var(--bg-mint); --focus-color: #5cd6ad; --btn-bg: #42c79a; }
+    body.theme-lavender { --page-bg: var(--bg-lavender); --focus-color: #c4a3ff; --btn-bg: #b48cff; }
+    body.theme-sky { --page-bg: var(--bg-sky); --focus-color: #7ac0ff; --btn-bg: #58a9ff; }
+    body.theme-lemon { --page-bg: var(--bg-lemon); --focus-color: #ffe066; --btn-bg: #ffd93b; --btn-text: #5c4e00; }
+    body.theme-grey { --page-bg: var(--bg-grey); --focus-color: #999; --btn-bg: #b0b0b0; }
+    
+    body.theme-black { 
+      --page-bg: var(--bg-black); 
+      --card-bg: rgba(40, 40, 40, 0.85);
+      --sidebar-bg: rgba(30, 30, 30, 0.95);
+      --text-main: #e0e0e0;
+      --text-sub: #aaa;
+      --border-color: rgba(255,255,255,0.15);
+      --focus-color: #888;
+      --btn-bg: #555;
+      --btn-text: #fff;
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     }
 
-    body.layout-mobile {
-      max-width: 600px;
-      font-size: 0.9rem;
-    }
-
-    body.layout-mobile h1 {
-      font-size: 1.4rem;
-    }
-
-    body.layout-mobile h2 {
-      font-size: 1rem;
-    }
-
-    body.layout-mobile .section {
-      padding: 10px 12px;
-      margin-bottom: 10px;
-    }
-
-    body.layout-mobile .top-bar {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
-
-    /* 主版面：側邊欄＋內容 */
+    /* === 佈局容器 === */
     .layout-shell {
       display: flex;
       align-items: flex-start;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .main-area {
+      flex: 1;
+      min-width: 0; /* 防止 flex 子元素溢出 */
+    }
+
+    /* === 排版 Typography === */
+    h1, h2, h3 {
+      font-family: "Noto Serif TC", serif;
+      margin-top: 0;
+      color: var(--text-main);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .tagline {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .top-bar {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
       gap: 16px;
-      margin-top: 10px;
     }
-/* 側邊欄收合按鈕 */
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 6px;
-}
 
-.sidebar-toggle-btn {
-  padding: 2px 8px;
-  font-size: 0.75rem;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-}
+    .sub-label {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: 4px;
+      display: block;
+    }
 
-body.theme-black .sidebar-toggle-btn {
-  background: #333;
-  color: #ddd;
-  border-color: #666;
-}
-
-/* 收合後的樣式 */
-
+    /* === 側邊欄 Sidebar === */
     .sidebar {
-  flex: 0 0 auto;          /* ✅ 讓寬度跟著 width 走 */
-  width: 240px;            /* 預設寬度 */
-  min-width: 240px;
-  position: sticky;
-  top: 10px;
-  align-self: flex-start;
-  background: rgba(255,255,255,0.9);
-  border-radius: 12px;
-  padding: 10px 12px;
-  border: 1px solid #f3c6d8;
-  box-shadow: 0 4px 10px rgba(255, 160, 195, 0.3);
-  backdrop-filter: blur(4px);
-  transition: width 0.25s ease;  /* 順便加在這裡 */
-transition: width 0.25s ease, padding 0.25s ease;
+      width: 260px;
+      min-width: 260px;
+      position: sticky;
+      top: 20px;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: var(--transition);
+      z-index: 10;
+      overflow: hidden;
+    }
+    
+    /* 側邊欄收合模式 */
+    .sidebar.is-collapsed {
+      width: 64px;
+      min-width: 64px;
+      padding: 16px 8px;
+    }
+    
+    .sidebar.is-collapsed .sidebar-title,
+    .sidebar.is-collapsed .sidebar-sub {
+      display: none;
+    }
+    
+    .sidebar.is-collapsed .sidebar-header {
+      justify-content: center;
+      margin-bottom: 16px;
     }
 
-    body.theme-black .sidebar {
-      background: rgba(36,36,36,0.96);
-      border-color: #555;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    .sidebar.is-collapsed .sidebar-nav button {
+      justify-content: center;
+      padding: 8px;
+    }
+    
+    .sidebar.is-collapsed .sidebar-nav button span.btn-text {
+      display: none;
+    }
+    
+    .sidebar.is-collapsed .sidebar-nav button span.btn-icon {
+      margin-right: 0;
+      font-size: 1.2rem;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .sidebar-title {
-      font-family: "Noto Serif TC", serif;
-      font-size: 0.95rem;
-      margin-bottom: 4px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-main);
     }
 
     .sidebar-sub {
       font-size: 0.8rem;
-      opacity: 0.8;
-      margin-bottom: 6px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
     }
 
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-top: 6px;
+      gap: 6px;
     }
 
     .sidebar-nav button {
       width: 100%;
-      justify-content: flex-start;
-      font-size: 0.8rem;
-      padding: 4px 8px;
+      text-align: left;
+      background: transparent;
+      color: var(--text-main);
       box-shadow: none;
-      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .sidebar-nav button:hover {
+      background: rgba(0,0,0,0.05);
+      transform: translateX(4px);
+    }
+    
+    body.theme-black .sidebar-nav button:hover {
+      background: rgba(255,255,255,0.1);
     }
 
     .sidebar-nav button.sidebar-main {
@@ -186,566 +242,471 @@ transition: width 0.25s ease, padding 0.25s ease;
     }
 
     .sidebar-nav button.sidebar-subitem {
-      padding-left: 16px;
-      opacity: 0.9;
-    }
-
-    .main-area {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-
-    body.layout-mobile .layout-shell {
-      flex-direction: column;
-    }
-
-    body.layout-mobile .sidebar {
-      position: static;
-      width: 100%;
-      box-shadow: none;
-      margin-bottom: 8px;
-      overflow-x: visible;
-    }
-
-    body.layout-mobile .sidebar-nav {
-      flex-direction: column;
-      flex-wrap: nowrap;
-      gap: 6px;
-    }
-
-    body.layout-mobile .sidebar-nav button {
-      flex: 1 1 auto;
-      width: 100%;
-      white-space: normal;
-    }
-
-    /* 說明文字統一風格 */
-    .tagline,
-    .sub-label,
-    label {
-      font-family: "Noto Serif TC", serif;
-      font-weight: 400;
-    }
-
-    h1 {
-      margin-bottom: 0.25rem;
-      font-size: 1.8rem;
-      font-family: "Noto Serif TC", serif;
-      letter-spacing: 0.5px;
-    }
-
-    h2 {
-      margin-bottom: 0.3rem;
-      font-size: 1.1rem;
-      font-family: "Noto Serif TC", serif;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    h3.tpl-type-title {
-      font-size: 0.95rem;
-      margin: 10px 0 4px;
-      font-family: "Noto Serif TC", serif;
-    }
-
-    p {
-      margin-top: 0;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 90px;
-      margin-bottom: 0.5rem;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid #e5c3d6;
-      font-family: inherit;
       font-size: 0.9rem;
-      box-sizing: border-box;
-      resize: vertical;
-      background: #fff;
+      color: var(--text-sub);
+      padding-left: 12px;
+    }
+    
+    .sidebar-nav button span.btn-icon {
+      margin-right: 8px;
+      width: 20px;
+      text-align: center;
     }
 
-    input[type="text"],
-    input[type="search"],
-    input[type="date"],
-    input:not([type]) {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid #e5c3d6;
-      box-sizing: border-box;
-      font-family: inherit;
-      font-size: 0.9rem;
-      background: #fff;
-    }
-
-    .label-row label {
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-
-    select {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid #e5c3d6;
-      box-sizing: border-box;
-      font-family: inherit;
-      font-size: 0.9rem;
-      background: #fff;
-    }
-
+    /* === 內容區塊 Card Style === */
     .section {
-      background: #ffffff;
-      border: 1px solid #f3c6d8;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(255, 160, 195, 0.18);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: var(--transition);
     }
 
-    .section-body {
-      margin-top: 6px;
+    .section:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
     }
 
     .section.collapsed .section-body {
       display: none;
     }
-
-    body.theme-black .section {
-      background: #242424;
-      border-color: #555;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    
+    .section.collapsed {
+      padding-bottom: 16px;
+      opacity: 0.7;
     }
 
-    #output {
-      white-space: pre-wrap;
-      background: #111;
-      color: #eee;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: "SF Mono", Consolas, monospace;
-      font-size: 0.9rem;
-      margin-bottom: 16px;
+    .section-body {
+      margin-top: 16px;
+      animation: fadeIn 0.4s ease;
     }
 
-    button {
-      padding: 7px 14px;
-      margin: 4px 4px 8px 0;
-      cursor: pointer;
-      border-radius: 999px;
-      border: none;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === 表單元素 Forms === */
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    label {
+      font-weight: 500;
+      color: var(--text-main);
+      margin-right: 8px;
+    }
+
+    input[type="text"],
+    input[type="search"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+      margin-bottom: 12px;
+      outline: none;
+    }
+    
+    body.theme-black input,
+    body.theme-black select,
+    body.theme-black textarea {
+      background: rgba(0,0,0,0.3);
       color: #fff;
-      font-size: 0.9rem;
-      font-family: "Noto Serif TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", serif;
+    }
 
+    textarea {
+      min-height: 100px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      background: #fff;
+      border-color: var(--focus-color);
+      box-shadow: 0 0 0 3px rgba(var(--focus-color), 0.2); /* 模擬光暈，需調整rgba */
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-color), transparent 80%);
+    }
+    
+    body.theme-black input:focus, 
+    body.theme-black textarea:focus {
+      background: rgba(0,0,0,0.5);
+    }
+
+    /* === 按鈕 Buttons === */
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
-    }
-
-    /* 按鈕主題顏色跟著 body class 走 */
-    body.theme-pink button {
-      background: var(--btn-pink);
-    }
-    body.theme-pink button:hover {
-      background: var(--btn-pink-dark);
-    }
-
-    body.theme-cream button {
-      background: var(--btn-cream);
-    }
-    body.theme-cream button:hover {
-      background: var(--btn-cream-dark);
-    }
-
-    body.theme-mint button {
-      background: var(--btn-mint);
-    }
-    body.theme-mint button:hover {
-      background: var(--btn-mint-dark);
-    }
-
-    body.theme-lavender button {
-      background: var(--btn-lavender);
-    }
-    body.theme-lavender button:hover {
-      background: var(--btn-lavender-dark);
-    }
-
-    body.theme-sky button {
-      background: var(--btn-sky);
-    }
-    body.theme-sky button:hover {
-      background: var(--btn-sky-dark);
-    }
-
-    body.theme-lemon button {
-      background: var(--btn-lemon);
-    }
-    body.theme-lemon button:hover {
-      background: var(--btn-lemon-dark);
-    }
-
-    body.theme-grey button {
-      background: var(--btn-grey);
-    }
-    body.theme-grey button:hover {
-      background: var(--btn-grey-dark);
-    }
-
-    body.theme-black button {
-      background: var(--btn-black);
-      color: #fff;
-    }
-    body.theme-black button:hover {
-      background: var(--btn-black-dark);
+      gap: 6px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: var(--transition);
+      margin-right: 6px;
+      margin-bottom: 6px;
     }
 
     button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     button:active {
       transform: translateY(0);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
 
-    .button-secondary {
-      background: #fff;
-      color: inherit;
-      border: 1px solid rgba(0,0,0,0.25);
+    /* 次要按鈕 / 小按鈕 */
+    .button-secondary, .button-mini {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
       box-shadow: none;
-      padding: 4px 10px;
-      font-size: 0.8rem;
     }
 
-    .button-secondary:hover {
+    .button-secondary:hover, .button-mini:hover {
+      background: rgba(0,0,0,0.05);
+      border-color: var(--focus-color);
+      color: var(--focus-color);
+    }
+    
+    body.theme-black .button-secondary:hover, 
+    body.theme-black .button-mini:hover {
       background: rgba(255,255,255,0.1);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+      color: #fff;
     }
 
     .button-mini {
-      padding: 2px 8px;
+      padding: 3px 10px;
       font-size: 0.75rem;
       margin: 0;
+    }
+    
+    /* 側邊欄切換按鈕 */
+    .sidebar-toggle-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.05);
+      color: var(--text-sub);
+      border-radius: 50%;
+      margin: 0;
       box-shadow: none;
-      background: #ffffff;
-      color: #666;
-      border: 1px solid #ccc;
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--focus-color);
+      color: #fff;
     }
 
-    .button-mini:hover {
-      background: #f3f3f3;
+    /* === 輸出區塊 Output === */
+    #output {
+      background: #222;
+      color: #f0f0f0;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-family: "Menlo", "Monaco", "Courier New", monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      margin-top: 12px;
     }
 
-    body.theme-black .button-mini {
-      background: #333;
-      color: #ddd;
-      border-color: #666;
+    /* === 動態生成的區塊 === */
+    .tpl-card {
+      background: rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
     }
-
-    body.theme-black .button-mini:hover {
-      background: #444;
+    .tpl-card:hover {
+      border-color: var(--focus-color);
     }
-
-    .tagline {
-      font-size: 0.85rem;
-      opacity: 0.8;
+    .tpl-name { font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+    .tpl-meta { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 6px; }
+    .tpl-preview { 
+      font-size: 0.85rem; color: var(--text-sub); 
+      background: rgba(0,0,0,0.03); padding: 6px; border-radius: 4px;
+      white-space: pre-wrap;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
-
-    .top-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    .theme-select {
-      font-size: 0.85rem;
-    }
-
-    .sub-label {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
-    .extra-block,
-    .event-block {
-      margin-bottom: 8px;
-    }
-
-    .label-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 4px;
-      margin-bottom: 4px;
-    }
-
-    .actions-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .prompt-stats {
-      margin-top: 6px;
-    }
-
+    
     .field-utils {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
+      gap: 8px;
+      margin-top: -8px;
+      margin-bottom: 16px;
       font-size: 0.75rem;
-      margin: -2px 0 6px;
-      gap: 4px;
+      color: var(--text-sub);
+    }
+    
+    .extra-block, .event-block {
+      border-left: 3px solid var(--border-color);
+      padding-left: 16px;
+      margin-bottom: 24px;
+      transition: border-color 0.3s;
+    }
+    .extra-block:hover, .event-block:hover {
+      border-left-color: var(--focus-color);
     }
 
-    .field-counter {
-      opacity: 0.7;
+    /* === RWD 響應式 === */
+    @media (max-width: 850px) {
+      .layout-shell {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        min-width: 100%;
+        position: static;
+        margin-bottom: 20px;
+        /* 手機版側邊欄改為橫向滾動選單 */
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+      }
+      .sidebar-header {
+         display: none; /* 手機版隱藏側邊欄標題，節省空間 */
+      }
+      .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+        /* 隱藏卷軸 */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+      .sidebar-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar-nav button {
+        white-space: nowrap;
+        width: auto;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+      }
+      .section {
+        padding: 16px 20px;
+      }
     }
+    
+    /* 強制排版樣式 (透過 JS 切換 class) */
+    body.layout-mobile .layout-shell { flex-direction: column; }
+    body.layout-mobile .sidebar { width: 100%; position: static; margin-bottom: 16px; }
+    body.layout-mobile .sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 5px; }
+    body.layout-mobile .sidebar-nav button { width: auto; white-space: nowrap; }
+    
+    body.layout-desktop .layout-shell { flex-direction: row; }
+    body.layout-desktop .sidebar { width: 260px; position: sticky; }
+    body.layout-desktop .sidebar-nav { flex-direction: column; overflow-x: visible; }
 
-    .field-copy {
-      margin-left: auto;
-    }
-
-    /* 模板管理中心 */
-    .tpl-card {
-      border-radius: 8px;
-      border: 1px solid #f1c5dd;
-      padding: 8px 10px;
-      margin-bottom: 6px;
-      background: #fffdfd;
-    }
-    body.theme-black .tpl-card {
-      background: #1c1c1c;
-      border-color: #555;
-    }
-    .tpl-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .tpl-preview {
-      font-size: 0.8rem;
-      margin: 2px 0 4px;
-      white-space: pre-wrap;
-      max-height: 5.5em;
-      overflow: hidden;
-    }
-    .tpl-meta {
-      font-size: 0.75rem;
-      opacity: 0.7;
-      margin-bottom: 2px;
-    }
-
-/* 收合狀態：左欄變窄 */
-.sidebar.is-collapsed {
-  width: 48px;
-  min-width: 48px;
-  overflow: hidden;
-  padding: 6px;
-}
-
-/* header 直向排版 */
-.sidebar.is-collapsed .sidebar-header {
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-/* 只顯示直立標題 */
-.sidebar.is-collapsed .sidebar-title {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  font-size: 0.85rem;
-  margin: 0 auto;
-  text-align: center;
-}
-
-/* 隱藏副標＆導航 */
-.sidebar.is-collapsed .sidebar-sub,
-.sidebar.is-collapsed .sidebar-nav {
-  display: none;
-}
-
-/* 收合時按鈕變小 */
-.sidebar.is-collapsed .sidebar-toggle-btn {
-  padding: 2px 4px;
-  font-size: 0.7rem;
-}
   </style>
 </head>
 <body class="theme-pink layout-desktop">
+
   <div class="top-bar">
     <div>
       <h1>💕 卿卿我我創角小幫手</h1>
-      <div class="tagline">填好之後按「生成 Markdown」，就可以直接丟給 AI 當角色卡。</div>
+      <div class="tagline">填寫設定，一鍵生成 AI 角色卡 Markdown，讓故事開始。</div>
     </div>
     <div class="theme-select">
-      背景主題：
-      <select onchange="changeTheme(this.value)">
-        <option value="pink" selected>淡粉紅</option>
-        <option value="cream">奶油白</option>
-        <option value="mint">薄荷綠</option>
-        <option value="lavender">薰衣草紫</option>
-        <option value="sky">天空藍</option>
-        <option value="lemon">淡檸檬黃</option>
-        <option value="grey">淺灰</option>
-        <option value="black">深夜黑</option>
+      <label style="font-size:0.9rem;">背景主題：</label>
+      <select onchange="changeTheme(this.value)" style="width:auto; display:inline-block; padding:6px 10px; margin-bottom:0;">
+        <option value="pink" selected>🌸 淡粉紅</option>
+        <option value="cream">🍞 奶油白</option>
+        <option value="mint">🌿 薄荷綠</option>
+        <option value="lavender">🔮 薰衣草</option>
+        <option value="sky">☁️ 天空藍</option>
+        <option value="lemon">🍋 檸檬黃</option>
+        <option value="grey">🌫️ 極簡灰</option>
+        <option value="black">🌙 深夜黑</option>
       </select>
     </div>
   </div>
 
-  <p class="sub-label">
-    ※ 提醒：各欄位內容可自行使用 Markdown（# 標題、- 內容或清單等）撰寫，工具不會改動你寫的格式。
-  </p>
-  <p class="sub-label">
-    ※ 請善用匯出存檔功能，本網頁不保證紀錄未存檔的內容。使用 localStorage 存檔，若手動清除瀏覽資料、使用無痕模式、不同瀏覽器、不同裝置可能導致資料消失。
-  </p>
-  <p class="sub-label">
-    ※ 提醒：下載 txt 僅會匯出「目前這隻角色」；JSON 匯出 / 匯入會打包「全部角色＋模板」做備份。
-  </p>
+  <div style="max-width:1200px; margin:0 auto 20px; opacity:0.8;">
+      <p class="sub-label">※ 各欄位支援 Markdown 語法。請善用「匯出存檔」功能避免資料遺失。</p>
+  </div>
 
   <div class="layout-shell">
-    <!-- 側邊功能選單 -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-    <div class="sidebar-title">📎 功能選單</div>
-    <button type="button"
-            class="sidebar-toggle-btn"
-            onclick="toggleSidebar()">
-      收合
-    </button>
-  </div>
-  <div class="sidebar-sub">點一下直接跳到該區塊，會自動幫你展開。</div>
-      <div class="sidebar-nav">
-        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-archive')">📂 角色存檔管理</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-info')">💁‍♀️ 角色資訊</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-gender')">🚻 性別</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-basic')">🌏 一、基本資訊</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-personality')">💗 二、性格</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-speech')">🗣️ 三、說話風格</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-prompt')">🧠 模型 & Prompt</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-first')">🎬 第一次聊天場景</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-fav')">🎀 喜好與生日</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-extra')">📌 附加資訊</button>
-        <button type="button" class="button-mini sidebar-subitem" onclick="scrollToSection('sec-event')">📚 創作者事件</button>
-        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-output')">📝 輸出與匯入</button>
-        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-template-center')">🧰 模板管理中心</button>
-        <button type="button" class="button-mini sidebar-main" onclick="scrollToSection('sec-layout')">📱 版面切換</button>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">📎 功能導航</div>
+        <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="收合/展開">
+          ◀
+        </button>
       </div>
+      
+      <div class="sidebar-sub">點擊快速跳轉</div>
+      
+      <nav class="sidebar-nav">
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-archive')">
+          <span class="btn-icon">📂</span><span class="btn-text">角色存檔管理</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-info')">
+          <span class="btn-icon">💁‍♀️</span><span class="btn-text">角色資訊</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-gender')">
+          <span class="btn-icon">🚻</span><span class="btn-text">性別設定</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-basic')">
+          <span class="btn-icon">🌏</span><span class="btn-text">基本資訊 (世界觀)</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-personality')">
+          <span class="btn-icon">💗</span><span class="btn-text">性格與特質</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-speech')">
+          <span class="btn-icon">🗣️</span><span class="btn-text">說話風格</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-prompt')">
+          <span class="btn-icon">🧠</span><span class="btn-text">模型 & Prompt</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-first')">
+          <span class="btn-icon">🎬</span><span class="btn-text">開場與對話</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-fav')">
+          <span class="btn-icon">🎀</span><span class="btn-text">喜好與生日</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-extra')">
+          <span class="btn-icon">📌</span><span class="btn-text">附加資訊</span>
+        </button>
+        <button type="button" class="sidebar-subitem" onclick="scrollToSection('sec-event')">
+          <span class="btn-icon">📚</span><span class="btn-text">創作者事件</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-output')">
+          <span class="btn-icon">📝</span><span class="btn-text">輸出與匯入</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-template-center')">
+          <span class="btn-icon">🧰</span><span class="btn-text">模板管理</span>
+        </button>
+        <button type="button" class="sidebar-main" onclick="scrollToSection('sec-layout')">
+          <span class="btn-icon">📱</span><span class="btn-text">版面切換</span>
+        </button>
+      </nav>
     </aside>
 
-    <!-- 主內容區 -->
     <main class="main-area">
 
-      <!-- 角色存檔管理區 -->
       <div class="section" id="sec-archive">
         <h2>
-          📂 角色存檔管理
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-archive')">⇕ 收合 / 展開</button>
+          <span>📂 角色存檔管理</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-archive')">⇕</button>
         </h2>
         <div class="section-body">
           <div class="label-row">
-            <label>分類篩選：</label>
-            <select id="filterCategory" onchange="refreshCharListFromStorage()">
-              <option value="">全部分類</option>
-            </select>
+            <div style="flex:1; margin-right:12px;">
+              <label>分類篩選</label>
+              <select id="filterCategory" onchange="refreshCharListFromStorage()">
+                <option value="">全部分類</option>
+              </select>
+            </div>
+            <div style="flex:1; margin-right:12px;">
+              <label>排序方式</label>
+              <select id="charSort" onchange="refreshCharListFromStorage()">
+                <option value="created_desc">新 ➝ 舊</option>
+                <option value="created_asc">舊 ➝ 新</option>
+                <option value="name_asc">名稱 A ➝ Z</option>
+              </select>
+            </div>
+             <div style="flex:1;">
+              <label>搜尋</label>
+              <input id="searchName" type="search" placeholder="輸入名字..." oninput="refreshCharListFromStorage()" />
+            </div>
           </div>
 
-          <div class="label-row">
-            <label>角色名稱搜尋：</label>
-            <input id="searchName" type="search" placeholder="輸入部分名字即可" oninput="refreshCharListFromStorage()" />
-          </div>
+          <div id="charList" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; min-height:40px;">
+            </div>
 
-          <div class="label-row">
-            <label>排序方式：</label>
-            <select id="charSort" onchange="refreshCharListFromStorage()">
-              <option value="created_desc">建立時間：新 ➝ 舊</option>
-              <option value="created_asc">建立時間：舊 ➝ 新</option>
-              <option value="name_asc">角色名稱：A ➝ Z</option>
-            </select>
-          </div>
-
-          <div id="charList" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
-            <!-- JS 動態產生角色按鈕 -->
-          </div>
-
-          <div style="margin-top:10px;">
+          <div style="margin-top:16px; border-top:1px dashed var(--border-color); padding-top:16px;">
             <button type="button" onclick="newCharacter()">➕ 新角色</button>
             <button type="button" onclick="saveCurrentChar()">💾 儲存目前角色</button>
-            <button type="button" class="button-secondary" onclick="deleteCurrentChar()">🗑 刪除目前角色</button>
+            <button type="button" class="button-secondary" onclick="deleteCurrentChar()" style="float:right;">🗑 刪除</button>
           </div>
         </div>
       </div>
 
       <div class="section" id="sec-info">
         <h2>
-          💁‍♀️ 角色資訊
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕ 收合 / 展開</button>
+          <span>💁‍♀️ 角色資訊</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button>
         </h2>
         <div class="section-body">
 
           <div class="label-row">
-            <label>角色名稱（必填）：</label>
+            <label>角色名稱 <span style="color:red;font-size:0.8em;">*</span></label>
             <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
           </div>
-          <input id="charName" type="text" />
+          <input id="charName" type="text" placeholder="例如：林月如" />
 
           <div class="label-row">
-            <label>角色分類（選填，例如：種類/世界觀等方便你自己分類的名字）：</label>
+            <label>角色分類</label>
             <button type="button" class="button-mini" onclick="clearOne('charCategory')">清空</button>
           </div>
-          <input id="charCategory" type="text" />
+          <input id="charCategory" type="text" placeholder="例如：現代、奇幻、OC..." />
 
           <div class="label-row">
-            <label>年齡（必填，15字內）：</label>
-            <button type="button" class="button-mini" onclick="clearOne('charAge')">清空</button>
+            <div style="flex:1; margin-right:10px;">
+               <label>年齡 <span style="color:red;font-size:0.8em;">*</span></label>
+               <input id="charAge" type="text" data-maxlength="15" placeholder="例如：18歲" />
+            </div>
+            <div style="flex:1;">
+               <label>職業 <span style="color:red;font-size:0.8em;">*</span></label>
+               <input id="charJob" type="text" data-maxlength="15" placeholder="例如：學生" />
+            </div>
           </div>
-          <input id="charAge" type="text" data-maxlength="15" />
 
           <div class="label-row">
-            <label>職業（必填，15字內）：</label>
-            <button type="button" class="button-mini" onclick="clearOne('charJob')">清空</button>
-          </div>
-          <input id="charJob" type="text" data-maxlength="15" />
-
-          <div class="label-row">
-            <label>來自角色的一句話（必填，80字內）：</label>
+            <label>來自角色的一句話 <span style="color:red;font-size:0.8em;">*</span></label>
             <button type="button" class="button-mini" onclick="clearOne('charQuote')">清空</button>
           </div>
-          <textarea id="charQuote" style="min-height:60px;" data-maxlength="80"></textarea>
+          <textarea id="charQuote" style="min-height:60px;" data-maxlength="80" placeholder="顯示在列表的短介紹"></textarea>
 
           <div class="label-row">
-            <label>敘述（選填，700字內）：</label>
+            <label>敘述 (Description)</label>
             <button type="button" class="button-mini" onclick="clearOne('charDesc')">清空</button>
           </div>
-          <textarea id="charDesc" data-maxlength="700"></textarea>
+          <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
 
           <div class="label-row">
-            <label>標籤（選填，hashtag，可用空白或逗號分隔）：</label>
+            <label>標籤 (Hashtag)</label>
             <button type="button" class="button-mini" onclick="clearOne('charTags')">清空</button>
           </div>
-          <input id="charTags" type="text" />
+          <input id="charTags" type="text" placeholder="用空白或逗號分隔，如：傲嬌, 雙馬尾" />
 
           <div class="label-row">
-            <label>創作者筆記（選填，200字）：</label>
+            <label>創作者筆記</label>
             <button type="button" class="button-mini" onclick="clearOne('creatorNote')">清空</button>
           </div>
           <textarea id="creatorNote" style="min-height:70px;" data-maxlength="200"></textarea>
@@ -754,14 +715,10 @@ transition: width 0.25s ease, padding 0.25s ease;
 
       <div class="section" id="sec-gender">
         <h2>
-          🚻 性別
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕ 收合 / 展開</button>
+          <span>🚻 性別</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="label-row">
-            <label>性別（必填）：</label>
-            <button type="button" class="button-mini" onclick="clearGender()">清空</button>
-          </div>
           <select id="gender">
             <option value="未設置" selected>未設置</option>
             <option value="男性">男性</option>
@@ -772,32 +729,19 @@ transition: width 0.25s ease, padding 0.25s ease;
 
       <div class="section" id="sec-basic">
         <h2>
-          🌏 一、基本資訊 <span class="sub-label">（必填，建議 ≤700字，角色世界觀、設定、關係等）</span>
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕ 收合 / 展開</button>
+          <span>🌏 一、基本資訊</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="label-row">
-            <span class="sub-label">可描述背景、世界觀、時間點、與玩家的關係等。</span>
-            <div>
-              <!-- 套用模板 -->
+          <p class="sub-label">必填。建議 ≤700字。描述角色背景、世界觀、時間點、與玩家的關係等。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
               <select data-template-type="basicInfo"
                       onchange="applyTemplateSingle('basicInfo','basicInfo',this)"
-                      class="tpl-select button-mini">
-                <option value="">套用模板…</option>
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
               </select>
-              <!-- 存為模板 -->
-              <button type="button"
-                      class="button-mini"
-                      onclick="saveTemplateFromField('basicInfo','basicInfo')">
-                存為模板
-              </button>
-              <!-- 清空 -->
-              <button type="button"
-                      class="button-mini"
-                      onclick="clearOne('basicInfo')">
-                清空
-              </button>
-            </div>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('basicInfo')">清空</button>
           </div>
           <textarea id="basicInfo" data-maxlength="700"></textarea>
         </div>
@@ -805,29 +749,19 @@ transition: width 0.25s ease, padding 0.25s ease;
 
       <div class="section" id="sec-personality">
         <h2>
-          💗 二、性格 <span class="sub-label">（必填，建議 ≤700字，對所有人＆只對玩家的差異）</span>
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕ 收合 / 展開</button>
+          <span>💗 二、性格</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="label-row">
-            <span class="sub-label">可描述角色性格。</span>
-            <div>
+           <p class="sub-label">必填。建議 ≤700字。描述對普通人 vs 對玩家的差異，或內心活動。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
               <select data-template-type="personality"
                       onchange="applyTemplateSingle('personality','personality',this)"
-                      class="tpl-select button-mini">
-                <option value="">套用模板…</option>
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
               </select>
-              <button type="button"
-                      class="button-mini"
-                      onclick="saveTemplateFromField('personality','personality')">
-                存為模板
-              </button>
-              <button type="button"
-                      class="button-mini"
-                      onclick="clearOne('personality')">
-                清空
-              </button>
-            </div>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('personality','personality')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('personality')">清空</button>
           </div>
           <textarea id="personality" data-maxlength="700"></textarea>
         </div>
@@ -835,220 +769,184 @@ transition: width 0.25s ease, padding 0.25s ease;
 
       <div class="section" id="sec-speech">
         <h2>
-          🗣️ 三、說話風格與習慣 <span class="sub-label">（必填，建議 ≤700字，語氣、互動模式）</span>
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕ 收合 / 展開</button>
+          <span>🗣️ 三、說話風格與習慣</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="label-row">
-            <span class="sub-label">例如：語氣用詞、稱呼玩家、聊天節奏、常用口頭禪等。</span>
-            <div>
+          <p class="sub-label">必填。建議 ≤700字。例如：語氣、口頭禪、對玩家的稱呼。</p>
+          <div class="label-row" style="justify-content:flex-end; margin-bottom:8px;">
               <select data-template-type="speechStyle"
                       onchange="applyTemplateSingle('speechStyle','speechStyle',this)"
-                      class="tpl-select button-mini">
-                <option value="">套用模板…</option>
+                      class="button-mini" style="width:auto; margin:0;">
+                <option value="">✨ 套用模板…</option>
               </select>
-              <button type="button"
-                      class="button-mini"
-                      onclick="saveTemplateFromField('speechStyle','speechStyle')">
-                存為模板
-              </button>
-              <button type="button"
-                      class="button-mini"
-                      onclick="clearOne('speechStyle')">
-                清空
-              </button>
-            </div>
+              <button type="button" class="button-mini" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button>
+              <button type="button" class="button-mini" onclick="clearOne('speechStyle')">清空</button>
           </div>
           <textarea id="speechStyle" data-maxlength="700"></textarea>
         </div>
       </div>
 
-      <!-- 模型與 Prompt 設定 -->
       <div class="section" id="sec-prompt">
         <h2>
-          🧠 模型與 Prompt 設定
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕ 收合 / 展開</button>
+          <span>🧠 模型與 Prompt 設定</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="label-row">
-            <label>使用模型：</label>
-          </div>
+          <div class="label-row"><label>使用模型</label></div>
           <select id="modelType" onchange="updatePromptTokenInfo(); saveCurrentChar();">
             <option value="claude-haiku" data-basecost="5">Claude Haiku（起價 5 果醬）</option>
             <option value="claude-sonnet" data-basecost="15">Claude Sonnet（起價 15 果醬）</option>
             <option value="gemini-3" data-basecost="10" selected>Gemini 3（起價 10 果醬）</option>
           </select>
 
-          <div class="label-row" style="margin-top:8px;">
-            <label>Role（系統提示）：</label>
+          <div class="label-row" style="margin-top:12px;">
+            <label>Role（系統提示）</label>
             <button type="button" class="button-mini" onclick="clearOne('promptRole')">清空</button>
           </div>
           <textarea id="promptRole" data-maxlength="2000" placeholder="例如：你是一位只對玩家溫柔、會主動帶話題的戀愛角色……"></textarea>
 
           <div class="label-row">
-            <label>Response Guideline（回應規則）：</label>
+            <label>Response Guideline（回應規則）</label>
             <button type="button" class="button-mini" onclick="clearOne('promptGuideline')">清空</button>
           </div>
-          <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI、每次回覆控制在……"></textarea>
+          <textarea id="promptGuideline" data-maxlength="3000" placeholder="例如：請用第一人稱和玩家說話、避免提到自己是 AI……"></textarea>
 
-          <div class="prompt-stats">
-            <div id="promptTokenInfo" class="sub-label"></div>
-            <div id="promptJamInfo" class="sub-label"></div>
+          <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:8px; margin-top:10px;">
+            <div id="promptTokenInfo" class="sub-label" style="color:var(--text-main);"></div>
+            <div id="promptJamInfo" class="sub-label" style="font-weight:bold;"></div>
           </div>
         </div>
       </div>
 
       <div class="section" id="sec-first">
         <h2>
-          🎬 第一次聊天場景與角色對話
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕ 收合 / 展開</button>
+          <span>🎬 第一次聊天場景與對話</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button>
         </h2>
         <div class="section-body">
           <div class="label-row">
-            <label>第一次聊天場景（選填，800字內）</label>
+            <label>第一次聊天場景</label>
             <button type="button" class="button-mini" onclick="clearOne('firstScene')">清空</button>
           </div>
-          <div class="sub-label">
-            設定第一個場景後，聊天開始時會套用該情境。此外，公開角色並設定第一個場景後，將顯示在推薦畫面上。
-          </div>
-          <textarea id="firstScene" data-maxlength="800"></textarea>
+          <textarea id="firstScene" data-maxlength="800" placeholder="設定開場情境..."></textarea>
 
           <div class="label-row">
-            <label>角色對話（選填，800字）</label>
+            <label>角色對話範例</label>
             <button type="button" class="button-mini" onclick="clearOne('sampleDialogue')">清空</button>
           </div>
-          <textarea id="sampleDialogue" data-maxlength="800"></textarea>
+          <textarea id="sampleDialogue" data-maxlength="800" placeholder="角色可能會說的話..."></textarea>
         </div>
       </div>
 
       <div class="section" id="sec-fav">
         <h2>
-          🎀 喜好與生日
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕ 收合 / 展開</button>
+          <span>🎀 喜好與生日</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button>
         </h2>
         <div class="section-body">
           <div class="label-row">
-            <label>角色喜歡的東西（選填，50字）：</label>
+            <label>喜歡的東西</label>
             <button type="button" class="button-mini" onclick="clearOne('likes')">清空</button>
           </div>
           <input id="likes" type="text" data-maxlength="50" />
 
           <div class="label-row">
-            <label>不喜歡的東西（選填，50字）：</label>
+            <label>不喜歡的東西</label>
             <button type="button" class="button-mini" onclick="clearOne('dislikes')">清空</button>
           </div>
           <input id="dislikes" type="text" data-maxlength="50" />
 
           <div class="label-row">
-            <label>生日（選填，西元日期）：</label>
+            <label>生日</label>
             <button type="button" class="button-mini" onclick="clearOne('birthday')">清空</button>
           </div>
-          <input id="birthday" type="date" style="max-width:220px;" />
+          <input id="birthday" type="date" style="max-width:200px;" />
         </div>
       </div>
 
       <div class="section" id="sec-extra">
         <h2>
-          📌 附加資訊 <span class="sub-label">（選填，最多 10 筆，每筆 ≤500字，可補充世界觀、設定細節）</span>
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕ 收合 / 展開</button>
+          <span>📌 附加資訊</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕</button>
         </h2>
         <div class="section-body">
-          <div style="margin-bottom:6px;">
-            <select data-template-type="extra"
-                    onchange=""
-                    class="tpl-select button-mini">
-              <option value="">（模板列表顯示在新增欄位中）</option>
-            </select>
-            <button type="button"
-                    class="button-mini"
-                    onclick="alert('模板須在「新增後的每一筆附加資訊欄位」中套用');">
-              如何套用模板？
-            </button>
-          </div>
-
+          <p class="sub-label">最多 10 筆，可用於補充世界觀細節。</p>
           <div id="extraContainer"></div>
-
-          <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
-          <button type="button"
-                  class="button-secondary"
-                  onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">
-            清空所有附加資訊
-          </button>
+          
+          <div style="margin-top:12px;">
+              <button type="button" onclick="addExtra()">＋ 新增附加資訊</button>
+              <button type="button" class="button-secondary" onclick="document.getElementById('extraContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
+          </div>
         </div>
       </div>
 
       <div class="section" id="sec-event">
         <h2>
-          📚 創作者事件 <span class="sub-label">（選填，最多 20 筆，每筆 ≤2000字，可填故事片段、重要事件）</span>
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕ 收合 / 展開</button>
+          <span>📚 創作者事件</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕</button>
         </h2>
         <div class="section-body">
-          <div style="margin-bottom:6px;">
-            <select data-template-type="event"
-                    onchange=""
-                    class="tpl-select button-mini">
-              <option value="">（模板列表會在事件欄位內顯示）</option>
-            </select>
-            <button type="button"
-                    class="button-mini"
-                    onclick="alert('模板需在事件欄位內套用喔～');">
-              如何套用模板？
-            </button>
-          </div>
-
+          <p class="sub-label">最多 20 筆，用於紀錄故事片段。</p>
           <div id="eventContainer"></div>
 
-          <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
-          <button type="button"
-                  class="button-secondary"
-                  onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">
-            清空所有創作者事件
-          </button>
+          <div style="margin-top:12px;">
+            <button type="button" onclick="addEvent()">＋ 新增創作者事件</button>
+            <button type="button" class="button-secondary" onclick="document.getElementById('eventContainer').innerHTML=''; saveCurrentChar();">清空全部</button>
+          </div>
         </div>
       </div>
 
-      <!-- 輸出 / 匯入區 -->
       <div class="section" id="sec-output">
         <h2>
-          📝 輸出與匯入
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕ 收合 / 展開</button>
+          <span>📝 輸出與匯入</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕</button>
         </h2>
         <div class="section-body">
-          <div class="actions-row">
-            <button onclick="generateMarkdown()">✨ 生成 Markdown</button>
-            <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載 txt 檔（目前角色）</button>
-
-            <input id="txtFile" type="file" accept=".txt" style="max-width:220px;" />
-            <button class="button-secondary" type="button" onclick="importTxt()">📂 匯入 txt 並填回欄位</button>
+          <div class="actions-row" style="margin-bottom:16px;">
+            <button onclick="generateMarkdown()" style="width:100%; justify-content:center; padding:12px; font-size:1rem;">✨ 生成 Markdown 角色卡</button>
           </div>
 
-          <div class="actions-row">
-            <button class="button-secondary" type="button" onclick="exportAllData()">📦 匯出全部角色＆模板（JSON 備份）</button>
-
-            <input id="allFile" type="file" accept=".json" style="max-width:220px;" />
-            <button class="button-secondary" type="button" onclick="importAllData()">📥 匯入全部角色＆模板（覆蓋）</button>
+          <div class="label-row" style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:12px;">
+             <div style="flex:1;">
+                <label>單一角色操作 (.txt)</label>
+                <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+                   <button class="button-secondary" type="button" onclick="downloadTxt()">⬇ 下載目前角色</button>
+                   <label class="button-secondary" style="cursor:pointer; margin:0;">
+                      📂 匯入 .txt
+                      <input id="txtFile" type="file" accept=".txt" style="display:none;" onchange="importTxt()" />
+                   </label>
+                </div>
+             </div>
           </div>
 
-          <h2 style="margin-top:8px;">
-            🖨 輸出結果（Markdown，可直接複製）
-          </h2>
+           <div class="label-row" style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:12px;">
+             <div style="flex:1;">
+                <label>完整備份 (.json)</label>
+                <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+                   <button class="button-secondary" type="button" onclick="exportAllData()">📦 備份所有資料</button>
+                   <label class="button-secondary" style="cursor:pointer; margin:0;">
+                      📥 還原備份
+                      <input id="allFile" type="file" accept=".json" style="display:none;" onchange="importAllData()" />
+                   </label>
+                </div>
+             </div>
+          </div>
+
+          <h3 style="margin-top:24px; font-size:1rem;">🖨 輸出預覽</h3>
           <div id="output"></div>
         </div>
       </div>
 
-      <!-- 模板管理中心 -->
       <div class="section" id="sec-template-center">
         <h2>
-          🧰 模板管理中心
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-template-center')">⇕ 收合 / 展開</button>
+          <span>🧰 模板管理中心</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-template-center')">⇕</button>
         </h2>
         <div class="section-body">
-          <p class="sub-label">
-            可以在這裡查看所有欄位存過的模板，或刪除不需要的模板。新增模板還是照舊在各欄位按「存為模板」。
-          </p>
           <div class="label-row">
             <label>篩選模板類型：</label>
-            <select id="tplFilter" onchange="renderTemplateManager()">
+            <select id="tplFilter" onchange="renderTemplateManager()" style="width:auto;">
               <option value="">全部類型</option>
               <option value="basicInfo">一、基本資訊</option>
               <option value="personality">二、性格</option>
@@ -1061,16 +959,16 @@ transition: width 0.25s ease, padding 0.25s ease;
         </div>
       </div>
 
-      <!-- 版面切換 -->
       <div class="section" id="sec-layout">
         <h2>
-          📱 版面切換
-          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-layout')">⇕ 收合 / 展開</button>
+          <span>📱 版面切換</span>
+          <button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-layout')">⇕</button>
         </h2>
         <div class="section-body">
-          <p class="sub-label">如果在手機上覺得排版太擠，可以切換成手機版；在電腦上想窄版閱讀也可以強制手機版。</p>
-          <button type="button" onclick="setLayout('desktop')">💻 電腦版排版</button>
-          <button type="button" onclick="setLayout('mobile')">📱 手機版排版</button>
+          <div style="display:flex; gap:10px;">
+              <button type="button" class="button-secondary" onclick="setLayout('desktop')">💻 電腦版</button>
+              <button type="button" class="button-secondary" onclick="setLayout('mobile')">📱 手機版</button>
+          </div>
         </div>
       </div>
 
@@ -1109,29 +1007,32 @@ transition: width 0.25s ease, padding 0.25s ease;
     }
 
     function initLayoutByWidth() {
-      if (window.innerWidth <= 640) {
+      if (window.innerWidth <= 850) {
         setLayout('mobile');
       } else {
         setLayout('desktop');
       }
     }
-function toggleSidebar() {
-  const sb = document.querySelector('.sidebar');
-  if (!sb) return;
-  sb.classList.toggle('is-collapsed');
+    
+    function toggleSidebar() {
+      const sb = document.querySelector('.sidebar');
+      if (!sb) return;
+      sb.classList.toggle('is-collapsed');
+      const btn = sb.querySelector('.sidebar-toggle-btn');
+      if (btn) {
+         btn.innerHTML = sb.classList.contains('is-collapsed') ? '▶' : '◀';
+      }
+    }
 
-  // 順便改一下按鈕文字
-  const btn = sb.querySelector('.sidebar-toggle-btn');
-  if (btn) {
-    btn.textContent = sb.classList.contains('is-collapsed') ? '展開' : '收合';
-  }
-}
     /* ========= 側邊欄捲動 & 區塊收合 ========= */
     function scrollToSection(sectionId) {
       const sec = document.getElementById(sectionId);
       if (!sec) return;
       expandSection(sectionId);
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 位移一點點以免被 sticky header 擋住 (雖然這裡 header 不是 sticky)
+      const yOffset = -20; 
+      const y = sec.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
     }
 
     function toggleSectionCollapse(sectionId) {
@@ -1210,7 +1111,7 @@ function toggleSidebar() {
       const list = getTemplatesByType(type);
       selects.forEach(sel => {
         const currentValue = sel.value;
-        sel.innerHTML = '<option value="">套用模板…</option>';
+        sel.innerHTML = '<option value="">✨ 套用模板…</option>';
         list.forEach(tpl => {
           const opt = document.createElement('option');
           opt.value = tpl.id;
@@ -1284,6 +1185,7 @@ function toggleSidebar() {
         updatePromptTokenInfo();
       }
       updateFieldCounter(ta);
+      selectEl.value = ""; // Reset select
     }
 
     function applyTemplateDynamic(type, selectEl) {
@@ -1305,6 +1207,7 @@ function toggleSidebar() {
       ta.value = tpl.text;
       saveCurrentChar();
       updateFieldCounter(ta);
+      selectEl.value = "";
     }
 
     /* ========= 模板管理中心渲染 ========= */
@@ -1329,6 +1232,8 @@ function toggleSidebar() {
 
         const title = document.createElement('h3');
         title.className = 'tpl-type-title';
+        title.style.fontSize = "1rem";
+        title.style.marginTop = "16px";
         title.textContent = `${TEMPLATE_TYPE_LABELS[type]}（${list.length} 筆）`;
         container.appendChild(title);
 
@@ -1345,12 +1250,13 @@ function toggleSidebar() {
           metaEl.className = 'tpl-meta';
           metaEl.textContent = `類型：${TEMPLATE_TYPE_LABELS[type]}`;
 
-          const previewEl = document.createElement('pre');
+          const previewEl = document.createElement('div');
           previewEl.className = 'tpl-preview';
           const txt = tpl.text || '';
-          previewEl.textContent = txt.length > 120 ? (txt.slice(0,120) + '…') : txt;
+          previewEl.textContent = txt;
 
           const btnRow = document.createElement('div');
+          btnRow.style.marginTop = "8px";
           const delBtn = document.createElement('button');
           delBtn.type = 'button';
           delBtn.className = 'button-mini';
@@ -1368,7 +1274,7 @@ function toggleSidebar() {
       });
 
       if (!total) {
-        container.innerHTML = '<p class="sub-label">目前尚未建立任何模板，可以在各欄位按「存為模板」建立。</p>';
+        container.innerHTML = '<p class="sub-label" style="text-align:center; padding:20px;">目前尚未建立任何模板，可以在各欄位按「存為模板」建立。</p>';
       }
     }
 
@@ -1420,13 +1326,14 @@ function toggleSidebar() {
       titleRow.className = "label-row";
 
       const titleLabel = document.createElement("label");
-      titleLabel.textContent = "標題（選填）：";
+      titleLabel.textContent = "標題";
 
       const titleInput = document.createElement("input");
       titleInput.type = "text";
       titleInput.className = "extra-title-field";
       titleInput.dataset.maxlength = "50";
       titleInput.style.flex = "1";
+      titleInput.placeholder = "選填，例如：特殊能力";
       titleInput.addEventListener('input', () => {
         saveCurrentChar();
         updateFieldCounter(titleInput);
@@ -1440,15 +1347,19 @@ function toggleSidebar() {
       labelRow.className = "label-row";
 
       const label = document.createElement("label");
-      label.textContent = "附加資訊 ：";
+      label.textContent = "附加資訊內容";
 
       const controls = document.createElement("div");
       controls.className = "label-controls";
+      controls.style.display = "flex";
+      controls.style.gap = "4px";
 
       const tplSelect = document.createElement("select");
-      tplSelect.className = "tpl-select";
+      tplSelect.className = "button-mini";
+      tplSelect.style.width = "auto";
+      tplSelect.style.margin = "0";
       tplSelect.dataset.templateType = "extra";
-      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.innerHTML = '<option value="">✨ 套用模板…</option>';
       tplSelect.addEventListener('change', function () {
         applyTemplateDynamic('extra', this);
       });
@@ -1464,7 +1375,7 @@ function toggleSidebar() {
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "button-mini";
-      delBtn.textContent = "刪除此項";
+      delBtn.textContent = "刪除";
       delBtn.onclick = function () {
         block.remove();
         renumberExtras();
@@ -1496,7 +1407,7 @@ function toggleSidebar() {
       renumberExtras();
       saveCurrentChar();
       refreshTemplateSelect('extra');
-      setupFieldUtils(); // 給新欄位加上字數＆複製（有 id 的欄位）
+      setupFieldUtils(block); // 給新欄位加上字數＆複製
     }
 
     function addEvent() {
@@ -1515,13 +1426,14 @@ function toggleSidebar() {
       titleRow.className = "label-row";
 
       const titleLabel = document.createElement("label");
-      titleLabel.textContent = "標題（選填）：";
+      titleLabel.textContent = "標題";
 
       const titleInput = document.createElement("input");
       titleInput.type = "text";
       titleInput.className = "event-title-field";
       titleInput.dataset.maxlength = "50";
       titleInput.style.flex = "1";
+      titleInput.placeholder = "選填，例如：初次相遇";
       titleInput.addEventListener('input', () => {
         saveCurrentChar();
         updateFieldCounter(titleInput);
@@ -1535,15 +1447,18 @@ function toggleSidebar() {
       labelRow.className = "label-row";
 
       const label = document.createElement("label");
-      label.textContent = "創作者事件 ：";
+      label.textContent = "事件內容";
 
       const controls = document.createElement("div");
-      controls.className = "label-controls";
+      controls.style.display = "flex";
+      controls.style.gap = "4px";
 
       const tplSelect = document.createElement("select");
-      tplSelect.className = "tpl-select";
+      tplSelect.className = "button-mini";
+      tplSelect.style.width = "auto";
+      tplSelect.style.margin = "0";
       tplSelect.dataset.templateType = "event";
-      tplSelect.innerHTML = '<option value="">套用模板…</option>';
+      tplSelect.innerHTML = '<option value="">✨ 套用模板…</option>';
       tplSelect.addEventListener('change', function () {
         applyTemplateDynamic('event', this);
       });
@@ -1559,7 +1474,7 @@ function toggleSidebar() {
       const delBtn = document.createElement("button");
       delBtn.type = "button";
       delBtn.className = "button-mini";
-      delBtn.textContent = "刪除此項";
+      delBtn.textContent = "刪除";
       delBtn.onclick = function () {
         block.remove();
         renumberEvents();
@@ -1591,12 +1506,25 @@ function toggleSidebar() {
       renumberEvents();
       saveCurrentChar();
       refreshTemplateSelect('event');
-      setupFieldUtils();
+      setupFieldUtils(block);
     }
 
     /* ========= 每個欄位：字數顯示 + 複製（有 id 的欄位）========= */
-    function copyFieldText(id) {
-      const el = document.getElementById(id);
+    function copyFieldText(idOrEl) {
+      let el;
+      if (typeof idOrEl === 'string') {
+          el = document.getElementById(idOrEl);
+      } else {
+          // 嘗試找到按鈕關聯的輸入框
+          const wrapper = idOrEl.closest('.field-utils');
+          if(wrapper) {
+              const prev = wrapper.previousElementSibling;
+              if(prev && (prev.tagName === 'INPUT' || prev.tagName === 'TEXTAREA')) {
+                  el = prev;
+              }
+          }
+      }
+      
       if (!el) return;
       const text = el.value || el.innerText || "";
       if (!text) {
@@ -1606,7 +1534,13 @@ function toggleSidebar() {
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text)
-          .then(() => alert('已複製這個欄位的內容！'))
+          .then(() => {
+               const originalText = '複製';
+               // 簡單的視覺反饋
+               const btn = event.target;
+               btn.textContent = '已複製！';
+               setTimeout(() => btn.textContent = originalText, 1500);
+          })
           .catch(err => {
             console.error(err);
             fallbackCopy(el);
@@ -1620,15 +1554,13 @@ function toggleSidebar() {
       try {
         el.select();
         document.execCommand('copy');
-        alert('已複製內容（使用相容模式）');
+        alert('已複製內容');
       } catch (e) {
         alert('複製失敗，可能被瀏覽器擋住了 QQ');
       }
     }
 
     function updateFieldCounter(el) {
-      const id = el.id;
-      if (!id) return;
       let wrapper = el.nextElementSibling;
       if (!wrapper || !wrapper.classList || !wrapper.classList.contains('field-utils')) {
         return;
@@ -1639,9 +1571,11 @@ function toggleSidebar() {
       const max = el.dataset.maxlength ? parseInt(el.dataset.maxlength, 10) : null;
       const len = el.value ? el.value.length : 0;
       if (max) {
-        counterSpan.textContent = `目前 ${len} / ${max} 字`;
+        counterSpan.textContent = `${len} / ${max}`;
+        if(len >= max) counterSpan.style.color = "red";
+        else counterSpan.style.color = "inherit";
       } else {
-        counterSpan.textContent = `目前 ${len} 字`;
+        counterSpan.textContent = `${len} 字`;
       }
     }
 
@@ -1650,11 +1584,10 @@ function toggleSidebar() {
       fields.forEach(updateFieldCounter);
     }
 
-    function setupFieldUtils() {
-      const fields = document.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
+    function setupFieldUtils(scope = document) {
+      const fields = scope.querySelectorAll('textarea, input[type="text"], input[type="search"], input[type="date"]');
       fields.forEach(el => {
-        const id = el.id;
-        if (!id) return;
+        // 避免重複添加
         const next = el.nextElementSibling;
         if (next && next.classList && next.classList.contains('field-utils')) return;
 
@@ -1663,20 +1596,20 @@ function toggleSidebar() {
 
         const counter = document.createElement('span');
         counter.className = 'field-counter';
-        counter.dataset.targetId = id;
-
+        
         const copyBtn = document.createElement('button');
         copyBtn.type = 'button';
         copyBtn.className = 'button-mini field-copy';
-        copyBtn.textContent = '複製內容';
-        copyBtn.addEventListener('click', () => copyFieldText(id));
+        copyBtn.textContent = '複製';
+        copyBtn.style.margin = "0";
+        copyBtn.onclick = (e) => copyFieldText(el);
 
         wrapper.appendChild(counter);
         wrapper.appendChild(copyBtn);
         el.insertAdjacentElement('afterend', wrapper);
+        
+        updateFieldCounter(el);
       });
-
-      updateAllFieldCounters();
     }
 
     /* ========= 表單資料收集 & 填回 ========= */
@@ -1749,7 +1682,8 @@ function toggleSidebar() {
       if (eventContainer) eventContainer.innerHTML = "";
 
       updatePromptTokenInfo();
-      setupFieldUtils();
+      // 重新初始化 utils
+      // setupFieldUtils(); // 不需要，因為DOM沒變，只是值變了，除了動態區塊
     }
 
     function fillFormFromData(data) {
@@ -1772,7 +1706,7 @@ function toggleSidebar() {
             title = item.title || "";
             text = item.text || "";
           }
-          if (!title && !text) return;
+          // if (!title && !text) return; // 即使是空的也還原結構
 
           addExtra();
           const blocks = document.querySelectorAll(".extra-block");
@@ -1795,8 +1729,7 @@ function toggleSidebar() {
             title = item.title || "";
             text = item.text || "";
           }
-          if (!title && !text) return;
-
+          
           addEvent();
           const blocks = document.querySelectorAll(".event-block");
           const lastBlock = blocks[blocks.length - 1];
@@ -1810,7 +1743,7 @@ function toggleSidebar() {
 
       updatePromptTokenInfo();
       refreshAllTemplateSelects();
-      setupFieldUtils();
+      updateAllFieldCounters();
     }
 
     /* ========= 角色存檔邏輯：多角色 ========= */
@@ -1856,6 +1789,9 @@ function toggleSidebar() {
       clearForm();
       document.getElementById('output').textContent = "";
       saveCurrentChar();
+      
+      // 滾動到頂部
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function deleteCurrentChar() {
@@ -1892,6 +1828,9 @@ function toggleSidebar() {
       fillFormFromData(item.data);
       document.getElementById('output').textContent = "";
       renderCharList(store);
+      
+      // 為了避免使用者不知道切換了，給點提示或滾動
+      // window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function renderCharList(store) {
@@ -1917,13 +1856,12 @@ function toggleSidebar() {
       const filterSel = document.getElementById('filterCategory');
       if (filterSel) {
         const prev = filterSel.value;
-        filterSel.innerHTML = '<option value="">全部分類</option>';
+        // 保存原本選項
+        let html = '<option value="">全部分類</option>';
         [...categorySet].sort().forEach(cat => {
-          const opt = document.createElement('option');
-          opt.value = cat;
-          opt.textContent = cat;
-          filterSel.appendChild(opt);
+          html += `<option value="${cat}">${cat}</option>`;
         });
+        filterSel.innerHTML = html;
         if (prev) filterSel.value = prev;
       }
 
@@ -1956,14 +1894,16 @@ function toggleSidebar() {
 
         const btn = document.createElement('button');
         btn.type = "button";
-        btn.className = "button-secondary";
-        btn.textContent = cat ? `${name}（${cat}）` : name;
-
+        // 根據是否選中改變樣式
         if (store.currentId === id) {
-          btn.style.fontWeight = "bold";
-          btn.style.textDecoration = "underline";
+          btn.className = "button-mini"; // 主要按鈕樣式
+          btn.style.background = "var(--focus-color)";
+          btn.style.color = "#fff";
+        } else {
+          btn.className = "button-secondary"; // 次要
         }
-
+        
+        btn.textContent = cat ? `${name} (${cat})` : name;
         btn.onclick = () => loadChar(id);
 
         listEl.appendChild(btn);
@@ -1978,7 +1918,7 @@ function toggleSidebar() {
     /* ========= 必填欄位提醒 ========= */
     function validateRequired() {
       const requiredFields = [
-        { id: 'charName', label: '姓名' },
+        { id: 'charName', label: '角色名稱' },
         { id: 'charAge', label: '年齡' },
         { id: 'charJob', label: '職業' },
         { id: 'charQuote', label: '來自角色的一句話' },
@@ -1994,20 +1934,16 @@ function toggleSidebar() {
         const el = document.getElementById(f.id);
         if (!el) return;
         let value = '';
-        if (el.tagName === 'SELECT') {
-          value = el.value.trim();
-        } else {
-          value = el.value.trim();
-        }
-        if (!value) {
+        value = el.value.trim();
+        if (!value || value === '未設置') {
           missing.push(f.label);
         }
       });
 
       if (missing.length > 0) {
-        alert("以下欄位為必填，目前尚未填寫：\n" +
+        alert("以下欄位建議填寫，資料會更完整喔：\n" +
           missing.join("、") +
-          "\n\n仍然會幫你生成 Markdown，但建議補完再用喔～");
+          "\n\n（仍然會幫你生成 Markdown）");
       }
       return true;
     }
@@ -2052,14 +1988,8 @@ function toggleSidebar() {
       let extraJams = extraTokens > 0 ? Math.ceil(extraTokens / 500) : 0;
       const totalJam = baseCost + extraJams;
 
-      tokenSpan.textContent =
-        `預估 token：${totalTokens}（超級不負責任估算：` +
-        `粗略把「一個中文字 ≈ 2 token、英文/數字/符號一字元 ≈ 1 token」，` +
-        `實際還是看各模型的 tokenizer，請量力參考就好 🙈）`;
-
-      jamSpan.textContent =
-        `模型基礎花費：約 ${baseCost} 果醬　＋　額外 token 花費：約 ${extraJams} 果醬　` +
-        `⇒ 預估合計：約 ${totalJam} 果醬（純估算，實際以平台計價為準）`;
+      tokenSpan.textContent = `預估 Token：${totalTokens} (中文約 2, 英文約 1)`;
+      jamSpan.textContent = `預估花費：約 ${totalJam} 果醬 (基礎 ${baseCost} + 額外 ${extraJams})`;
     }
 
     /* ========= Markdown 生成 ========= */
@@ -2099,15 +2029,15 @@ function toggleSidebar() {
       let tagsFormatted = "";
       if (tagsRaw) {
         const parts = tagsRaw.split(/[,，\s]+/).filter(Boolean);
-        tagsFormatted = parts.map(t => "#" + t).join(" ");
+        tagsFormatted = parts.map(t => "#" + t.replace(/^#/, "")).join(" ");
       }
 
       let md = [];
 
-      md.push(`【角色資訊】\n`);
+      md.push(`【角色資訊】`);
       md.push(`- 名稱：${name || "（未命名）"}`);
       if (category) md.push(`- 分類：${category}`);
-      if (gender) md.push(`- 性別：${gender}`);
+      if (gender && gender !== '未設置') md.push(`- 性別：${gender}`);
       if (age) md.push(`- 年齡：${age}`);
       if (job) md.push(`- 職業：${job}`);
       if (birthdayText) md.push(`- 生日：${birthdayText}`);
@@ -2145,7 +2075,7 @@ function toggleSidebar() {
       if (modelValue || promptRole || promptGuideline) {
         md.push(`【模型與 Prompt 設定】`);
         if (modelLabel) md.push(`- 模型：${modelLabel}`);
-        md.push(`- 預估 token：${promptTokens}（內部以「中文字≈2、其他字元≈1」粗估，實際依平台為準）`);
+        md.push(`- 預估 token：${promptTokens}（僅供參考）`);
         if (promptRole) {
           md.push(`- Role：`);
           md.push(promptRole);
@@ -2224,7 +2154,10 @@ function toggleSidebar() {
         });
       }
 
-      document.getElementById('output').textContent = md.join("\n");
+      const outputBox = document.getElementById('output');
+      outputBox.textContent = md.join("\n");
+      // 滾動到輸出區
+      outputBox.scrollIntoView({behavior: "smooth", block: "center"});
     }
 
     /* ========= Markdown 解析 ========= */
@@ -2310,18 +2243,18 @@ function toggleSidebar() {
             const t = lines[j].trim();
             if (t.startsWith("【")) break;
             if (t.startsWith("- 模型：")) {
+              // 簡易匹配
               const label = t.replace("- 模型：", "").trim();
               const sel = document.getElementById('modelType');
               if (sel) {
-                for (let k = 0; k < sel.options.length; k++) {
-                  if (sel.options[k].textContent.indexOf(label) !== -1) {
-                    sel.value = sel.options[k].value;
-                    break;
-                  }
-                }
+                 // 嘗試部分匹配
+                 for(let opt of sel.options) {
+                     if(label.includes(opt.value) || opt.text.includes(label)) {
+                         sel.value = opt.value;
+                         break;
+                     }
+                 }
               }
-            } else if (t.startsWith("- 預估 token")) {
-              // 忽略
             } else if (t.startsWith("- Role：")) {
               const res2 = readBlockUntilHeading(lines, j + 1);
               document.getElementById('promptRole').value = res2.text;
@@ -2426,7 +2359,7 @@ function toggleSidebar() {
 
       updatePromptTokenInfo();
       refreshAllTemplateSelects();
-      setupFieldUtils();
+      updateAllFieldCounters();
       saveCurrentChar();
     }
 
@@ -2445,6 +2378,7 @@ function toggleSidebar() {
         const content = e.target.result || "";
         document.getElementById('output').textContent = content;
         parseMarkdownToForm(content);
+        alert("已載入：" + file.name);
       };
 
       reader.readAsText(file, "utf-8");
@@ -2475,7 +2409,7 @@ function toggleSidebar() {
     function exportAllData() {
       const store = getStore();
       const text = JSON.stringify(store, null, 2);
-      const filename = `qing_all_${new Date().toISOString().slice(0,10)}.json`;
+      const filename = `qing_backup_${new Date().toISOString().slice(0,10)}.json`;
 
       const blob = new Blob([text], { type: "application/json;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -2505,11 +2439,11 @@ function toggleSidebar() {
           const parsed = JSON.parse(content);
 
           if (!parsed || typeof parsed !== 'object') {
-            alert("匯入失敗：檔案內容不是有效的 JSON 物件 QQ");
+            alert("匯入失敗：檔案格式錯誤");
             return;
           }
           if (!parsed.chars || typeof parsed.chars !== 'object') {
-            alert("匯入失敗：看起來缺少 chars 欄位 QQ");
+            alert("匯入失敗：缺少 chars 資料");
             return;
           }
           if (!parsed.templates) {
@@ -2521,10 +2455,10 @@ function toggleSidebar() {
           setStore(parsed);
           loadInitialFromStore();
 
-          alert("匯入完成！已載入全部角色與模板～");
+          alert("匯入完成！已還原所有資料。");
         } catch (err) {
           console.error(err);
-          alert("匯入失敗：無法解析這個 JSON 檔案 QQ");
+          alert("匯入失敗：無法解析 JSON");
         }
       };
 
@@ -2547,13 +2481,6 @@ function toggleSidebar() {
       updateFieldCounter(el);
     }
 
-    function clearGender() {
-      const el = document.getElementById('gender');
-      if (!el) return;
-      el.value = '未設置';
-      saveCurrentChar();
-    }
-
     /* ========= 自動暫存 ========= */
     function setupAutoSave() {
       const els = document.querySelectorAll('input, textarea, select');
@@ -2570,17 +2497,10 @@ function toggleSidebar() {
             updateFieldCounter(el);
           }
         });
+        // select change 也要存
         el.addEventListener('change', () => {
-          saveCurrentChar();
-          if (el.id === 'promptRole' || el.id === 'promptGuideline' || el.id === 'modelType') {
-            updatePromptTokenInfo();
-          }
-          if (el.tagName === 'TEXTAREA' ||
-              el.type === 'text' ||
-              el.type === 'search' ||
-              el.type === 'date') {
-            updateFieldCounter(el);
-          }
+           saveCurrentChar();
+           if(el.tagName === 'SELECT') updatePromptTokenInfo();
         });
       });
     }
@@ -2606,10 +2526,16 @@ function toggleSidebar() {
 
     window.addEventListener('DOMContentLoaded', () => {
       initLayoutByWidth();
-      setupAutoSave();
       loadInitialFromStore();
+      setupAutoSave();
+      
+      // 監聽視窗大小改變
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(initLayoutByWidth, 200);
+      });
     });
   </script>
-
 </body>
 </html>
