@@ -13,8 +13,7 @@
       --radius-full: 999px;
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
       --shadow-md: 0 8px 24px -6px rgba(0,0,0,0.12);
-      --shadow-lg: 0 12px 40px -8px rgba(0,0,0,0.18);
-      --transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       
       /* 背景色系定義 */
       --bg-pink: #ffeef5; --accent-pink: #ff8ebf;
@@ -26,7 +25,7 @@
       --bg-grey: #f7f7f7; --accent-grey: #999;
       --bg-black: #1a1a1a; --accent-black: #666;
 
-      /* 預設變數 (由 body class 覆寫) */
+      /* 預設變數 */
       --page-bg: var(--bg-pink);
       --card-bg: rgba(255, 255, 255, 0.85);
       --sidebar-bg: rgba(255, 255, 255, 0.9);
@@ -38,7 +37,6 @@
       --btn-text: #fff;
     }
 
-    /* === 全局設定 === */
     * { box-sizing: border-box; }
 
     body {
@@ -48,7 +46,6 @@
       line-height: 1.7;
       color: var(--text-main);
       background-color: var(--page-bg);
-      /* 加入細微的背景紋理 */
       background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
       background-size: 24px 24px;
       transition: background 0.3s ease, color 0.3s ease;
@@ -84,63 +81,22 @@
       gap: 24px;
       max-width: 1200px;
       margin: 0 auto;
+      /* 確保 flex 容器正確運作 */
+      position: relative;
     }
 
     .main-area {
-      flex: 1;
-      min-width: 0; /* 防止 flex 子元素溢出 */
+      flex: 1; /* 讓主要區域自動填滿剩餘空間 */
+      min-width: 0; /* 防止內容撐爆 flex */
+      transition: var(--transition); /* 平滑過渡寬度變化 */
     }
 
-    /* === 排版 Typography === */
-    h1, h2, h3 {
-      font-family: "Noto Serif TC", serif;
-      margin-top: 0;
-      color: var(--text-main);
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-size: 1.25rem;
-      margin-bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed var(--border-color);
-    }
-
-    .tagline {
-      color: var(--text-sub);
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-    }
-
-    .top-bar {
-      max-width: 1200px;
-      margin: 0 auto 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .sub-label {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-      margin-top: 4px;
-      display: block;
-    }
-
-    /* === 側邊欄 Sidebar === */
+    /* === 側邊欄 Sidebar (修正版) === */
     .sidebar {
+      /* 關鍵修正：設定 flex-basis 讓 flex 容器知道它佔多少空間 */
+      flex: 0 0 260px; 
       width: 260px;
-      min-width: 260px;
+      
       position: sticky;
       top: 20px;
       background: var(--sidebar-bg);
@@ -150,21 +106,34 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
       border: 1px solid rgba(255,255,255,0.3);
-      transition: var(--transition);
-      z-index: 10;
+      
+      /* 關鍵：加上 overflow: hidden 避免內容被擠壓時撐開寬度 */
       overflow: hidden;
+      
+      /* 確保寬度變化有動畫 */
+      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), flex-basis 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.3s ease;
+      z-index: 10;
+      
+      /* 防止文字換行導致版面跳動 */
+      white-space: nowrap;
     }
     
-    /* 側邊欄收合模式 */
+    /* 側邊欄收合模式 (修正版) */
     .sidebar.is-collapsed {
-      width: 64px;
-      min-width: 64px;
-      padding: 16px 8px;
+      /* 關鍵修正：同步更新 flex-basis 與 width */
+      flex: 0 0 68px;
+      width: 68px;
+      padding: 16px 10px; /* 稍微縮減內距 */
     }
     
+    /* 收合時隱藏的部分 */
     .sidebar.is-collapsed .sidebar-title,
-    .sidebar.is-collapsed .sidebar-sub {
-      display: none;
+    .sidebar.is-collapsed .sidebar-sub,
+    .sidebar.is-collapsed .btn-text {
+      opacity: 0;
+      pointer-events: none;
+      /* 讓文字瞬間消失或快速淡出，避免動畫過程中文字被切斷 */
+      display: none; 
     }
     
     .sidebar.is-collapsed .sidebar-header {
@@ -174,18 +143,15 @@
 
     .sidebar.is-collapsed .sidebar-nav button {
       justify-content: center;
-      padding: 8px;
-    }
-    
-    .sidebar.is-collapsed .sidebar-nav button span.btn-text {
-      display: none;
+      padding: 10px 0;
     }
     
     .sidebar.is-collapsed .sidebar-nav button span.btn-icon {
       margin-right: 0;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
+    /* Header 樣式 */
     .sidebar-header {
       display: flex;
       justify-content: space-between;
@@ -193,6 +159,7 @@
       margin-bottom: 12px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-color);
+      min-height: 45px; /* 固定高度避免跳動 */
     }
 
     .sidebar-title {
@@ -222,7 +189,7 @@
       border: 1px solid transparent;
       padding: 8px 12px;
       border-radius: 8px;
-      transition: var(--transition);
+      transition: background 0.2s, transform 0.2s;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -233,27 +200,36 @@
       transform: translateX(4px);
     }
     
+    /* 收合時取消 hover 位移，避免看起來怪怪的 */
+    .sidebar.is-collapsed .sidebar-nav button:hover {
+      transform: none;
+      background: var(--focus-color);
+      color: #fff;
+    }
+    
     body.theme-black .sidebar-nav button:hover {
       background: rgba(255,255,255,0.1);
     }
 
-    .sidebar-nav button.sidebar-main {
-      font-weight: 600;
-    }
-
-    .sidebar-nav button.sidebar-subitem {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      padding-left: 12px;
-    }
+    .sidebar-nav button.sidebar-main { font-weight: 600; }
+    .sidebar-nav button.sidebar-subitem { font-size: 0.9rem; color: var(--text-sub); padding-left: 12px; }
     
     .sidebar-nav button span.btn-icon {
       margin-right: 8px;
-      width: 20px;
+      width: 24px;
       text-align: center;
+      display: inline-block;
     }
 
-    /* === 內容區塊 Card Style === */
+    /* === 其他排版樣式 (保持原本優化) === */
+    h1, h2, h3 { font-family: "Noto Serif TC", serif; margin-top: 0; color: var(--text-main); }
+    h1 { font-size: 2rem; margin-bottom: 8px; font-weight: 700; }
+    h2 { font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); }
+    
+    .tagline { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 20px; }
+    .top-bar { max-width: 1200px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+    .sub-label { font-size: 0.85rem; color: var(--text-sub); margin-top: 4px; display: block; }
+
     .section {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -265,271 +241,85 @@
       border: 1px solid rgba(255,255,255,0.4);
       transition: var(--transition);
     }
-
-    .section:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    .section.collapsed .section-body {
-      display: none;
-    }
+    .section:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .section.collapsed .section-body { display: none; }
+    .section.collapsed { padding-bottom: 16px; opacity: 0.7; }
+    .section-body { margin-top: 16px; animation: fadeIn 0.4s ease; }
     
-    .section.collapsed {
-      padding-bottom: 16px;
-      opacity: 0.7;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .section-body {
-      margin-top: 16px;
-      animation: fadeIn 0.4s ease;
-    }
+    .label-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; }
+    label { font-weight: 500; color: var(--text-main); margin-right: 8px; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
+    input[type="text"], input[type="search"], input[type="date"], select, textarea {
+      width: 100%; padding: 10px 14px; font-size: 0.95rem; font-family: inherit; color: var(--text-main);
+      background: rgba(255,255,255,0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      transition: var(--transition); margin-bottom: 12px; outline: none;
     }
+    body.theme-black input, body.theme-black select, body.theme-black textarea { background: rgba(0,0,0,0.3); color: #fff; }
+    textarea { min-height: 100px; line-height: 1.6; resize: vertical; }
+    input:focus, select:focus, textarea:focus { background: #fff; border-color: var(--focus-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-color), transparent 80%); }
+    body.theme-black input:focus, body.theme-black textarea:focus { background: rgba(0,0,0,0.5); }
 
-    /* === 表單元素 Forms === */
-    .label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    label {
-      font-weight: 500;
-      color: var(--text-main);
-      margin-right: 8px;
-    }
-
-    input[type="text"],
-    input[type="search"],
-    input[type="date"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px 14px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      color: var(--text-main);
-      background: rgba(255,255,255,0.6);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      transition: var(--transition);
-      margin-bottom: 12px;
-      outline: none;
-    }
-    
-    body.theme-black input,
-    body.theme-black select,
-    body.theme-black textarea {
-      background: rgba(0,0,0,0.3);
-      color: #fff;
-    }
-
-    textarea {
-      min-height: 100px;
-      line-height: 1.6;
-      resize: vertical;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      background: #fff;
-      border-color: var(--focus-color);
-      box-shadow: 0 0 0 3px rgba(var(--focus-color), 0.2); /* 模擬光暈，需調整rgba */
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-color), transparent 80%);
-    }
-    
-    body.theme-black input:focus, 
-    body.theme-black textarea:focus {
-      background: rgba(0,0,0,0.5);
-    }
-
-    /* === 按鈕 Buttons === */
     button {
-      cursor: pointer;
-      border: none;
-      border-radius: var(--radius-full);
-      padding: 8px 16px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: var(--transition);
-      margin-right: 6px;
-      margin-bottom: 6px;
+      cursor: pointer; border: none; border-radius: var(--radius-full); padding: 8px 16px; font-size: 0.9rem;
+      font-family: inherit; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
+      background: var(--btn-bg); color: var(--btn-text); box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: var(--transition); margin-right: 6px; margin-bottom: 6px;
     }
-
-    button:hover {
-      filter: brightness(1.08);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    /* 次要按鈕 / 小按鈕 */
-    .button-secondary, .button-mini {
-      background: transparent;
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      box-shadow: none;
-    }
-
-    .button-secondary:hover, .button-mini:hover {
-      background: rgba(0,0,0,0.05);
-      border-color: var(--focus-color);
-      color: var(--focus-color);
-    }
+    button:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    button:active { transform: translateY(0); }
     
-    body.theme-black .button-secondary:hover, 
-    body.theme-black .button-mini:hover {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-    }
-
-    .button-mini {
-      padding: 3px 10px;
-      font-size: 0.75rem;
-      margin: 0;
-    }
+    .button-secondary, .button-mini { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
+    .button-secondary:hover, .button-mini:hover { background: rgba(0,0,0,0.05); border-color: var(--focus-color); color: var(--focus-color); }
+    body.theme-black .button-secondary:hover, body.theme-black .button-mini:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .button-mini { padding: 3px 10px; font-size: 0.75rem; margin: 0; }
     
-    /* 側邊欄切換按鈕 */
     .sidebar-toggle-btn {
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.05);
-      color: var(--text-sub);
-      border-radius: 50%;
-      margin: 0;
-      box-shadow: none;
+      width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.05); color: var(--text-sub); border-radius: 50%; margin: 0; box-shadow: none;
     }
-    .sidebar-toggle-btn:hover {
-      background: var(--focus-color);
-      color: #fff;
-    }
+    .sidebar-toggle-btn:hover { background: var(--focus-color); color: #fff; }
 
-    /* === 輸出區塊 Output === */
     #output {
-      background: #222;
-      color: #f0f0f0;
-      padding: 16px;
-      border-radius: var(--radius-md);
-      font-family: "Menlo", "Monaco", "Courier New", monospace;
-      font-size: 0.9rem;
-      white-space: pre-wrap;
-      line-height: 1.5;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-      margin-top: 12px;
+      background: #222; color: #f0f0f0; padding: 16px; border-radius: var(--radius-md);
+      font-family: "Menlo", "Monaco", "Courier New", monospace; font-size: 0.9rem; white-space: pre-wrap;
+      line-height: 1.5; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); margin-top: 12px;
     }
 
-    /* === 動態生成的區塊 === */
-    .tpl-card {
-      background: rgba(0,0,0,0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .tpl-card:hover {
-      border-color: var(--focus-color);
-    }
+    .tpl-card { background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .tpl-card:hover { border-color: var(--focus-color); }
     .tpl-name { font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
     .tpl-meta { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 6px; }
-    .tpl-preview { 
-      font-size: 0.85rem; color: var(--text-sub); 
-      background: rgba(0,0,0,0.03); padding: 6px; border-radius: 4px;
-      white-space: pre-wrap;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-    }
+    .tpl-preview { font-size: 0.85rem; color: var(--text-sub); background: rgba(0,0,0,0.03); padding: 6px; border-radius: 4px; white-space: pre-wrap; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
     
-    .field-utils {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 8px;
-      margin-top: -8px;
-      margin-bottom: 16px;
-      font-size: 0.75rem;
-      color: var(--text-sub);
-    }
-    
-    .extra-block, .event-block {
-      border-left: 3px solid var(--border-color);
-      padding-left: 16px;
-      margin-bottom: 24px;
-      transition: border-color 0.3s;
-    }
-    .extra-block:hover, .event-block:hover {
-      border-left-color: var(--focus-color);
-    }
+    .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: -8px; margin-bottom: 16px; font-size: 0.75rem; color: var(--text-sub); }
+    .extra-block, .event-block { border-left: 3px solid var(--border-color); padding-left: 16px; margin-bottom: 24px; transition: border-color 0.3s; }
+    .extra-block:hover, .event-block:hover { border-left-color: var(--focus-color); }
 
     /* === RWD 響應式 === */
     @media (max-width: 850px) {
-      .layout-shell {
-        flex-direction: column;
-      }
+      .layout-shell { flex-direction: column; }
       .sidebar {
-        width: 100%;
-        min-width: 100%;
-        position: static;
-        margin-bottom: 20px;
-        /* 手機版側邊欄改為橫向滾動選單 */
-        display: flex;
-        flex-direction: column;
-        padding: 12px;
+        width: 100%; flex: 0 0 auto; /* 手機版取消 flex 限制 */
+        position: static; margin-bottom: 20px; display: flex; flex-direction: column; padding: 12px;
       }
-      .sidebar-header {
-         display: none; /* 手機版隱藏側邊欄標題，節省空間 */
-      }
-      .sidebar-nav {
-        flex-direction: row;
-        overflow-x: auto;
-        gap: 8px;
-        padding-bottom: 4px;
-        /* 隱藏卷軸 */
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-      }
-      .sidebar-nav::-webkit-scrollbar {
-        display: none;
-      }
-      .sidebar-nav button {
-        white-space: nowrap;
-        width: auto;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-      }
-      .section {
-        padding: 16px 20px;
-      }
+      .sidebar-header { display: none; }
+      .sidebar-nav { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; }
+      .sidebar-nav::-webkit-scrollbar { display: none; }
+      .sidebar-nav button { white-space: nowrap; width: auto; background: var(--card-bg); border: 1px solid var(--border-color); }
+      .section { padding: 16px 20px; }
     }
     
-    /* 強制排版樣式 (透過 JS 切換 class) */
+    /* 強制排版樣式 */
     body.layout-mobile .layout-shell { flex-direction: column; }
-    body.layout-mobile .sidebar { width: 100%; position: static; margin-bottom: 16px; }
+    body.layout-mobile .sidebar { width: 100%; flex: 0 0 auto; position: static; margin-bottom: 16px; }
     body.layout-mobile .sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 5px; }
     body.layout-mobile .sidebar-nav button { width: auto; white-space: nowrap; }
     
     body.layout-desktop .layout-shell { flex-direction: row; }
-    body.layout-desktop .sidebar { width: 260px; position: sticky; }
+    body.layout-desktop .sidebar { flex: 0 0 260px; width: 260px; position: sticky; }
+    body.layout-desktop .sidebar.is-collapsed { flex: 0 0 68px; width: 68px; }
     body.layout-desktop .sidebar-nav { flex-direction: column; overflow-x: visible; }
 
   </style>
