@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卿卿我我創角小幫手 (最終修正版)</title>
+  <title>卿卿我我創角小幫手 (完美單機版)</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
   <style>
     :root {
@@ -18,7 +18,7 @@
       --bg-black: #1a1a1a; --accent-black: #71717a; --focus-rgb-black: 113, 113, 122;
 
       --page-bg: var(--bg-pink); --card-bg: rgba(255, 255, 255, 0.85); --sidebar-bg: rgba(255, 255, 255, 0.9);
-      --text-main: #475569; --text-sub: #94a3b8; --border-color: rgba(0,0,0,0.06);
+      --text-main: #475569; --text-sub: #64748b; --border-color: rgba(0,0,0,0.08);
       --focus-color: var(--accent-pink); --focus-rgb: var(--focus-rgb-pink);
       --btn-bg: var(--accent-pink); --btn-text: #fff;
       --shadow-card: 0 4px 20px -4px rgba(0,0,0,0.06); --shadow-hover: 0 10px 25px -5px rgba(0,0,0,0.1);
@@ -83,7 +83,6 @@
     input:focus, select:focus, textarea:focus, .tags-container:focus-within { background: #fff; border-color: var(--focus-color); box-shadow: 0 0 0 3px rgba(var(--focus-rgb), 0.15); }
     body.theme-black input:focus, body.theme-black textarea:focus, body.theme-black .tags-container:focus-within { background: rgba(40,40,40,0.8); }
 
-    /* 工具列 (整合在輸入框下方) */
     .field-utils { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 4px; font-size: 0.75rem; color: var(--text-sub); }
     .field-counter { margin-right: auto; opacity: 0.8; }
     .field-counter.limit-reach { color: #ef4444; font-weight: bold; }
@@ -329,7 +328,9 @@
               </select>
           </div>
           <div class="field-group">
-             <div class="label-row"><label>System Role</label></div>
+             <div class="label-row">
+                 <label>System Role</label>
+             </div>
              <textarea id="promptRole" placeholder="系統指令..." oninput="updatePromptTokenInfo()"></textarea>
           </div>
           <div class="field-group">
@@ -379,11 +380,15 @@
         <h2><span>🎬 開場與對話 (800字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group">
-              <div class="label-row"><label>第一次聊天場景</label></div>
+              <div class="label-row">
+                  <label>第一次聊天場景</label>
+              </div>
               <textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
           </div>
           <div class="field-group">
-              <div class="label-row"><label>角色對話範例</label></div>
+              <div class="label-row">
+                  <label>角色對話範例</label>
+              </div>
               <textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
           </div>
         </div>
@@ -392,8 +397,7 @@
       <div class="section" id="sec-fav">
         <h2>
             <span>🎀 喜好與生日 (50字)</span>
-            <button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button>
-        </h2>
+            <button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group"><input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" /></div>
           <div class="field-group"><input id="dislikes" type="text" data-maxlength="50" placeholder="討厭的東西" /></div>
@@ -461,7 +465,7 @@
   <script>
     const EXTRA_MAX = 10;
     const EVENT_MAX = 20;
-    const STORAGE_KEY = 'qing_char_game_v15_final'; 
+    const STORAGE_KEY = 'qing_char_game_v16_pure'; 
     const TEMPLATE_TYPES = ['basicInfo','personality','speechStyle','extra','event'];
     const TEMPLATE_TYPE_LABELS = { basicInfo: '基本資訊', personality: '性格', speechStyle: '說話風格', extra: '附加資訊', event: '創作者事件' };
     
@@ -471,7 +475,7 @@
       initLayoutByWidth();
       initStoryEditors(); 
       
-      // 檢查是否有嵌入資料
+      // 檢查是否有嵌入資料 (單檔模式)
       const stateEl = document.getElementById('app-state');
       if(stateEl && stateEl.textContent.trim() !== '/*__DATA__*/' && stateEl.textContent.trim().length > 0) {
           try {
@@ -546,7 +550,7 @@
           </div>
           <div class="field-group"><label>提示語 (60字)</label><input type="text" class="story-hint" data-maxlength="60" value="${d?.hint||''}" oninput="saveCurrentChar()"></div>
           <div class="field-group"><label>標題 (30字)</label><input type="text" class="story-title" data-maxlength="30" value="${d?.title||''}" oninput="saveCurrentChar()"></div>
-          <div class="field-group"><label>內容 (2000字)</label><textarea class="story-content" data-maxlength="2000" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
+          <div class="field-group"><label>內容 (2000字)</label><textarea class="story-content" data-maxlength="2000" style="min-height:150px;" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
           <div style="margin-top:10px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px;">
              <div style="display:flex; justify-content:space-between;"><label>🔀 多重結局</label><input type="checkbox" class="story-multi-check" id="chk_${uid}" style="width:18px; height:18px;" onchange="toggleOptionsContainer('${uid}');saveCurrentChar()"></div>
              <div id="optCon_${uid}" style="display:none; margin-top:8px;"><div class="options-list"></div><button type="button" class="sec-btn" style="width:100%; font-size:0.8rem;" onclick="addOptionToStory(this)">＋ 選項</button></div>
@@ -570,7 +574,6 @@
     function estimateTextTokens(text) {
       let total = 0;
       for (const ch of text) {
-        // 簡單估算：中日韓字符約 2 token，其他約 1 token
         if (/[\u3400-\u4DBF\u4E00-\u9FFF]/.test(ch)) {
           total += 2;
         } else {
@@ -608,11 +611,10 @@
         `;
     }
 
-    /* ========= 字數統計 (修復) ========= */
+    /* ========= 字數統計 ========= */
     function updateFieldCounter(el) {
       let wrapper = el.nextElementSibling; if(!wrapper || !wrapper.classList.contains('field-utils')) return;
       const len = el.value.length; 
-      // 優先取 data-maxlength
       const max = el.getAttribute('data-maxlength') || el.getAttribute('maxlength');
       
       const counter = wrapper.querySelector('.field-counter');
@@ -625,17 +627,12 @@
     
     function setupFieldUtils(scope=document) {
        scope.querySelectorAll('textarea, input[type="text"]').forEach(el => {
-           // 排除不需要統計的
            if(el.classList.contains('tags-input') || el.nextElementSibling?.classList.contains('field-utils')) return;
-           
-           // 建立工具列
            const div = document.createElement('div'); div.className = 'field-utils';
            div.innerHTML = `<span class="field-counter">0 字</span><button type="button" class="icon-btn" title="複製" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.value);showToast('已複製')">📋</button>`;
            el.parentNode.insertBefore(div, el.nextSibling);
-           
-           // 綁定事件
            el.addEventListener('input', ()=>updateFieldCounter(el)); 
-           updateFieldCounter(el); // 初始化顯示
+           updateFieldCounter(el); 
        });
     }
     function addExtra() { addExtraWithVal('',''); }
@@ -789,7 +786,7 @@
         render();
     }
     
-    function limitText(t,m){ return t ? t.trim().slice(0,m) : ''; }
+    function limitText(t,m){ return t.trim().slice(0,m); }
     function showToast(m){ const c=document.getElementById('toastContainer'); const d=document.createElement('div'); d.className='toast'; d.textContent=m; c.appendChild(d); setTimeout(()=>{d.classList.add('fade-out'); d.addEventListener('animationend',()=>d.remove())},2000); }
     function changeTheme(t) { document.body.className=`theme-${t} layout-desktop`; }
     function setLayout(m) { document.body.classList.remove('layout-desktop','layout-mobile'); document.body.classList.add(`layout-${m}`); }
