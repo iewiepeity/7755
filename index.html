@@ -236,6 +236,7 @@
     }
     .field-counter.limit-near::before { background: #f59e0b; }
     .field-counter.limit-reach::before { background: #ef4444; }
+    .field-counter.limit-reach { color: #ef4444; font-weight: bold; }
     
     .field-copy { font-size: 0.75rem; padding: 2px 10px; border-radius: 6px; }
 
@@ -308,6 +309,7 @@
 </head>
 <body class="theme-pink layout-desktop">
 
+  <!-- 進度條 -->
   <div class="progress-header">
     <div class="progress-container">
       <div class="progress-label">設定完成度 <span id="progressText">0%</span></div>
@@ -358,6 +360,7 @@
 
     <main class="main-area">
 
+      <!-- 存檔 -->
       <div class="section" id="sec-archive">
         <h2><span>📂 角色存檔</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-archive')">⇕</button></h2>
         <div class="section-body">
@@ -378,33 +381,34 @@
         </div>
       </div>
 
+      <!-- 角色資訊 -->
       <div class="section" id="sec-info">
         <h2><span>💁‍♀️ 角色資訊</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-info')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row">
-            <label>角色名稱 *</label>
+            <label>角色名稱 * (15字)</label>
             <button type="button" class="button-mini" onclick="clearOne('charName')">清空</button>
           </div>
-          <input id="charName" type="text" placeholder="例如：林月如" oninput="updateChatPreview()" />
+          <input id="charName" type="text" data-maxlength="15" placeholder="例如：林月如" oninput="updateChatPreview()" />
 
           <div class="label-row">
              <div style="flex:1; margin-right:16px;">
-               <label>年齡</label>
-               <input id="charAge" type="text" placeholder="18歲" />
+               <label>年齡 (15字)</label>
+               <input id="charAge" type="text" data-maxlength="15" placeholder="18歲" />
             </div>
             <div style="flex:1;">
-               <label>職業</label>
-               <input id="charJob" type="text" placeholder="學生" />
+               <label>職業 (15字)</label>
+               <input id="charJob" type="text" data-maxlength="15" placeholder="學生" />
             </div>
           </div>
           <div class="label-row"><label>角色分類</label></div>
           <input id="charCategory" type="text" placeholder="現代、奇幻..." />
 
-          <div class="label-row"><label>一句話介紹 *</label></div>
-          <textarea id="charQuote" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea>
+          <div class="label-row"><label>一句話介紹 * (80字)</label></div>
+          <textarea id="charQuote" data-maxlength="80" style="min-height:80px;" placeholder="顯示在列表的短介紹"></textarea>
 
-          <div class="label-row"><label>敘述 (Description)</label></div>
-          <textarea id="charDesc" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
+          <div class="label-row"><label>敘述 (Description) (700字)</label></div>
+          <textarea id="charDesc" data-maxlength="700" placeholder="角色的外貌、氣質等詳細描寫"></textarea>
 
           <div class="label-row"><label>標籤 (輸入後按 Enter)</label></div>
           <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
@@ -412,11 +416,12 @@
           </div>
           <input type="hidden" id="charTags" />
           
-          <div class="label-row"><label>創作者筆記</label></div>
-          <textarea id="creatorNote" style="min-height:80px;"></textarea>
+          <div class="label-row"><label>創作者筆記 (200字)</label></div>
+          <textarea id="creatorNote" data-maxlength="200" style="min-height:80px;"></textarea>
         </div>
       </div>
       
+      <!-- 性別 -->
       <div class="section" id="sec-gender">
          <h2><span>🚻 性別</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-gender')">⇕</button></h2>
         <div class="section-body">
@@ -429,36 +434,40 @@
         </div>
       </div>
 
+      <!-- 基本資訊 -->
       <div class="section" id="sec-basic">
-        <h2><span>🌏 基本資訊 (世界觀)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕</button></h2>
+        <h2><span>🌏 基本資訊 (世界觀) (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-basic')">⇕</button></h2>
         <div class="section-body">
            <div class="label-row" style="justify-content:flex-end;">
               <button type="button" class="button-mini" onclick="saveTemplateFromField('basicInfo','basicInfo')">存為模板</button>
           </div>
-          <textarea id="basicInfo" placeholder="必填。世界觀、背景故事..."></textarea>
+          <textarea id="basicInfo" data-maxlength="700" placeholder="必填。世界觀、背景故事..."></textarea>
         </div>
       </div>
 
+      <!-- 性格 -->
       <div class="section" id="sec-personality">
-        <h2><span>💗 性格特質</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
+        <h2><span>💗 性格特質 (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row" style="justify-content:flex-end;">
               <button type="button" class="button-mini" onclick="saveTemplateFromField('personality','personality')">存為模板</button>
           </div>
-          <textarea id="personality" placeholder="必填。內在性格、對玩家的態度..."></textarea>
+          <textarea id="personality" data-maxlength="700" placeholder="必填。內在性格、對玩家的態度..."></textarea>
         </div>
       </div>
       
+      <!-- 說話風格 -->
       <div class="section" id="sec-speech">
-        <h2><span>🗣️ 說話風格</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
+        <h2><span>🗣️ 說話風格 (700字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row" style="justify-content:flex-end;">
               <button type="button" class="button-mini" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button>
           </div>
-          <textarea id="speechStyle" placeholder="必填。口頭禪、語氣、用詞習慣..."></textarea>
+          <textarea id="speechStyle" data-maxlength="700" placeholder="必填。口頭禪、語氣、用詞習慣..."></textarea>
         </div>
       </div>
       
+      <!-- Prompt -->
       <div class="section" id="sec-prompt">
         <h2><span>🧠 Prompt 優化</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
         <div class="section-body">
@@ -479,27 +488,28 @@
         </div>
       </div>
 
+      <!-- 開場與對話 -->
       <div class="section" id="sec-first">
-        <h2><span>🎬 開場與對話</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
+        <h2><span>🎬 開場與對話 (各800字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row"><label>第一次聊天場景 (旁白)</label></div>
-          <textarea id="firstScene" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
+          <textarea id="firstScene" data-maxlength="800" oninput="updateChatPreview()" placeholder="設定場景..."></textarea>
           <div class="label-row"><label>角色對話範例</label></div>
-          <textarea id="sampleDialogue" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
+          <textarea id="sampleDialogue" data-maxlength="800" oninput="updateChatPreview()" placeholder="角色第一句會說的話..."></textarea>
         </div>
       </div>
       
       <div class="section" id="sec-fav">
-        <h2><span>🎀 喜好與生日</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
+        <h2><span>🎀 喜好與生日 (50字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
         <div class="section-body">
-          <input id="likes" type="text" placeholder="喜歡的東西" />
-          <input id="dislikes" type="text" placeholder="討厭的東西" />
+          <input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" />
+          <input id="dislikes" type="text" data-maxlength="50" placeholder="討厭的東西" />
           <input id="birthday" type="date" />
         </div>
       </div>
       
       <div class="section" id="sec-extra">
-        <h2><span>📌 附加資訊</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
+        <h2><span>📌 附加資訊 (500字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
         <div class="section-body">
           <div id="extraContainer"></div>
           <button type="button" onclick="addExtra()">＋ 新增一筆</button>
@@ -507,13 +517,14 @@
       </div>
       
       <div class="section" id="sec-event">
-        <h2><span>📚 創作者事件</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
+        <h2><span>📚 創作者事件 (2000字)</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
         <div class="section-body">
           <div id="eventContainer"></div>
           <button type="button" onclick="addEvent()">＋ 新增事件</button>
         </div>
       </div>
 
+      <!-- 輸出預覽 -->
       <div class="section" id="sec-output">
         <h2><span>📝 輸出與預覽</span><button type="button" class="button-mini" onclick="toggleSectionCollapse('sec-output')">⇕</button></h2>
         <div class="section-body">
@@ -581,7 +592,7 @@
       initLayoutByWidth();
       loadInitialFromStore();
       setupAutoSave();
-      setupFieldUtils(); // ★★★ 關鍵修復：確保字數統計啟動
+      setupFieldUtils(); // 確保字數統計啟動
       initTagInput();
       updateProgress();
       
@@ -599,7 +610,6 @@
     }
 
     function updateFieldCounter(el) {
-      // 尋找下一個 sibling 是否是 field-utils
       let wrapper = el.nextElementSibling;
       if (!wrapper || !wrapper.classList.contains('field-utils')) return;
       
@@ -609,32 +619,27 @@
       const len = el.value ? el.value.length : 0;
       counter.textContent = `${len} 字`;
       
-      // 變色邏輯 (假設有 maxlength)
-      const max = el.getAttribute('maxlength') || el.dataset.maxlength;
+      const max = el.getAttribute('data-maxlength') || el.dataset.maxlength;
       if(max) {
          counter.textContent = `${len} / ${max}`;
-         counter.className = 'field-counter'; // 重置
+         counter.className = 'field-counter'; 
          if(len >= max) counter.classList.add('limit-reach');
          else if(len >= max * 0.9) counter.classList.add('limit-near');
       }
     }
 
     function setupFieldUtils(scope = document) {
-       // 只針對一般輸入框 (排除 hidden, radio, etc)
        const fields = scope.querySelectorAll('textarea, input[type="text"], input[type="search"]');
        fields.forEach(el => {
-           // 避免重複加入
            if(el.nextElementSibling && el.nextElementSibling.classList.contains('field-utils')) return;
            
            const wrapper = document.createElement('div');
            wrapper.className = 'field-utils';
            
-           // 字數
            const counter = document.createElement('span');
            counter.className = 'field-counter';
            counter.textContent = '0 字';
            
-           // 複製按鈕
            const copyBtn = document.createElement('button');
            copyBtn.className = 'button-mini field-copy';
            copyBtn.textContent = '複製';
@@ -648,9 +653,7 @@
            wrapper.appendChild(copyBtn);
            el.parentNode.insertBefore(wrapper, el.nextSibling);
            
-           // 綁定輸入事件更新字數
            el.addEventListener('input', () => updateFieldCounter(el));
-           // 初始化更新
            updateFieldCounter(el);
        });
     }
@@ -691,7 +694,7 @@
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                const txt = input.value.trim().replace(/^#/, ''); // 去除 #
+                const txt = input.value.trim().replace(/^#/, ''); 
                 if (txt) {
                     let tags = hiddenInput.value.split(' ').filter(t => t.trim());
                     if (!tags.includes(txt)) {
@@ -783,7 +786,7 @@
       if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show');
     });
 
-    /* ========= 資料存取 (簡化) ========= */
+    /* ========= 資料存取 ========= */
     function getStore() {
        const raw = localStorage.getItem(STORAGE_KEY);
        try { return JSON.parse(raw) || { currentId: null, chars: {}, templates: {basicInfo:[], personality:[], speechStyle:[], extra:[], event:[]} }; }
@@ -800,7 +803,6 @@
        document.querySelectorAll('input:not(.tags-input), textarea, select').forEach(el => {
            if(el.id) data.fields[el.id] = el.value;
        });
-       // 手動補上 hidden tags
        data.fields['charTags'] = document.getElementById('charTags').value;
 
        document.querySelectorAll('.extra-block').forEach(b => {
@@ -835,7 +837,7 @@
         if(data.extras) data.extras.forEach(ex => addExtraWithVal(ex.title, ex.text));
         if(data.events) data.events.forEach(ev => addEventWithVal(ev.title, ev.text));
         initTagInput(); updateChatPreview(); updateProgress(); updatePromptTokenInfo();
-        setupFieldUtils(); // 重新綁定新的動態欄位
+        setupFieldUtils();
     }
 
     /* ========= 動態欄位 ========= */
@@ -843,19 +845,19 @@
     function addExtraWithVal(title, text) {
         const div = document.createElement('div'); div.className = 'extra-block';
         div.innerHTML = `
-           <div class="label-row"><label>標題</label><input type="text" class="extra-title-field" value="${title}" oninput="saveCurrentChar()"></div>
-           <textarea class="extra-field" oninput="saveCurrentChar()">${text}</textarea>
+           <div class="label-row"><label>標題</label><input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div>
+           <textarea class="extra-field" data-maxlength="500" oninput="saveCurrentChar()">${text}</textarea>
            <div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.extra-block').remove(); saveCurrentChar();">刪除</button></div>
         `;
         document.getElementById('extraContainer').appendChild(div);
-        setupFieldUtils(div); // 為新欄位加字數統計
+        setupFieldUtils(div); 
     }
     function addEvent() { addEventWithVal('',''); }
     function addEventWithVal(title, text) {
         const div = document.createElement('div'); div.className = 'event-block';
         div.innerHTML = `
-           <div class="label-row"><label>事件標題</label><input type="text" class="event-title-field" value="${title}" oninput="saveCurrentChar()"></div>
-           <textarea class="event-field" oninput="saveCurrentChar()">${text}</textarea>
+           <div class="label-row"><label>事件標題</label><input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div>
+           <textarea class="event-field" data-maxlength="2000" oninput="saveCurrentChar()">${text}</textarea>
            <div style="text-align:right; margin-top:4px;"><button class="button-mini" onclick="this.closest('.event-block').remove(); saveCurrentChar();">刪除</button></div>
         `;
         document.getElementById('eventContainer').appendChild(div);
@@ -917,21 +919,24 @@
       const extras = getStore().chars[getStore().currentId].data.extras;
       const events = getStore().chars[getStore().currentId].data.events;
       
-      let md = `# 角色設定：${d.charName}\n\n## 基本檔案\n`;
+      let md = `# 角色設定：${limitText(d.charName, 15)}\n\n## 基本檔案\n`;
       if(d.charCategory) md += `- 分類：${d.charCategory}\n`;
       if(d.gender && d.gender !== '未設置') md += `- 性別：${d.gender}\n`;
-      if(d.charAge) md += `- 年齡：${d.charAge}\n`;
-      if(d.charJob) md += `- 職業：${d.charJob}\n`;
+      if(d.charAge) md += `- 年齡：${limitText(d.charAge, 15)}\n`;
+      if(d.charJob) md += `- 職業：${limitText(d.charJob, 15)}\n`;
       if(d.charTags) md += `- 標籤：${d.charTags.split(' ').map(t=>'#'+t).join(' ')}\n`;
+      if(d.likes) md += `- 喜歡：${limitText(d.likes, 50)}\n`;
+      if(d.dislikes) md += `- 討厭：${limitText(d.dislikes, 50)}\n`;
       
-      md += `\n## 核心設定\n### 簡介\n${d.charQuote}\n\n### 外貌與詳情\n${d.charDesc}\n\n### 性格特質\n${d.personality}\n\n`;
-      md += `## 世界觀\n${d.basicInfo}\n\n`;
-      md += `## 說話風格\n${d.speechStyle}\n\n`;
+      md += `\n## 核心設定\n### 簡介\n${limitText(d.charQuote, 80)}\n\n### 外貌與詳情\n${limitText(d.charDesc, 700)}\n\n### 性格特質\n${limitText(d.personality, 700)}\n\n`;
+      md += `## 世界觀\n${limitText(d.basicInfo, 700)}\n\n`;
+      md += `## 說話風格\n${limitText(d.speechStyle, 700)}\n\n`;
 
-      if(extras.length) { md += `## 附加設定\n`; extras.forEach((ex, i) => md += `### ${ex.title || `項目 ${i+1}`}\n${ex.text}\n\n`); }
-      if(events.length) { md += `## 關鍵事件\n`; events.forEach((ev, i) => md += `### ${ev.title || `事件 ${i+1}`}\n${ev.text}\n\n`); }
-      if(d.firstScene) md += `## 開場情境\n${d.firstScene}\n\n`;
-      if(d.sampleDialogue) md += `## 對話範例\n${d.sampleDialogue}\n\n`;
+      if(extras.length) { md += `## 附加設定\n`; extras.forEach((ex, i) => md += `### ${ex.title || `項目 ${i+1}`}\n${limitText(ex.text, 500)}\n\n`); }
+      if(events.length) { md += `## 關鍵事件\n`; events.forEach((ev, i) => md += `### ${ev.title || `事件 ${i+1}`}\n${limitText(ev.text, 2000)}\n\n`); }
+      if(d.firstScene) md += `## 開場情境\n${limitText(d.firstScene, 800)}\n\n`;
+      if(d.sampleDialogue) md += `## 對話範例\n${limitText(d.sampleDialogue, 800)}\n\n`;
+      if(d.creatorNote) md += `> 創作者筆記：${limitText(d.creatorNote, 200)}`;
       
       document.getElementById('output').textContent = md;
       scrollToSection('sec-output');
@@ -961,8 +966,8 @@
         showToast("已下載 .txt");
     }
 
-    /* ========= 模板功能 (簡化) ========= */
-    function renderTemplateManager() { /* ...保留原有邏輯即可，為了簡潔省略詳細實作... */ }
+    /* ========= 模板功能 ========= */
+    function renderTemplateManager() { /* ... */ }
     function saveTemplateFromField(type, id) { 
         const val = document.getElementById(id).value;
         if(!val) { showToast("欄位是空的", "warn"); return; }
@@ -973,8 +978,19 @@
             setStore(store); showToast("模板已儲存"); 
         }
     }
-    function applyTemplateSingle(type, id, sel) { /* ...略... */ } 
-    // (完整版請保留之前的功能，這邊重點修復了 setupFieldUtils)
+    function applyTemplateSingle(type, id, sel) { 
+        if(!sel.value) return;
+        const store = getStore();
+        const tpl = store.templates[type].find(t => t.id == sel.value);
+        if(tpl) {
+            document.getElementById(id).value = tpl.text;
+            saveCurrentChar();
+            // 手動觸發字數更新
+            updateFieldCounter(document.getElementById(id));
+            showToast("模板已套用");
+        }
+        sel.value = "";
+    }
   </script>
 </body>
 </html>
