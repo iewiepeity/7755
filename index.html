@@ -163,7 +163,7 @@
     .ai-warn { background: rgba(250,204,21,0.12); border-left: 3px solid #facc15; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; color: var(--text-main); margin-top: 10px; line-height: 1.6; }
     body.theme-black .ai-warn { background: rgba(250,204,21,0.08); }
 
-    /* 欄位 label-row 按鈕群組（✨ AI 生成 / 📋 複製） */
+    /* 欄位 label-row 按鈕群組（AI 生成 /複製） */
     .label-row { gap: 6px; flex-wrap: wrap; }
     .ai-field-btn, .copy-field-btn { border: 1px solid transparent; cursor: pointer; padding: 4px 12px; border-radius: 99px; font-size: 0.72rem; font-weight: 600; transition: all .2s ease; letter-spacing: .04em; line-height: 1.4; white-space: nowrap; font-family: inherit; }
     .ai-field-btn { background: linear-gradient(135deg, rgba(var(--focus-rgb),.12), rgba(var(--focus-rgb),.05)); border-color: rgba(var(--focus-rgb),.3); color: var(--focus-color); }
@@ -259,7 +259,7 @@
     .modal-box .mactions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
     /* ==========================================================
-     * ✦ v2 深度美化覆寫層（放在最後，優先級最高）
+     *v2 深度美化覆寫層（放在最後，優先級最高）
      * ========================================================== */
 
     /* 背景：多層漸層光斑 */
@@ -454,7 +454,7 @@
       font-variant-numeric: tabular-nums;
     }
     .field-counter.limit-reach { background: rgba(239, 68, 68, 0.14); color: #ef4444; }
-    .field-counter.limit-reach::before { content: "⚠ "; }
+    .field-counter.limit-reach::before { content: ""; }
 
     /* AI 生成 / 複製按鈕 */
     .ai-field-btn, .copy-field-btn {
@@ -700,6 +700,790 @@
       from { opacity: 0; transform: translateY(14px); }
       to { opacity: 1; transform: none; }
     }
+
+    /* ==========================================================
+     * ✦ v3 — 重新設計（移除 emoji · 文學雜誌風）
+     *  把前面所有裝飾性樣式覆寫掉，改成極簡編輯版面
+     * ========================================================== */
+
+    /* 整體：更素雅的字體，更大氣的留白 */
+    body { line-height: 1.7; letter-spacing: 0.015em; font-feature-settings: "palt" 1; }
+
+    /* 背景改為非常淡的紙質感 */
+    body {
+      background-image:
+        radial-gradient(ellipse 800px 500px at 10% 0%, rgba(var(--focus-rgb), 0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 600px 400px at 95% 95%, rgba(var(--focus-rgb), 0.04) 0%, transparent 55%) !important;
+    }
+    body.theme-black {
+      background-image:
+        radial-gradient(ellipse 800px 500px at 10% 0%, rgba(var(--focus-rgb), 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 600px 400px at 95% 95%, rgba(var(--focus-rgb), 0.06) 0%, transparent 55%) !important;
+    }
+
+    /* ── 頂部進度條：扁平 ── */
+    .progress-header {
+      padding: 12px 28px !important;
+      background: rgba(255,255,255,0.7) !important;
+      backdrop-filter: blur(18px) !important;
+      border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    body.theme-black .progress-header { background: rgba(26,26,26,0.75) !important; border-color: rgba(255,255,255,0.05) !important; }
+    .progress-label {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.7rem !important;
+      letter-spacing: 0.32em !important;
+      text-transform: uppercase;
+      font-weight: 500 !important;
+      color: var(--text-sub) !important;
+    }
+    .progress-label::before { content: "— "; opacity: 0.5; }
+    .progress-label span { color: var(--focus-color); font-weight: 700; letter-spacing: 0.1em; }
+    .progress-track {
+      height: 2px !important;
+      background: rgba(0,0,0,0.04) !important;
+      border-radius: 0 !important;
+    }
+    body.theme-black .progress-track { background: rgba(255,255,255,0.06) !important; }
+    .progress-bar {
+      background: var(--focus-color) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      animation: none !important;
+    }
+
+    /* ── 頂部 bar：magazine 風 ── */
+    .top-bar {
+      padding: 48px 28px 24px !important;
+      margin: 0 auto 30px !important;
+      border-bottom: 1px solid rgba(var(--focus-rgb), 0.12);
+      max-width: 1100px;
+      align-items: flex-end !important;
+    }
+    h1 {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 1.9rem !important;
+      letter-spacing: 0.18em !important;
+      line-height: 1.3 !important;
+      font-weight: 500 !important;
+      background: none !important;
+      -webkit-text-fill-color: var(--text-main) !important;
+      color: var(--text-main) !important;
+      filter: none !important;
+      position: relative;
+      padding-left: 0;
+    }
+    h1::before {
+      content: "CHARACTER · STUDIO";
+      display: block;
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 0.65rem !important;
+      letter-spacing: 0.4em !important;
+      color: var(--focus-color) !important;
+      margin-bottom: 10px;
+      font-weight: 700 !important;
+      -webkit-text-fill-color: var(--focus-color) !important;
+    }
+    .tagline {
+      font-size: 0.8rem !important;
+      color: var(--text-sub) !important;
+      margin-top: 10px !important;
+      letter-spacing: 0.08em !important;
+      font-style: normal !important;
+      font-weight: 400 !important;
+    }
+    .tagline::before { content: "" !important; }
+
+    /* 頂部工具列：全部扁平、等高、細框線 */
+    .top-bar > div:last-child {
+      gap: 8px !important;
+      align-items: center !important;
+    }
+    .top-bar button,
+    .top-bar select,
+    .top-bar .ai-status {
+      height: 36px !important;
+      padding: 0 18px !important;
+      font-size: 0.78rem !important;
+      letter-spacing: 0.12em !important;
+      font-weight: 500 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.22) !important;
+      color: var(--text-main) !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      text-transform: uppercase;
+      transition: all .2s ease;
+    }
+    .top-bar .main-btn {
+      background: var(--btn-bg) !important;
+      color: var(--btn-text) !important;
+      border-color: var(--btn-bg) !important;
+      font-weight: 600 !important;
+    }
+    .top-bar button:hover,
+    .top-bar select:hover {
+      border-color: var(--focus-color) !important;
+      color: var(--focus-color) !important;
+      background: transparent !important;
+    }
+    .top-bar .main-btn:hover {
+      background: color-mix(in srgb, var(--btn-bg) 80%, #000 20%) !important;
+      border-color: color-mix(in srgb, var(--btn-bg) 80%, #000 20%) !important;
+      color: var(--btn-text) !important;
+      transform: none !important;
+    }
+    .top-bar .ai-status .dot {
+      width: 6px !important;
+      height: 6px !important;
+    }
+    .theme-select select {
+      font-family: "Noto Sans TC", sans-serif;
+      letter-spacing: 0.1em !important;
+    }
+
+    /* ── Layout：像一本書的內頁 ── */
+    .layout-shell {
+      max-width: 1100px !important;
+      gap: 48px !important;
+      padding: 0 28px !important;
+      margin: 0 auto !important;
+    }
+
+    /* ── Sidebar：極簡編號清單 ── */
+    .sidebar {
+      background: transparent !important;
+      border: 0 !important;
+      border-right: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      padding: 6px 20px 6px 0 !important;
+      backdrop-filter: none !important;
+      flex: 0 0 200px !important;
+      width: 200px !important;
+    }
+    body.theme-black .sidebar { background: transparent !important; }
+    .sidebar-header {
+      border-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 20px !important;
+    }
+    .sidebar-title {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.68rem !important;
+      letter-spacing: 0.4em !important;
+      text-transform: uppercase;
+      color: var(--text-sub) !important;
+      font-weight: 600 !important;
+      border-bottom: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .sidebar-sub { display: none !important; }
+    .sidebar-header .icon-btn {
+      background: transparent !important;
+      font-size: 0.75rem !important;
+      color: var(--text-sub);
+    }
+
+    .sidebar-nav {
+      counter-reset: navcount;
+      gap: 0 !important;
+      border-top: 1px solid rgba(var(--focus-rgb), 0.1);
+      padding-top: 10px !important;
+    }
+    .sidebar-nav button {
+      counter-increment: navcount;
+      padding: 9px 4px !important;
+      font-size: 0.82rem !important;
+      font-weight: 400 !important;
+      gap: 14px !important;
+      color: var(--text-main) !important;
+      font-family: "Noto Sans TC", sans-serif;
+      letter-spacing: 0.08em;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      border-bottom: 1px solid transparent !important;
+    }
+    .sidebar-nav button::before {
+      content: counter(navcount, decimal-leading-zero) !important;
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.7rem !important;
+      color: var(--text-sub) !important;
+      letter-spacing: 0.12em !important;
+      opacity: 0.6 !important;
+      width: 24px !important;
+      height: auto !important;
+      background: none !important;
+      transform: none !important;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      border-radius: 0 !important;
+    }
+    .sidebar-nav button:hover {
+      background: transparent !important;
+      color: var(--focus-color) !important;
+      border-bottom-color: rgba(var(--focus-rgb), 0.3) !important;
+    }
+    .sidebar-nav button:hover::before {
+      color: var(--focus-color) !important;
+      opacity: 1 !important;
+    }
+    .sidebar-nav button .icon { display: none !important; }
+
+    /* ── Main area：像書頁 ── */
+    .main-area {
+      background: rgba(255,255,255,0.75) !important;
+      padding: 20px 48px 48px !important;
+      border-radius: 2px !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.08);
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.02),
+        0 20px 60px -24px rgba(var(--focus-rgb), 0.15) !important;
+    }
+    body.theme-black .main-area {
+      background: rgba(30,30,30,0.75) !important;
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    /* ── Section：用水平線分隔，不用卡片 ── */
+    .main-area { counter-reset: sectioncount; }
+    .section {
+      counter-increment: sectioncount;
+      background: transparent !important;
+      border: 0 !important;
+      border-top: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+      border-radius: 0 !important;
+      padding: 40px 0 30px !important;
+      margin-bottom: 0 !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+    .section:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .section::before { display: none !important; }
+    .section:first-of-type {
+      border-top: 0 !important;
+      padding-top: 20px !important;
+    }
+
+    /* ── H2：章節編號 + 典雅標題 ── */
+    h2 {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 1.35rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.08em !important;
+      border-bottom: 0 !important;
+      padding-bottom: 20px !important;
+      margin-bottom: 24px !important;
+      color: var(--text-main) !important;
+      display: flex !important;
+      align-items: baseline !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      position: relative;
+    }
+    h2 > span:first-child {
+      display: inline-flex !important;
+      align-items: baseline !important;
+      gap: 20px !important;
+      flex: 1;
+      position: relative;
+    }
+    h2 > span:first-child::before {
+      content: counter(sectioncount, decimal-leading-zero) !important;
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.8rem !important;
+      color: var(--focus-color) !important;
+      letter-spacing: 0.2em !important;
+      font-weight: 600 !important;
+      background: none !important;
+      width: auto !important;
+      height: auto !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      flex-shrink: 0;
+      padding: 3px 14px 3px 0 !important;
+      border-right: 1px solid rgba(var(--focus-rgb), 0.3) !important;
+      display: inline-block !important;
+      text-transform: uppercase;
+    }
+    h2 .icon-btn {
+      opacity: 0.4 !important;
+      transition: .2s !important;
+      background: none !important;
+      width: auto !important;
+      height: auto !important;
+      border-radius: 2px !important;
+      padding: 4px 10px !important;
+      font-size: 0.8rem !important;
+    }
+    h2 .icon-btn:hover {
+      opacity: 1 !important;
+      transform: none !important;
+      background: rgba(var(--focus-rgb), 0.08) !important;
+      color: var(--focus-color) !important;
+    }
+
+    /* ── H3（遊戲管理子標）── */
+    h3 {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.1em !important;
+      color: var(--text-main) !important;
+      padding-left: 12px;
+      border-left: 2px solid var(--focus-color);
+      margin: 24px 0 14px !important;
+    }
+
+    /* ── Input 扁平化 ── */
+    input[type="text"], input[type="search"], input[type="date"], input[type="number"], select, textarea, .tags-container {
+      border-radius: 2px !important;
+      border-width: 1px !important;
+      border-color: rgba(0,0,0,0.15) !important;
+      background: rgba(255,255,255,0.5) !important;
+      padding: 10px 12px !important;
+      font-size: 0.92rem !important;
+      transition: all .18s ease !important;
+    }
+    body.theme-black input,
+    body.theme-black select,
+    body.theme-black textarea,
+    body.theme-black .tags-container {
+      border-color: rgba(255,255,255,0.12) !important;
+      background: rgba(0,0,0,0.25) !important;
+    }
+    input:hover, textarea:hover, select:hover, .tags-container:hover {
+      border-color: rgba(0,0,0,0.3) !important;
+      background: #fff !important;
+    }
+    body.theme-black input:hover, body.theme-black select:hover,
+    body.theme-black textarea:hover, body.theme-black .tags-container:hover {
+      background: rgba(0,0,0,0.35) !important;
+      border-color: rgba(255,255,255,0.2) !important;
+    }
+    input:focus, textarea:focus, select:focus, .tags-container:focus-within {
+      border-color: var(--focus-color) !important;
+      background: #fff !important;
+      box-shadow: 0 0 0 2px rgba(var(--focus-rgb), 0.15) !important;
+    }
+    body.theme-black input:focus, body.theme-black select:focus,
+    body.theme-black textarea:focus, body.theme-black .tags-container:focus-within {
+      background: rgba(40,40,40,0.95) !important;
+    }
+    textarea { min-height: 110px !important; line-height: 1.75 !important; }
+
+    /* ── Label ── */
+    .label-row { margin-bottom: 8px !important; gap: 8px !important; }
+    .label-row label {
+      font-size: 0.82rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.06em !important;
+      color: var(--text-main) !important;
+      flex: 0 1 auto;
+      margin-right: auto;
+    }
+    .field-group { margin-bottom: 22px !important; }
+
+    /* ── Field utils / 字數 ── */
+    .field-utils {
+      margin-top: 6px !important;
+      padding: 4px 2px !important;
+      border-top: 1px dashed rgba(0,0,0,0.08);
+      font-size: 0.7rem !important;
+    }
+    body.theme-black .field-utils { border-top-color: rgba(255,255,255,0.06); }
+    .field-counter {
+      background: transparent !important;
+      color: var(--text-sub) !important;
+      font-weight: 400 !important;
+      padding: 0 !important;
+      font-size: 0.7rem !important;
+      letter-spacing: 0.1em !important;
+      font-variant-numeric: tabular-nums;
+    }
+    .field-counter.limit-reach {
+      background: transparent !important;
+      color: #ef4444 !important;
+      font-weight: 600 !important;
+    }
+    .field-counter.limit-reach::before { content: "" !important; }
+
+    /* ── AI / Copy 小按鈕 ── */
+    .ai-field-btn, .copy-field-btn {
+      background: transparent !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.3) !important;
+      border-radius: 0 !important;
+      padding: 3px 12px !important;
+      font-size: 0.68rem !important;
+      letter-spacing: 0.14em !important;
+      text-transform: uppercase !important;
+      font-weight: 500 !important;
+      color: var(--focus-color) !important;
+      box-shadow: none !important;
+    }
+    .copy-field-btn {
+      border-color: rgba(0,0,0,0.2) !important;
+      color: var(--text-sub) !important;
+    }
+    body.theme-black .copy-field-btn { border-color: rgba(255,255,255,0.15) !important; }
+    .ai-field-btn:hover, .copy-field-btn:hover {
+      background: var(--focus-color) !important;
+      color: var(--btn-text) !important;
+      border-color: var(--focus-color) !important;
+      transform: none !important;
+    }
+
+    /* ── 一般按鈕 ── */
+    button.main-btn {
+      background: var(--btn-bg) !important;
+      color: var(--btn-text) !important;
+      border: 1px solid var(--btn-bg) !important;
+      border-radius: 2px !important;
+      padding: 9px 24px !important;
+      font-size: 0.82rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.12em !important;
+      box-shadow: none !important;
+      text-transform: uppercase;
+      transition: all .2s ease !important;
+    }
+    button.main-btn:hover {
+      background: color-mix(in srgb, var(--btn-bg) 82%, #000 18%) !important;
+      transform: none !important;
+      box-shadow: 0 4px 14px rgba(var(--focus-rgb), 0.25) !important;
+      filter: none !important;
+    }
+    button.sec-btn {
+      background: transparent !important;
+      border: 1px solid rgba(0,0,0,0.18) !important;
+      border-radius: 2px !important;
+      padding: 7px 18px !important;
+      font-size: 0.78rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.1em !important;
+      color: var(--text-main) !important;
+      text-transform: uppercase;
+    }
+    body.theme-black button.sec-btn { border-color: rgba(255,255,255,0.15) !important; }
+    button.sec-btn:hover {
+      background: transparent !important;
+      border-color: var(--focus-color) !important;
+      color: var(--focus-color) !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ── Tabs ── */
+    .tabs-header {
+      background: transparent !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      border-bottom: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+      gap: 0 !important;
+      margin-bottom: 20px !important;
+    }
+    .tab-btn {
+      border-radius: 0 !important;
+      padding: 10px 18px !important;
+      border-bottom: 2px solid transparent !important;
+      font-weight: 500 !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.1em;
+      margin-bottom: -1px !important;
+      background: transparent !important;
+    }
+    .tab-btn.active {
+      background: transparent !important;
+      border-bottom-color: var(--focus-color) !important;
+      color: var(--focus-color) !important;
+      box-shadow: none !important;
+      font-weight: 600 !important;
+    }
+
+    /* ── Tag pill 扁平 ── */
+    .tag-pill {
+      background: transparent !important;
+      color: var(--focus-color) !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.4) !important;
+      padding: 2px 10px !important;
+      font-weight: 500 !important;
+      box-shadow: none !important;
+      border-radius: 2px !important;
+      font-size: 0.76rem !important;
+      letter-spacing: 0.04em;
+    }
+    body.theme-lemon .tag-pill { color: var(--focus-color) !important; }
+    .tag-remove { opacity: 0.7 !important; }
+
+    /* ── Story / Option card ── */
+    .story-card, .option-card {
+      background: rgba(var(--focus-rgb), 0.025) !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+      border-radius: 2px !important;
+      padding: 18px !important;
+    }
+    body.theme-black .story-card, body.theme-black .option-card {
+      background: rgba(255,255,255,0.025) !important;
+      border-color: rgba(255,255,255,0.08) !important;
+    }
+    .story-card:hover, .option-card:hover {
+      border-color: rgba(var(--focus-rgb), 0.35) !important;
+      box-shadow: none !important;
+    }
+
+    /* ── 聊天面板 ── */
+    #chatPanel {
+      border-radius: 2px !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.2) !important;
+      box-shadow: 0 24px 70px -10px rgba(0,0,0,0.25) !important;
+    }
+    .chat-panel-head {
+      padding: 14px 20px !important;
+      background: transparent !important;
+      border-bottom: 1px solid rgba(var(--focus-rgb), 0.18) !important;
+    }
+    .chat-panel-head .title {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.78rem !important;
+      letter-spacing: 0.25em !important;
+      text-transform: uppercase;
+      font-weight: 600 !important;
+    }
+    .chat-panel-head .actions button {
+      background: transparent !important;
+      font-size: 0.75rem !important;
+      letter-spacing: 0.08em;
+    }
+
+    .cmsg {
+      border-radius: 2px !important;
+      padding: 10px 14px !important;
+      font-size: 0.88rem !important;
+    }
+    .cmsg.user {
+      background: var(--focus-color) !important;
+      box-shadow: none !important;
+      border-bottom-right-radius: 2px !important;
+    }
+    .cmsg.assistant {
+      background: rgba(var(--focus-rgb), 0.06) !important;
+      border: 0 !important;
+      border-bottom-left-radius: 2px !important;
+    }
+    body.theme-black .cmsg.assistant { background: rgba(255,255,255,0.06) !important; }
+    .cmsg.sys {
+      border: 1px dashed rgba(var(--focus-rgb), 0.25) !important;
+      background: transparent !important;
+    }
+
+    .chat-quick {
+      padding: 10px 14px !important;
+      border-top: 1px dashed rgba(var(--focus-rgb), 0.12);
+      gap: 6px !important;
+    }
+    .chat-quick button {
+      border-radius: 2px !important;
+      padding: 4px 12px !important;
+      letter-spacing: 0.1em !important;
+      font-size: 0.68rem !important;
+      background: transparent !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.3) !important;
+      color: var(--focus-color) !important;
+      text-transform: uppercase;
+    }
+    .chat-quick button:hover {
+      background: var(--focus-color) !important;
+      color: var(--btn-text) !important;
+      transform: none !important;
+    }
+
+    .chat-panel-foot { padding: 12px !important; border-top: 1px solid rgba(var(--focus-rgb), 0.15) !important; }
+    .chat-panel-foot textarea {
+      border-radius: 2px !important;
+      background: transparent !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.2) !important;
+    }
+    .chat-panel-foot .send {
+      border-radius: 2px !important;
+      background: var(--btn-bg) !important;
+      font-size: 0.78rem !important;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 16px !important;
+    }
+
+    /* ── 聊天 FAB 文字版 ── */
+    #chatFab {
+      width: auto !important;
+      min-width: 88px;
+      height: 42px !important;
+      padding: 0 22px !important;
+      border-radius: 2px !important;
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.78rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.35em !important;
+      background: var(--btn-bg) !important;
+      color: var(--btn-text) !important;
+      box-shadow: 0 8px 24px rgba(var(--focus-rgb), 0.35) !important;
+      right: 28px !important;
+      bottom: 28px !important;
+      padding-left: 28px !important;
+      padding-right: 20px !important;
+    }
+    #chatFab:hover {
+      transform: translateY(-2px) !important;
+      background: color-mix(in srgb, var(--btn-bg) 82%, #000 18%) !important;
+      box-shadow: 0 12px 30px rgba(var(--focus-rgb), 0.45) !important;
+    }
+
+    /* ── Modal ── */
+    .modal-box {
+      border-radius: 2px !important;
+      padding: 36px 40px !important;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.3) !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+    }
+    .modal-box h3 {
+      font-size: 1.1rem !important;
+      letter-spacing: 0.15em !important;
+      text-transform: uppercase;
+      border-left: 0 !important;
+      padding-left: 0 !important;
+      margin-bottom: 12px !important;
+    }
+    .modal-box textarea {
+      border-radius: 2px !important;
+      border: 1px solid rgba(0,0,0,0.15) !important;
+    }
+
+    /* ── AI 設定 mode-switch：下劃線風 ── */
+    .mode-switch {
+      background: transparent !important;
+      border: 0 !important;
+      border-bottom: 1px solid rgba(var(--focus-rgb), 0.15) !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      display: inline-flex !important;
+      width: fit-content;
+    }
+    .mode-switch button {
+      background: transparent !important;
+      border: 0 !important;
+      border-bottom: 2px solid transparent !important;
+      border-radius: 0 !important;
+      padding: 10px 20px !important;
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.1em !important;
+      margin-bottom: -1px !important;
+      color: var(--text-sub) !important;
+      font-weight: 500 !important;
+      box-shadow: none !important;
+    }
+    .mode-switch button.on {
+      background: transparent !important;
+      border-bottom-color: var(--focus-color) !important;
+      color: var(--focus-color) !important;
+      box-shadow: none !important;
+      font-weight: 700 !important;
+    }
+
+    /* ── AI 警告 / 說明區 ── */
+    .ai-warn {
+      background: transparent !important;
+      border: 0 !important;
+      border-left: 2px solid var(--focus-color) !important;
+      padding: 10px 14px !important;
+      border-radius: 0 !important;
+      font-size: 0.78rem !important;
+      line-height: 1.7 !important;
+      color: var(--text-sub) !important;
+    }
+    #ai-settings-panel .section {
+      border: 1px solid rgba(var(--focus-rgb), 0.2) !important;
+      background: rgba(255,255,255,0.85) !important;
+    }
+    body.theme-black #ai-settings-panel .section { background: rgba(30,30,30,0.85) !important; }
+
+    /* ── 聊天預覽（原本的 chat-container）── */
+    .chat-container {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2) !important;
+      border-radius: 2px !important;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── 角色列表按鈕（存檔管理）── */
+    #charList button {
+      border-radius: 2px !important;
+      padding: 6px 16px !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Back to top ── */
+    #backToTopBtn {
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 2px !important;
+      background: var(--btn-bg) !important;
+      box-shadow: 0 6px 18px rgba(var(--focus-rgb), 0.3) !important;
+      font-size: 0.85rem !important;
+      right: 28px !important;
+      bottom: 82px !important;
+    }
+
+    /* ── scrollbar ── */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(var(--focus-rgb), 0.2);
+      border-radius: 0;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(var(--focus-rgb), 0.4);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      border-radius: 2px !important;
+      padding: 8px 20px !important;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.06em !important;
+      background: var(--text-main) !important;
+      color: var(--page-bg) !important;
+    }
+
+    /* ── Token Info Box ── */
+    #promptTokenInfo {
+      font-family: "Noto Sans TC", sans-serif;
+      letter-spacing: 0.03em;
+    }
+    #promptTokenInfo strong {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+
+    /* ── 響應式 ── */
+    @media (max-width: 850px) {
+      h1 { font-size: 1.5rem !important; }
+      .top-bar { padding: 24px 20px 18px !important; }
+      .main-area { padding: 20px 20px 30px !important; }
+      .layout-shell { gap: 20px !important; padding: 0 16px !important; }
+      .section { padding: 30px 0 24px !important; }
+      h2 { font-size: 1.15rem !important; }
+      #chatFab { min-width: 72px; padding: 0 16px !important; font-size: 0.7rem !important; letter-spacing: 0.25em !important; }
+    }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -714,25 +1498,25 @@
 
   <div class="top-bar">
     <div>
-      <h1>卿卿我我創角小幫手💕 </h1>
+      <h1>卿卿我我創角小幫手</h1>
       <div class="tagline">透過網頁設定你的角色 · 內建 AI 討論 &amp; 一鍵生成</div>
     </div>
     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
       <button class="ai-status" id="aiStatus" onclick="toggleAiSettings()" title="點擊設定 API Key">
         <span class="dot"></span><span id="aiStatusText">AI 未連線</span>
       </button>
-      <button class="main-btn" onclick="openFullGenModal()" title="讓 AI 一鍵生成整個角色">🎲 全角生成</button>
-      <button class="sec-btn" onclick="copyForExternalAi()" title="複製角色快照 + 提示詞，貼到 Claude Code / ChatGPT 討論">📋 複製給外部 AI</button>
+      <button class="main-btn" onclick="openFullGenModal()" title="讓 AI 一鍵生成整個角色">全角生成</button>
+      <button class="sec-btn" onclick="copyForExternalAi()" title="複製角色快照 + 提示詞，貼到 Claude Code / ChatGPT 討論">複製給外部 AI</button>
       <div class="theme-select">
         <select onchange="changeTheme(this.value)" style="padding:6px 10px; border-radius:99px; border:1px solid var(--border-color); cursor:pointer;">
-          <option value="pink" selected>🌸 櫻花粉</option>
-          <option value="cream">🍞 奶油白</option>
-          <option value="mint">🌿 薄荷綠</option>
-          <option value="lavender">🔮 薰衣草</option>
-          <option value="sky">☁️ 天空藍</option>
-          <option value="lemon">🍋 檸檬黃</option>
-          <option value="grey">🌫️ 極簡灰</option>
-          <option value="black">🌙 深夜黑</option>
+          <option value="pink" selected>櫻花粉</option>
+          <option value="cream">奶油白</option>
+          <option value="mint">薄荷綠</option>
+          <option value="lavender">薰衣草</option>
+          <option value="sky">天空藍</option>
+          <option value="lemon">檸檬黃</option>
+          <option value="grey">極簡灰</option>
+          <option value="black">深夜黑</option>
         </select>
       </div>
     </div>
@@ -741,13 +1525,13 @@
   <!-- AI 設定面板（預設隱藏，點狀態燈展開） -->
   <div id="ai-settings-panel" hidden>
     <div class="section">
-      <h2><span>🤖 AI 設定</span><button class="icon-btn" onclick="toggleAiSettings()">✕</button></h2>
+      <h2><span>AI 設定</span><button class="icon-btn" onclick="toggleAiSettings()">✕</button></h2>
       <div class="section-body">
         <div class="field-group">
           <label style="margin-bottom:6px;">AI 提供者</label>
           <div class="mode-switch" style="display:inline-flex;">
-            <button type="button" id="provClaude" onclick="setProvider('claude')">🤖 Claude</button>
-            <button type="button" id="provGemini" onclick="setProvider('gemini')" class="on">✨ Gemini（免費）</button>
+            <button type="button" id="provClaude" onclick="setProvider('claude')">Claude</button>
+            <button type="button" id="provGemini" onclick="setProvider('gemini')" class="on">Gemini（免費）</button>
           </div>
         </div>
 
@@ -769,8 +1553,8 @@
             </select>
           </div>
           <div class="ai-warn">
-            ⚠️ Claude API 需先在 Anthropic Console 儲值（最少 $5）才能使用<br>
-            🔒 API Key 只存你瀏覽器的 localStorage，不會上傳第三方
+           Claude API 需先在 Anthropic Console 儲值（最少 $5）才能使用<br>
+           API Key 只存你瀏覽器的 localStorage，不會上傳第三方
           </div>
         </div>
 
@@ -793,14 +1577,14 @@
             </select>
           </div>
           <div class="ai-warn">
-            ✨ Gemini 免費層每天都有額度，只要 Google 帳號、不用信用卡<br>
-            🔒 API Key 只存你瀏覽器的 localStorage，不會上傳第三方
+           Gemini 免費層每天都有額度，只要 Google 帳號、不用信用卡<br>
+           API Key 只存你瀏覽器的 localStorage，不會上傳第三方
           </div>
         </div>
 
         <div style="display:flex; gap:8px; margin-top:14px;">
-          <button class="main-btn" onclick="saveAiSettings()">💾 儲存</button>
-          <button class="sec-btn" onclick="testAiConnection()">🔌 測試連線</button>
+          <button class="main-btn" onclick="saveAiSettings()">儲存</button>
+          <button class="sec-btn" onclick="testAiConnection()">測試連線</button>
           <button class="sec-btn" style="margin-left:auto; color:#ef4444; border-color:#fca5a5;" onclick="clearApiKey()">清除當前 Key</button>
         </div>
       </div>
@@ -810,20 +1594,20 @@
   <div class="layout-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-title">📎 功能導航</div>
+        <div class="sidebar-title">功能導航</div>
         <button class="icon-btn" onclick="toggleSidebar()">◀</button>
       </div>
       <div class="sidebar-sub" style="margin-bottom:10px;">點擊快速跳轉</div>
       <nav class="sidebar-nav">
-        <button onclick="scrollToSection('sec-archive')"><span class="icon">📂</span><span class="text">存檔管理</span></button>
-        <button onclick="scrollToSection('sec-info')"><span class="icon">💁‍♀️</span><span class="text">角色資訊</span></button>
-        <button onclick="scrollToSection('sec-basic')"><span class="icon">🌏</span><span class="text">基本資訊</span></button>
-        <button onclick="scrollToSection('sec-personality')"><span class="icon">💗</span><span class="text">性格特質</span></button>
-        <button onclick="scrollToSection('sec-speech')"><span class="icon">🗣️</span><span class="text">說話風格</span></button>
-        <button onclick="scrollToSection('sec-prompt')"><span class="icon">🧠</span><span class="text">Prompt</span></button>
-        <button onclick="scrollToSection('sec-game-mgr')"><span class="icon">🎮</span><span class="text">遊戲管理</span></button>
-        <button onclick="scrollToSection('sec-first')"><span class="icon">🎬</span><span class="text">開場對話</span></button>
-        <button onclick="scrollToSection('sec-output')"><span class="icon">📝</span><span class="text">輸出預覽</span></button>
+        <button onclick="scrollToSection('sec-archive')"><span class="icon"></span><span class="text">存檔管理</span></button>
+        <button onclick="scrollToSection('sec-info')"><span class="icon"></span><span class="text">角色資訊</span></button>
+        <button onclick="scrollToSection('sec-basic')"><span class="icon"></span><span class="text">基本資訊</span></button>
+        <button onclick="scrollToSection('sec-personality')"><span class="icon"></span><span class="text">性格特質</span></button>
+        <button onclick="scrollToSection('sec-speech')"><span class="icon"></span><span class="text">說話風格</span></button>
+        <button onclick="scrollToSection('sec-prompt')"><span class="icon"></span><span class="text">Prompt</span></button>
+        <button onclick="scrollToSection('sec-game-mgr')"><span class="icon"></span><span class="text">遊戲管理</span></button>
+        <button onclick="scrollToSection('sec-first')"><span class="icon"></span><span class="text">開場對話</span></button>
+        <button onclick="scrollToSection('sec-output')"><span class="icon"></span><span class="text">輸出預覽</span></button>
       </nav>
     </aside>
 
@@ -831,7 +1615,7 @@
 
       <!-- 存檔區 -->
       <div class="section" id="sec-archive">
-        <h2><span>📂 角色存檔</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-archive')">⇕</button></h2>
+        <h2><span>角色存檔</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-archive')">⇕</button></h2>
         <div class="section-body">
           <div class="label-row">
              <div style="flex:1; margin-right:12px;"><select id="filterCategory" onchange="refreshCharListFromStorage()"><option value="">全部分類</option></select></div>
@@ -839,9 +1623,9 @@
           </div>
           <div id="charList" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; min-height:40px;"></div>
           <div style="margin-top:20px; padding-top:20px; border-top:1px dashed var(--border-color); display:flex; gap:10px;">
-            <button class="main-btn" onclick="newCharacter()">➕ 新角色</button>
-            <button class="main-btn" onclick="saveCurrentChar()">💾 儲存</button>
-            <button class="sec-btn" onclick="deleteCurrentChar()" style="margin-left:auto; color:#ef4444; border-color:#fca5a5;">🗑 刪除</button>
+            <button class="main-btn" onclick="newCharacter()">新角色</button>
+            <button class="main-btn" onclick="saveCurrentChar()">儲存</button>
+            <button class="sec-btn" onclick="deleteCurrentChar()" style="margin-left:auto; color:#ef4444; border-color:#fca5a5;">刪除</button>
           </div>
         </div>
       </div>
@@ -849,14 +1633,14 @@
       <!-- 角色資訊 -->
       <div class="section" id="sec-info">
         <h2>
-          <span>💁‍♀️ 角色資訊</span>
+          <span>角色資訊</span>
           <button class="icon-btn" onclick="toggleSectionCollapse('sec-info')">⇕</button>
         </h2>
         <div class="section-body">
           <div class="field-group">
             <div class="label-row">
                 <label>角色名稱 <span style="color:red">*</span> (15字)</label>
-                <button class="icon-btn" onclick="clearOne('charName')" title="清空">🗑️</button>
+                <button class="icon-btn" onclick="clearOne('charName')" title="清空"></button>
             </div>
             <input id="charName" type="text" data-maxlength="15" placeholder="例如：林月如" oninput="updateChatPreview()" />
           </div>
@@ -907,7 +1691,7 @@
       </div>
       
       <div class="section" id="sec-gender">
-         <h2><span>🚻 性別</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-gender')">⇕</button></h2>
+         <h2><span>性別</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-gender')">⇕</button></h2>
         <div class="section-body">
           <select id="gender"><option value="未設置" selected>未設置</option><option value="男性">男性</option><option value="女性">女性</option><option value="無性別">無性別</option></select>
         </div>
@@ -916,7 +1700,7 @@
       <!-- 核心設定 -->
       <div class="section" id="sec-basic">
         <h2>
-            <span>🌏 基本資訊 (700字)</span>
+            <span>基本資訊 (700字)</span>
             <button class="icon-btn" onclick="toggleSectionCollapse('sec-basic')">⇕</button>
         </h2>
         <div class="section-body">
@@ -927,7 +1711,7 @@
 
       <div class="section" id="sec-personality">
         <h2>
-            <span>💗 性格特質 (700字)</span>
+            <span>性格特質 (700字)</span>
             <button class="icon-btn" onclick="toggleSectionCollapse('sec-personality')">⇕</button></h2>
         <div class="section-body">
           <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('personality','personality')">存為模板</button></div>
@@ -937,7 +1721,7 @@
       
       <div class="section" id="sec-speech">
         <h2>
-            <span>🗣️ 說話風格 (700字)</span>
+            <span>說話風格 (700字)</span>
             <button class="icon-btn" onclick="toggleSectionCollapse('sec-speech')">⇕</button></h2>
         <div class="section-body">
           <div style="text-align:right; margin-bottom:6px;"><button class="sec-btn" style="font-size:0.75rem; padding:2px 10px;" onclick="saveTemplateFromField('speechStyle','speechStyle')">存為模板</button></div>
@@ -946,7 +1730,7 @@
       </div>
       
       <div class="section" id="sec-prompt">
-        <h2><span>🧠 Prompt 優化</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
+        <h2><span>Prompt 優化</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-prompt')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group">
               <label style="margin-bottom:6px;">使用模型</label>
@@ -979,7 +1763,7 @@
       <!-- 遊戲管理 -->
       <div class="section" id="sec-game-mgr">
         <h2>
-            <span>🎮 遊戲管理</span>
+            <span>遊戲管理</span>
             <button class="icon-btn" onclick="toggleSectionCollapse('sec-game-mgr')">⇕</button>
         </h2>
         <div class="section-body">
@@ -1006,7 +1790,7 @@
       </div>
 
       <div class="section" id="sec-first">
-        <h2><span>🎬 開場與對話 (800字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
+        <h2><span>開場與對話 (800字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-first')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group">
               <div class="label-row">
@@ -1025,7 +1809,7 @@
       
       <div class="section" id="sec-fav">
         <h2>
-            <span>🎀 喜好與生日 (50字)</span>
+            <span>喜好與生日 (50字)</span>
             <button class="icon-btn" onclick="toggleSectionCollapse('sec-fav')">⇕</button></h2>
         <div class="section-body">
           <div class="field-group"><input id="likes" type="text" data-maxlength="50" placeholder="喜歡的東西" /></div>
@@ -1035,7 +1819,7 @@
       </div>
       
       <div class="section" id="sec-extra">
-        <h2><span>📌 附加資訊 (500字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
+        <h2><span>附加資訊 (500字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-extra')">⇕</button></h2>
         <div class="section-body">
             <div id="extraContainer"></div>
             <button class="sec-btn" onclick="addExtra()">＋ 新增一筆</button>
@@ -1043,7 +1827,7 @@
       </div>
       
       <div class="section" id="sec-event">
-        <h2><span>📚 創作者事件 (2000字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
+        <h2><span>創作者事件 (2000字)</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-event')">⇕</button></h2>
         <div class="section-body">
             <div id="eventContainer"></div>
             <button class="sec-btn" onclick="addEvent()">＋ 新增事件</button>
@@ -1051,10 +1835,10 @@
       </div>
 
       <div class="section" id="sec-output">
-        <h2><span>📝 輸出與預覽</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-output')">⇕</button></h2>
+        <h2><span>輸出與預覽</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-output')">⇕</button></h2>
         <div class="section-body">
            <div style="display:flex; justify-content:center; margin-bottom:30px;">
-             <button class="main-btn" style="width:100%; font-size:1.1rem;" onclick="generateMarkdown()">✨ 生成 Markdown 腳本</button>
+             <button class="main-btn" style="width:100%; font-size:1.1rem;" onclick="generateMarkdown()">生成 Markdown 腳本</button>
            </div>
            <div class="chat-container">
             <div class="chat-header"><span id="chatHeaderName">角色名稱</span></div>
@@ -1064,11 +1848,11 @@
             </div>
           </div>
           <div style="margin-top:30px; display:flex; gap:10px; flex-wrap:wrap;">
-             <button class="main-btn" style="background:#4b5563;" onclick="saveSelfHtml()">💾 儲存為獨立 App 檔 (推薦)</button>
+             <button class="main-btn" style="background:#4b5563;" onclick="saveSelfHtml()">儲存為獨立 App 檔 (推薦)</button>
              <button class="sec-btn" onclick="downloadTxt()">⬇ 下載 .txt</button>
-             <button class="sec-btn" onclick="exportAllData()">📦 備份 JSON</button>
+             <button class="sec-btn" onclick="exportAllData()">備份 JSON</button>
              <label class="sec-btn" style="cursor:pointer; display:flex; align-items:center; margin:0;">
-                📂 匯入<input id="allFile" type="file" accept=".json,.html" style="display:none;" onchange="importAllData()" />
+               匯入<input id="allFile" type="file" accept=".json,.html" style="display:none;" onchange="importAllData()" />
              </label>
           </div>
           <div id="output"></div>
@@ -1076,13 +1860,13 @@
       </div>
       
       <div class="section" id="sec-template-center">
-        <h2><span>🧰 模板管理</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-template-center')">⇕</button></h2>
+        <h2><span>模板管理</span><button class="icon-btn" onclick="toggleSectionCollapse('sec-template-center')">⇕</button></h2>
         <div class="section-body"><select id="tplFilter" onchange="renderTemplateManager()"><option value="">全部類型</option></select><div id="tplManagerList" style="margin-top:16px;"></div></div>
       </div>
       
       <div class="section" id="sec-layout">
-        <h2><span>📱 版面切換</span></h2>
-        <div class="section-body"><div style="display:flex; gap:10px;"><button class="sec-btn" onclick="setLayout('desktop')">💻 電腦版</button><button class="sec-btn" onclick="setLayout('mobile')">📱 手機版</button></div></div>
+        <h2><span>版面切換</span></h2>
+        <div class="section-body"><div style="display:flex; gap:10px;"><button class="sec-btn" onclick="setLayout('desktop')">電腦版</button><button class="sec-btn" onclick="setLayout('mobile')">手機版</button></div></div>
       </div>
     </main>
   </div>
@@ -1090,23 +1874,23 @@
   <button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
 
   <!-- 浮動聊天球 -->
-  <button type="button" id="chatFab" onclick="toggleChat()" title="跟 Claude 討論角色設定">💬</button>
+  <button type="button" id="chatFab" onclick="toggleChat()" title="跟 Claude 討論角色設定">對話</button>
 
   <!-- 聊天面板 -->
   <div id="chatPanel">
     <div class="chat-panel-head">
-      <div class="title">💫 Claude 創角助理</div>
+      <div class="title">Claude 創角助理</div>
       <div class="actions">
-        <button onclick="clearChat()" title="清空對話">🗑</button>
+        <button onclick="clearChat()" title="清空對話"></button>
         <button onclick="toggleChat()" title="關閉">✕</button>
       </div>
     </div>
     <div class="chat-panel-body" id="chatBody"></div>
     <div class="chat-quick" id="chatQuick">
-      <button onclick="quickAsk('幫我想三個能配這個角色的名字')">💡 想名字</button>
-      <button onclick="quickAsk('根據我現在填的資料，這個角色有什麼地方矛盾或可以補強？')">🔍 檢查角色</button>
-      <button onclick="quickAsk('幫我腦力激盪五個好玩的事件')">✨ 腦力激盪</button>
-      <button onclick="quickAsk('幫我把目前的角色寫成一段 100 字的介紹')">📝 快速介紹</button>
+      <button onclick="quickAsk('幫我想三個能配這個角色的名字')">想名字</button>
+      <button onclick="quickAsk('根據我現在填的資料，這個角色有什麼地方矛盾或可以補強？')">檢查角色</button>
+      <button onclick="quickAsk('幫我腦力激盪五個好玩的事件')">腦力激盪</button>
+      <button onclick="quickAsk('幫我把目前的角色寫成一段 100 字的介紹')">快速介紹</button>
     </div>
     <div class="chat-panel-foot">
       <textarea id="chatInput" placeholder="跟 Claude 討論角色設定…（Enter 送出、Shift+Enter 換行）" rows="1"></textarea>
@@ -1117,12 +1901,12 @@
   <!-- 全角生成 Modal -->
   <div class="modal-bg" id="fullGenModal">
     <div class="modal-box">
-      <h3>🎲 全角一鍵生成</h3>
+      <h3>全角一鍵生成</h3>
       <p>描述你想要的角色方向，Claude 會自動填入所有欄位（基本資訊、性格、說話風格、開場對話等），你再逐欄微調。</p>
       <textarea id="fullGenPrompt" placeholder="例：一個古代朝廷的年輕權臣，表面冷峻話少、對玩家有佔有慾但不說出口；世界觀是北宋架空朝堂；想要虐戀主調、慢熱線。"></textarea>
       <div class="mactions">
         <button class="sec-btn" onclick="closeFullGenModal()">取消</button>
-        <button class="main-btn" id="fullGenRunBtn" onclick="runFullGen()">✨ 開始生成</button>
+        <button class="main-btn" id="fullGenRunBtn" onclick="runFullGen()">開始生成</button>
       </div>
     </div>
   </div>
@@ -1234,7 +2018,7 @@
         const list = document.getElementById(`storyList_${idx}`); const div = document.createElement('div'); div.className = 'story-card';
         const uid = Date.now() + Math.random().toString(36).substr(2,9);
         div.innerHTML = `
-          <div class="story-card-header"><span>故事設定</span><button type="button" class="icon-btn" style="color:#ef4444;" onclick="if(confirm('刪除?')){this.closest('.story-card').remove();saveCurrentChar();}">🗑️</button></div>
+          <div class="story-card-header"><span>故事設定</span><button type="button" class="icon-btn" style="color:#ef4444;" onclick="if(confirm('刪除?')){this.closest('.story-card').remove();saveCurrentChar();}"></button></div>
           <div class="label-row" style="background:rgba(var(--focus-rgb),0.05); padding:8px; border-radius:8px; margin-bottom:12px;">
               <div style="flex:1;"><label>等級</label><select class="story-age" onchange="saveCurrentChar()"><option value="all" ${d?.ageRating==='all'?'selected':''}>全齡</option><option value="adult" ${d?.ageRating==='adult'?'selected':''}>成人限定</option></select></div>
               <div style="flex:1; margin-left:8px;"><label>付費</label><select class="story-public" onchange="saveCurrentChar()"><option value="free" ${d?.publicSetting==='free'?'selected':''}>免費</option><option value="paid" ${d?.publicSetting==='paid'?'selected':''}>付費</option></select></div>
@@ -1243,7 +2027,7 @@
           <div class="field-group"><label>標題 (30字)</label><input type="text" class="story-title" data-maxlength="30" value="${d?.title||''}" oninput="saveCurrentChar()"></div>
           <div class="field-group"><label>內容 (2000字)</label><textarea class="story-content" data-maxlength="2000" style="min-height:150px;" oninput="saveCurrentChar()">${d?.content||''}</textarea></div>
           <div style="margin-top:10px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px;">
-             <div style="display:flex; justify-content:space-between;"><label>🔀 多重結局</label><input type="checkbox" class="story-multi-check" id="chk_${uid}" style="width:18px; height:18px;" onchange="toggleOptionsContainer('${uid}');saveCurrentChar()"></div>
+             <div style="display:flex; justify-content:space-between;"><label>多重結局</label><input type="checkbox" class="story-multi-check" id="chk_${uid}" style="width:18px; height:18px;" onchange="toggleOptionsContainer('${uid}');saveCurrentChar()"></div>
              <div id="optCon_${uid}" style="display:none; margin-top:8px;"><div class="options-list"></div><button type="button" class="sec-btn" style="width:100%; font-size:0.8rem;" onclick="addOptionToStory(this)">＋ 選項</button></div>
           </div>`;
         list.appendChild(div);
@@ -1327,18 +2111,18 @@
              el.addEventListener('input', ()=>updateFieldCounter(el));
            }
            updateFieldCounter(el);
-           // 在 label-row 放「📋 複製」按鈕（醒目樣式）
+           // 在 label-row 放「複製」按鈕（醒目樣式）
            const labelRow = el.closest('.field-group, .label-row')?.querySelector('.label-row') || el.closest('.label-row');
            if (labelRow && !labelRow.querySelector('.copy-field-btn')) {
              const btn = document.createElement('button');
              btn.type = 'button';
              btn.className = 'copy-field-btn';
              btn.title = '複製這一欄的內容';
-             btn.innerHTML = '📋 複製';
+             btn.innerHTML = '複製';
              btn.onclick = () => {
                const v = el.value || '';
                if (!v) { showToast('欄位是空的'); return; }
-               navigator.clipboard.writeText(v).then(() => showToast('✅ 已複製：' + v.slice(0, 20) + (v.length > 20 ? '…' : '')));
+               navigator.clipboard.writeText(v).then(() => showToast('已複製：' + v.slice(0, 20) + (v.length > 20 ? '…' : '')));
              };
              labelRow.appendChild(btn);
            }
@@ -1346,7 +2130,7 @@
     }
 
     /* =======================================================
-     * 📋 一鍵複製角色狀態給外部 AI（Claude Code / ChatGPT 等）
+     *一鍵複製角色狀態給外部 AI（Claude Code / ChatGPT 等）
      * ======================================================= */
     function buildExternalPrompt() {
       saveCurrentChar();
@@ -1406,7 +2190,7 @@
     function copyForExternalAi() {
       const md = buildExternalPrompt();
       navigator.clipboard.writeText(md).then(() => {
-        showToast('✅ 已複製！貼到 Claude Code / ChatGPT / Gemini 即可開始討論');
+        showToast('已複製！貼到 Claude Code / ChatGPT / Gemini 即可開始討論');
       }).catch(() => {
         showToast('複製失敗，請手動全選複製');
       });
@@ -1414,13 +2198,13 @@
     function addExtra() { addExtraWithVal('',''); }
     function addExtraWithVal(title, text) {
         const div = document.createElement('div'); div.className = 'field-group extra-block';
-        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="extra-field" data-maxlength="500" placeholder="內容(500字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.extra-block').remove();saveCurrentChar()">🗑️ 刪除</button></div>`;
+        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="extra-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="extra-field" data-maxlength="500" placeholder="內容(500字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.extra-block').remove();saveCurrentChar()">刪除</button></div>`;
         document.getElementById('extraContainer').appendChild(div); setupFieldUtils(div);
     }
     function addEvent() { addEventWithVal('',''); }
     function addEventWithVal(title, text) {
         const div = document.createElement('div'); div.className = 'field-group event-block';
-        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="event-field" data-maxlength="2000" placeholder="內容(2000字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.event-block').remove();saveCurrentChar()">🗑️ 刪除</button></div>`;
+        div.innerHTML = `<div class="label-row"><label>標題 (50字)</label><input type="text" class="event-title-field" data-maxlength="50" value="${title}" oninput="saveCurrentChar()"></div><textarea class="event-field" data-maxlength="2000" placeholder="內容(2000字)" oninput="saveCurrentChar()">${text}</textarea><div style="text-align:right;"><button class="icon-btn" style="display:inline-flex;" onclick="this.closest('.event-block').remove();saveCurrentChar()">刪除</button></div>`;
         document.getElementById('eventContainer').appendChild(div); setupFieldUtils(div);
     }
 
@@ -1630,7 +2414,7 @@
     }
 
     /* =======================================================
-     * ✨ AI 互動功能：Claude + Gemini 雙提供者、聊天、欄位生成、全角生成
+     *AI 互動功能：Claude + Gemini 雙提供者、聊天、欄位生成、全角生成
      * ======================================================= */
     const AI_SETTINGS_STORAGE = 'qing_ai_settings_v2';
     const AI_CHAT_STORAGE = 'qing_ai_chat_v1';
@@ -1687,7 +2471,7 @@
       saveAiSettingsSilent();
       refreshAiStatus();
       const curKey = currentKey();
-      showToast(curKey ? `✅ 已儲存（${aiState.provider === 'gemini' ? 'Gemini' : 'Claude'}）` : '已儲存（無 Key）');
+      showToast(curKey ? `已儲存（${aiState.provider === 'gemini' ? 'Gemini' : 'Claude'}）` : '已儲存（無 Key）');
       if (curKey) toggleAiSettings();
     }
     function clearApiKey() {
@@ -1719,9 +2503,9 @@
       refreshAiStatus(true);
       try {
         const r = await callAi([{ role: 'user', content: '回一個字「好」確認連線' }], { maxTokens: 20 });
-        showToast('✅ 連線成功：' + r.slice(0, 30));
+        showToast('連線成功：' + r.slice(0, 30));
       } catch (e) {
-        showToast('❌ 連線失敗：' + e.message);
+        showToast('連線失敗：' + e.message);
       } finally {
         refreshAiStatus();
       }
@@ -1800,7 +2584,7 @@
       document.getElementById('chatPanel').classList.toggle('on', aiState.chatOpen);
       if (aiState.chatOpen) {
         if (aiState.messages.length === 0) {
-          addSysMsg('嗨 👋 我是創角助理。我能看到你目前填在頁面上的所有欄位——可以請我：想名字、檢查矛盾、腦力激盪事件、擴寫性格段落，或任何關於這個角色的問題。');
+          addSysMsg('嗨我是創角助理。我能看到你目前填在頁面上的所有欄位——可以請我：想名字、檢查矛盾、腦力激盪事件、擴寫性格段落，或任何關於這個角色的問題。');
         }
         renderChatHistory();
         document.getElementById('chatInput').focus();
@@ -1868,7 +2652,7 @@
         pendingDom.textContent = reply;
       } catch (e) {
         pendingDom.remove();
-        appendMsgDom('system', '⚠️ 失敗：' + e.message);
+        appendMsgDom('system', '失敗：' + e.message);
         aiState.messages.pop();
       } finally {
         sendBtn.disabled = false; sendBtn.textContent = '送出';
@@ -1911,8 +2695,8 @@ ${JSON.stringify(snapshot, null, 2)}
       return s;
     }
 
-    /* --- 欄位 ✨ AI 生成按鈕 --- */
-    /* 哪些欄位要加 ✨ 按鈕：文字量較大的 textarea */
+    /* --- 欄位AI 生成按鈕 --- */
+    /* 哪些欄位要加按鈕：文字量較大的 textarea */
     const AI_FIELDS = {
       charQuote: { label: '一句話介紹', prompt: '請幫我寫一句 60 字內的角色介紹，吸引人、點出特色。' },
       charDesc: { label: '外貌敘述', prompt: '請幫我擴寫角色的外貌與氣質，約 400-600 字，散文筆法。' },
@@ -1935,7 +2719,7 @@ ${JSON.stringify(snapshot, null, 2)}
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'ai-field-btn';
-        btn.innerHTML = '✨ AI 生成';
+        btn.innerHTML = 'AI 生成';
         btn.title = 'AI 幫你生成這一欄';
         btn.onclick = () => generateField(id);
         labelRow.appendChild(btn);
@@ -1970,11 +2754,11 @@ ${JSON.stringify(snapshot, null, 2)}
         const max = Number(el.getAttribute('data-maxlength') || 0);
         el.value = max ? text.slice(0, max) : text;
         el.dispatchEvent(new Event('input', { bubbles: true }));
-        showToast('✨ 已生成到：' + cfg.label);
+        showToast('已生成到：' + cfg.label);
       } catch (e) {
         showToast('生成失敗：' + e.message);
       } finally {
-        btn.disabled = false; btn.innerHTML = '✨ AI 生成';
+        btn.disabled = false; btn.innerHTML = 'AI 生成';
         refreshAiStatus();
       }
     }
@@ -2025,11 +2809,11 @@ JSON 格式必須包含以下 key（值都是字串，繁體中文；若某欄�
         if (!data) throw new Error('AI 回傳非 JSON：' + raw.slice(0, 100));
         applyFullGenData(data);
         closeFullGenModal();
-        showToast('✨ 已生成完整角色，請檢查各欄位');
+        showToast('已生成完整角色，請檢查各欄位');
       } catch (e) {
         showToast('生成失敗：' + e.message);
       } finally {
-        btn.disabled = false; btn.textContent = '✨ 開始生成';
+        btn.disabled = false; btn.textContent = '開始生成';
         refreshAiStatus();
       }
     }
