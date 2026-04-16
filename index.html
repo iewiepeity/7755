@@ -145,6 +145,76 @@
     /* Token Info Box */
     #promptTokenInfo { font-size: 0.8rem; color: var(--text-main); line-height: 1.6; }
     #promptTokenInfo strong { color: var(--focus-color); }
+
+    /* ===== AI 互動功能樣式 ===== */
+    /* 狀態指示燈 + 全角生成按鈕 */
+    .ai-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: rgba(255,255,255,0.5); border: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-sub); cursor: pointer; transition: .18s; }
+    body.theme-black .ai-status { background: rgba(0,0,0,0.2); }
+    .ai-status:hover { border-color: var(--focus-color); color: var(--focus-color); }
+    .ai-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.5); transition: .3s; }
+    .ai-status.connected .dot { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+    .ai-status.loading .dot { background: #f59e0b; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+
+    /* AI 設定區（可收摺） */
+    #ai-settings-panel { max-width: 1000px; margin: 0 auto 16px; padding: 0 20px; }
+    #ai-settings-panel .section { padding: 20px 24px; }
+    #ai-settings-panel[hidden] { display: none; }
+    .ai-warn { background: rgba(250,204,21,0.12); border-left: 3px solid #facc15; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; color: var(--text-main); margin-top: 10px; line-height: 1.6; }
+    body.theme-black .ai-warn { background: rgba(250,204,21,0.08); }
+
+    /* 欄位 ✨ 按鈕 */
+    .ai-field-btn { background: transparent; border: 1px dashed rgba(var(--focus-rgb),.35); color: var(--focus-color); cursor: pointer; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; transition: .2s; letter-spacing: .04em; }
+    .ai-field-btn:hover { background: rgba(var(--focus-rgb),.1); border-style: solid; transform: translateY(-1px); }
+    .ai-field-btn:disabled { opacity: 0.4; cursor: wait; }
+
+    /* 浮動聊天球 + 面板 */
+    #chatFab { position: fixed; bottom: 90px; right: 30px; width: 56px; height: 56px; border-radius: 50%; background: var(--btn-bg); color: var(--btn-text); font-size: 1.4rem; box-shadow: 0 8px 24px rgba(var(--focus-rgb),.4); border: 0; cursor: pointer; z-index: 950; display: flex; align-items: center; justify-content: center; transition: .25s; }
+    #chatFab:hover { transform: translateY(-3px) scale(1.04); }
+    #chatFab.badge::after { content: ''; position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; border: 2px solid var(--btn-bg); }
+
+    #chatPanel { position: fixed; bottom: 30px; right: 30px; width: 380px; max-width: calc(100vw - 40px); height: 560px; max-height: calc(100vh - 60px); background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 22px; border: 1px solid var(--border-color); box-shadow: 0 16px 48px rgba(0,0,0,0.2); z-index: 951; display: flex; flex-direction: column; overflow: hidden; transform: translateY(20px) scale(0.98); opacity: 0; pointer-events: none; transition: .28s; }
+    #chatPanel.on { transform: none; opacity: 1; pointer-events: auto; }
+    body.theme-black #chatPanel { background: rgba(39,39,42,0.95); }
+
+    .chat-panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--focus-rgb),.08); }
+    .chat-panel-head .title { font-family: "Noto Serif TC", serif; font-weight: 700; font-size: 0.95rem; color: var(--focus-color); letter-spacing: .05em; }
+    .chat-panel-head .actions { display: flex; gap: 4px; }
+    .chat-panel-head .actions button { background: transparent; border: 0; color: var(--text-sub); cursor: pointer; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; }
+    .chat-panel-head .actions button:hover { background: rgba(0,0,0,0.05); color: var(--focus-color); }
+    body.theme-black .chat-panel-head .actions button:hover { background: rgba(255,255,255,0.08); }
+
+    .chat-panel-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .cmsg { max-width: 85%; padding: 8px 14px; border-radius: 14px; font-size: 0.88rem; line-height: 1.65; white-space: pre-wrap; word-wrap: break-word; animation: fadeIn 0.25s; }
+    .cmsg.user { background: var(--focus-color); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    body.theme-lemon .cmsg.user { color: #4a3d00; }
+    .cmsg.assistant { background: rgba(0,0,0,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
+    body.theme-black .cmsg.assistant { background: rgba(255,255,255,0.08); }
+    .cmsg .fill-btn { display: inline-block; margin-top: 8px; padding: 4px 10px; background: var(--btn-bg); color: var(--btn-text); border-radius: 99px; font-size: 0.75rem; cursor: pointer; border: 0; font-weight: 600; }
+    .cmsg .fill-btn:hover { filter: brightness(1.1); }
+    .cmsg.sys { background: transparent; border: 1px dashed var(--border-color); color: var(--text-sub); align-self: center; font-size: 0.78rem; text-align: center; }
+
+    .chat-panel-foot { border-top: 1px solid var(--border-color); padding: 10px 12px; display: flex; gap: 8px; align-items: flex-end; }
+    .chat-panel-foot textarea { flex: 1; min-height: 36px; max-height: 120px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.5); font-size: 0.88rem; font-family: inherit; resize: none; line-height: 1.5; color: var(--text-main); }
+    body.theme-black .chat-panel-foot textarea { background: rgba(0,0,0,0.3); }
+    .chat-panel-foot textarea:focus { outline: none; border-color: var(--focus-color); background: #fff; }
+    body.theme-black .chat-panel-foot textarea:focus { background: rgba(40,40,40,0.8); }
+    .chat-panel-foot .send { background: var(--btn-bg); color: var(--btn-text); border: 0; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+    .chat-panel-foot .send:disabled { opacity: 0.5; cursor: wait; }
+
+    .chat-quick { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 8px; }
+    .chat-quick button { background: rgba(var(--focus-rgb),.1); color: var(--focus-color); border: 0; padding: 3px 10px; border-radius: 99px; font-size: 0.72rem; cursor: pointer; }
+    .chat-quick button:hover { background: rgba(var(--focus-rgb),.2); }
+
+    /* 全角生成 Modal */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 960; display: none; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s; }
+    .modal-bg.on { display: flex; }
+    .modal-box { background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 20px; padding: 24px; max-width: 500px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .modal-box h3 { font-family: "Noto Serif TC", serif; color: var(--focus-color); margin: 0 0 8px; font-size: 1.1rem; letter-spacing: .05em; }
+    .modal-box p { font-size: 0.85rem; color: var(--text-sub); margin: 0 0 14px; line-height: 1.6; }
+    .modal-box textarea { width: 100%; min-height: 100px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.6); font-family: inherit; font-size: 0.95rem; }
+    body.theme-black .modal-box textarea { background: rgba(0,0,0,0.3); }
+    .modal-box .mactions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
   </style>
 </head>
 <body class="theme-pink layout-desktop">
@@ -160,9 +230,13 @@
   <div class="top-bar">
     <div>
       <h1>卿卿我我創角小幫手💕 </h1>
-      <div class="tagline">透過網頁設定你的角色。</div>
+      <div class="tagline">透過網頁設定你的角色 · 內建 AI 討論 &amp; 一鍵生成</div>
     </div>
-    <div style="display:flex; gap:8px; align-items:center;">
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button class="ai-status" id="aiStatus" onclick="toggleAiSettings()" title="點擊設定 API Key">
+        <span class="dot"></span><span id="aiStatusText">AI 未連線</span>
+      </button>
+      <button class="main-btn" onclick="openFullGenModal()" title="讓 AI 一鍵生成整個角色">🎲 全角生成</button>
       <div class="theme-select">
         <select onchange="changeTheme(this.value)" style="padding:6px 10px; border-radius:99px; border:1px solid var(--border-color); cursor:pointer;">
           <option value="pink" selected>🌸 櫻花粉</option>
@@ -174,6 +248,39 @@
           <option value="grey">🌫️ 極簡灰</option>
           <option value="black">🌙 深夜黑</option>
         </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 設定面板（預設隱藏，點狀態燈展開） -->
+  <div id="ai-settings-panel" hidden>
+    <div class="section">
+      <h2><span>🤖 AI 設定（Claude API）</span><button class="icon-btn" onclick="toggleAiSettings()">✕</button></h2>
+      <div class="section-body">
+        <div class="field-group">
+          <div class="label-row">
+            <label>Anthropic API Key</label>
+            <a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-size:0.75rem; color:var(--focus-color);">前往申請 ↗</a>
+          </div>
+          <input id="aiApiKey" type="password" placeholder="sk-ant-api03-..." autocomplete="off" />
+        </div>
+        <div class="field-group">
+          <label style="margin-bottom:6px;">模型（越貴越聰明、越慢）</label>
+          <select id="aiModel">
+            <option value="claude-haiku-4-5-20251001">Haiku 4.5（快、便宜，適合單欄生成）</option>
+            <option value="claude-sonnet-4-6" selected>Sonnet 4.6（平衡，推薦）</option>
+            <option value="claude-opus-4-6">Opus 4.6（最強，適合全角生成）</option>
+          </select>
+        </div>
+        <div class="ai-warn">
+          🔒 API Key 只存在你瀏覽器的 localStorage，不會上傳到我或任何第三方。<br>
+          ⚠️ 每次對話或生成都會消耗你自己的 Anthropic API 額度，建議先用便宜模型試試。
+        </div>
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button class="main-btn" onclick="saveAiSettings()">💾 儲存</button>
+          <button class="sec-btn" onclick="testAiConnection()">🔌 測試連線</button>
+          <button class="sec-btn" style="margin-left:auto; color:#ef4444; border-color:#fca5a5;" onclick="clearApiKey()">清除 Key</button>
+        </div>
       </div>
     </div>
   </div>
@@ -459,6 +566,45 @@
   </div>
 
   <button type="button" id="backToTopBtn" onclick="scrollToTop()" title="回到頁首">▲</button>
+
+  <!-- 浮動聊天球 -->
+  <button type="button" id="chatFab" onclick="toggleChat()" title="跟 Claude 討論角色設定">💬</button>
+
+  <!-- 聊天面板 -->
+  <div id="chatPanel">
+    <div class="chat-panel-head">
+      <div class="title">💫 Claude 創角助理</div>
+      <div class="actions">
+        <button onclick="clearChat()" title="清空對話">🗑</button>
+        <button onclick="toggleChat()" title="關閉">✕</button>
+      </div>
+    </div>
+    <div class="chat-panel-body" id="chatBody"></div>
+    <div class="chat-quick" id="chatQuick">
+      <button onclick="quickAsk('幫我想三個能配這個角色的名字')">💡 想名字</button>
+      <button onclick="quickAsk('根據我現在填的資料，這個角色有什麼地方矛盾或可以補強？')">🔍 檢查角色</button>
+      <button onclick="quickAsk('幫我腦力激盪五個好玩的事件')">✨ 腦力激盪</button>
+      <button onclick="quickAsk('幫我把目前的角色寫成一段 100 字的介紹')">📝 快速介紹</button>
+    </div>
+    <div class="chat-panel-foot">
+      <textarea id="chatInput" placeholder="跟 Claude 討論角色設定…（Enter 送出、Shift+Enter 換行）" rows="1"></textarea>
+      <button class="send" id="chatSend" onclick="sendChat()">送出</button>
+    </div>
+  </div>
+
+  <!-- 全角生成 Modal -->
+  <div class="modal-bg" id="fullGenModal">
+    <div class="modal-box">
+      <h3>🎲 全角一鍵生成</h3>
+      <p>描述你想要的角色方向，Claude 會自動填入所有欄位（基本資訊、性格、說話風格、開場對話等），你再逐欄微調。</p>
+      <textarea id="fullGenPrompt" placeholder="例：一個古代朝廷的年輕權臣，表面冷峻話少、對玩家有佔有慾但不說出口；世界觀是北宋架空朝堂；想要虐戀主調、慢熱線。"></textarea>
+      <div class="mactions">
+        <button class="sec-btn" onclick="closeFullGenModal()">取消</button>
+        <button class="main-btn" id="fullGenRunBtn" onclick="runFullGen()">✨ 開始生成</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 這裡存放應用程式狀態 -->
   <script id="app-state" type="application/json">/*__DATA__*/</script>
 
@@ -874,6 +1020,399 @@
         };
         reader.readAsText(file);
     }
+
+    /* =======================================================
+     * ✨ AI 互動功能：Claude API、聊天、欄位生成、全角生成
+     * ======================================================= */
+    const AI_KEY_STORAGE = 'qing_ai_key_v1';
+    const AI_MODEL_STORAGE = 'qing_ai_model_v1';
+    const AI_CHAT_STORAGE = 'qing_ai_chat_v1';
+    const AI_API_URL = 'https://api.anthropic.com/v1/messages';
+
+    let aiState = {
+      apiKey: localStorage.getItem(AI_KEY_STORAGE) || '',
+      model: localStorage.getItem(AI_MODEL_STORAGE) || 'claude-sonnet-4-6',
+      messages: [],
+      chatOpen: false,
+    };
+    try { aiState.messages = JSON.parse(localStorage.getItem(AI_CHAT_STORAGE) || '[]') || []; } catch { aiState.messages = []; }
+
+    /* --- 設定面板 --- */
+    function toggleAiSettings() {
+      const p = document.getElementById('ai-settings-panel');
+      p.hidden = !p.hidden;
+      if (!p.hidden) {
+        document.getElementById('aiApiKey').value = aiState.apiKey || '';
+        document.getElementById('aiModel').value = aiState.model || 'claude-sonnet-4-6';
+      }
+    }
+    function saveAiSettings() {
+      const k = document.getElementById('aiApiKey').value.trim();
+      const m = document.getElementById('aiModel').value;
+      aiState.apiKey = k;
+      aiState.model = m;
+      localStorage.setItem(AI_KEY_STORAGE, k);
+      localStorage.setItem(AI_MODEL_STORAGE, m);
+      refreshAiStatus();
+      showToast(k ? '已儲存 API Key' : '已清除 API Key');
+      if (k) toggleAiSettings();
+    }
+    function clearApiKey() {
+      if (!confirm('確定要清除 API Key？')) return;
+      aiState.apiKey = '';
+      localStorage.removeItem(AI_KEY_STORAGE);
+      document.getElementById('aiApiKey').value = '';
+      refreshAiStatus();
+      showToast('已清除');
+    }
+    function refreshAiStatus(loading) {
+      const el = document.getElementById('aiStatus');
+      const txt = document.getElementById('aiStatusText');
+      el.classList.remove('connected', 'loading');
+      if (loading) { el.classList.add('loading'); txt.textContent = 'AI 思考中…'; return; }
+      if (aiState.apiKey) { el.classList.add('connected'); txt.textContent = 'AI 已連線'; }
+      else { txt.textContent = 'AI 未連線'; }
+    }
+    async function testAiConnection() {
+      if (!aiState.apiKey) { showToast('請先填 API Key'); return; }
+      refreshAiStatus(true);
+      try {
+        const r = await callClaude([{ role: 'user', content: '回一個字「好」確認連線' }], { maxTokens: 10 });
+        showToast('✅ 連線成功：' + r.slice(0, 20));
+      } catch (e) {
+        showToast('❌ 連線失敗：' + e.message);
+      } finally {
+        refreshAiStatus();
+      }
+    }
+
+    /* --- Claude API 呼叫（瀏覽器直連） --- */
+    async function callClaude(messages, opts = {}) {
+      if (!aiState.apiKey) throw new Error('尚未設定 API Key');
+      const body = {
+        model: opts.model || aiState.model,
+        max_tokens: opts.maxTokens || 2048,
+        messages,
+      };
+      if (opts.system) body.system = opts.system;
+      const res = await fetch(AI_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': aiState.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        let msg = res.status + ' ' + res.statusText;
+        try { const j = JSON.parse(errText); if (j.error?.message) msg = j.error.message; } catch {}
+        throw new Error(msg);
+      }
+      const data = await res.json();
+      const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n').trim();
+      return text;
+    }
+
+    /* --- 聊天面板 --- */
+    function toggleChat() {
+      aiState.chatOpen = !aiState.chatOpen;
+      document.getElementById('chatPanel').classList.toggle('on', aiState.chatOpen);
+      if (aiState.chatOpen) {
+        if (aiState.messages.length === 0) {
+          addSysMsg('嗨 👋 我是創角助理。我能看到你目前填在頁面上的所有欄位——可以請我：想名字、檢查矛盾、腦力激盪事件、擴寫性格段落，或任何關於這個角色的問題。');
+        }
+        renderChatHistory();
+        document.getElementById('chatInput').focus();
+      }
+    }
+    function clearChat() {
+      if (!confirm('清空對話紀錄？')) return;
+      aiState.messages = [];
+      localStorage.removeItem(AI_CHAT_STORAGE);
+      document.getElementById('chatBody').innerHTML = '';
+      addSysMsg('對話已清空。');
+    }
+    function renderChatHistory() {
+      const body = document.getElementById('chatBody');
+      body.innerHTML = '';
+      aiState.messages.forEach(m => appendMsgDom(m.role, m.content));
+      body.scrollTop = body.scrollHeight;
+    }
+    function appendMsgDom(role, content, extraHtml = '') {
+      const body = document.getElementById('chatBody');
+      const d = document.createElement('div');
+      d.className = 'cmsg ' + (role === 'user' ? 'user' : role === 'system' ? 'sys' : 'assistant');
+      d.textContent = content;
+      if (extraHtml) d.insertAdjacentHTML('beforeend', extraHtml);
+      body.appendChild(d);
+      body.scrollTop = body.scrollHeight;
+      return d;
+    }
+    function addSysMsg(text) {
+      appendMsgDom('system', text);
+    }
+    function quickAsk(q) {
+      document.getElementById('chatInput').value = q;
+      sendChat();
+    }
+    async function sendChat() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      if (!aiState.apiKey) {
+        showToast('請先設定 API Key');
+        toggleAiSettings();
+        return;
+      }
+      input.value = '';
+      input.style.height = 'auto';
+      aiState.messages.push({ role: 'user', content: msg });
+      appendMsgDom('user', msg);
+      localStorage.setItem(AI_CHAT_STORAGE, JSON.stringify(aiState.messages));
+
+      const sendBtn = document.getElementById('chatSend');
+      sendBtn.disabled = true; sendBtn.textContent = '…';
+      refreshAiStatus(true);
+
+      const pendingDom = appendMsgDom('assistant', '思考中…');
+
+      try {
+        const sys = buildChatSystemPrompt();
+        const reply = await callClaude(aiState.messages.map(m => ({ role: m.role, content: m.content })), {
+          system: sys,
+          maxTokens: 2048,
+        });
+        aiState.messages.push({ role: 'assistant', content: reply });
+        localStorage.setItem(AI_CHAT_STORAGE, JSON.stringify(aiState.messages));
+        pendingDom.textContent = reply;
+      } catch (e) {
+        pendingDom.remove();
+        appendMsgDom('system', '⚠️ 失敗：' + e.message);
+        aiState.messages.pop();
+      } finally {
+        sendBtn.disabled = false; sendBtn.textContent = '送出';
+        refreshAiStatus();
+      }
+    }
+
+    function buildChatSystemPrompt() {
+      const snapshot = getCharSnapshot();
+      return `你是「卿卿我我」創角助理，協助使用者腦力激盪、檢查矛盾、擴寫設定。
+使用繁體中文回答。語氣活潑、專業、像朋友。
+回答盡量精簡——除非被要求擴寫或生成完整段落，否則控制在 3-5 句話內。
+
+以下是使用者目前在頁面上填的角色資料（JSON）：
+${JSON.stringify(snapshot, null, 2)}
+
+重要：如果欄位值是空字串，代表使用者還沒填。
+如果使用者要求生成某欄位的內容，直接給該欄位的最終文字，不要加額外的「好，以下是…」開場白。`;
+    }
+
+    /* --- 取得當前角色快照（給 AI 參考） --- */
+    function getCharSnapshot() {
+      const ids = ['charName', 'charAge', 'charJob', 'charCategory', 'charQuote', 'charDesc',
+                   'gender', 'basicInfo', 'personality', 'speechStyle',
+                   'firstScene', 'sampleDialogue', 'likes', 'dislikes', 'creatorNote',
+                   'gameTitle', 'gameIntro'];
+      const s = {};
+      ids.forEach(id => { const el = document.getElementById(id); if (el) s[id] = (el.value || '').trim(); });
+      s.charTags = document.getElementById('charTags')?.value || '';
+      s.extras = [];
+      document.querySelectorAll('.extra-block').forEach(b => {
+        const t = b.querySelector('input')?.value || ''; const x = b.querySelector('textarea')?.value || '';
+        if (t || x) s.extras.push({ title: t, text: x });
+      });
+      s.events = [];
+      document.querySelectorAll('.event-block').forEach(b => {
+        const t = b.querySelector('input')?.value || ''; const x = b.querySelector('textarea')?.value || '';
+        if (t || x) s.events.push({ title: t, text: x });
+      });
+      return s;
+    }
+
+    /* --- 欄位 ✨ AI 生成按鈕 --- */
+    /* 哪些欄位要加 ✨ 按鈕：文字量較大的 textarea */
+    const AI_FIELDS = {
+      charQuote: { label: '一句話介紹', prompt: '請幫我寫一句 60 字內的角色介紹，吸引人、點出特色。' },
+      charDesc: { label: '外貌敘述', prompt: '請幫我擴寫角色的外貌與氣質，約 400-600 字，散文筆法。' },
+      basicInfo: { label: '基本資訊（世界觀／背景）', prompt: '請根據目前設定擴寫「基本資訊」約 600-700 字，包含世界觀與角色背景。精簡、不重複。' },
+      personality: { label: '性格特質', prompt: '請擴寫「性格特質」約 600-700 字。包含表層性格、真實內心、對玩家的態度。精簡、不重複。' },
+      speechStyle: { label: '說話風格', prompt: '請擴寫「說話風格」約 600-700 字。包含語氣語速、用字、口頭禪、稱呼、自稱、習慣動作。' },
+      firstScene: { label: '第一次聊天場景', prompt: '請寫一段 400-600 字的開場場景，符合角色調性，末句讓玩家準備說話。' },
+      sampleDialogue: { label: '角色對話範例', prompt: '請寫一段角色的開場首句對話（100-200 字），符合角色說話風格。' },
+      creatorNote: { label: '創作者筆記', prompt: '請用 100-150 字整理這個角色的核心概念，給創作者日後參考。' },
+      gameTitle: { label: '遊戲標題', prompt: '請想一個 10-20 字以內、有氛圍感的遊戲標題。' },
+      gameIntro: { label: '遊戲介紹', prompt: '請寫一段 20-30 字內的遊戲簡介，吸睛。' },
+    };
+
+    function setupAiFieldButtons() {
+      Object.entries(AI_FIELDS).forEach(([id, cfg]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const labelRow = el.closest('.field-group')?.querySelector('.label-row');
+        if (!labelRow || labelRow.querySelector('.ai-field-btn')) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ai-field-btn';
+        btn.innerHTML = '✨ AI 生成';
+        btn.title = 'AI 幫你生成這一欄';
+        btn.onclick = () => generateField(id);
+        labelRow.appendChild(btn);
+      });
+    }
+
+    async function generateField(id) {
+      if (!aiState.apiKey) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
+      const cfg = AI_FIELDS[id];
+      if (!cfg) return;
+      const el = document.getElementById(id);
+      const btn = el.closest('.field-group').querySelector('.ai-field-btn');
+
+      let extra = prompt(`要給 AI 的額外指示（可留空）：\n\n預設：${cfg.prompt}`, '');
+      if (extra === null) return;
+      const userMsg = cfg.prompt + (extra ? '\n\n補充：' + extra : '');
+
+      btn.disabled = true; btn.innerHTML = '⏳ 生成中…';
+      refreshAiStatus(true);
+      try {
+        const snapshot = getCharSnapshot();
+        const sys = `你是「卿卿我我」創角助理。回答一律繁體中文。
+使用者在網頁上填了以下角色資料（JSON）：
+${JSON.stringify(snapshot, null, 2)}
+
+現在使用者要你生成「${cfg.label}」欄位的內容。
+重要：
+1. 直接輸出該欄位的最終文字，不要加「好的，以下是…」、不要加標題、不要用引號包裹
+2. 不要超過該欄位的字數上限（${el.getAttribute('data-maxlength') || '無'}字）
+3. 與其他已填欄位保持一致，不要矛盾`;
+        const text = await callClaude([{ role: 'user', content: userMsg }], { system: sys, maxTokens: 2048 });
+        const max = Number(el.getAttribute('data-maxlength') || 0);
+        el.value = max ? text.slice(0, max) : text;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        showToast('✨ 已生成到：' + cfg.label);
+      } catch (e) {
+        showToast('生成失敗：' + e.message);
+      } finally {
+        btn.disabled = false; btn.innerHTML = '✨ AI 生成';
+        refreshAiStatus();
+      }
+    }
+
+    /* --- 全角一鍵生成 --- */
+    function openFullGenModal() {
+      if (!aiState.apiKey) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
+      document.getElementById('fullGenModal').classList.add('on');
+      document.getElementById('fullGenPrompt').focus();
+    }
+    function closeFullGenModal() {
+      document.getElementById('fullGenModal').classList.remove('on');
+    }
+    async function runFullGen() {
+      const desc = document.getElementById('fullGenPrompt').value.trim();
+      if (!desc) { showToast('請先描述想要的角色'); return; }
+      const btn = document.getElementById('fullGenRunBtn');
+      btn.disabled = true; btn.textContent = '⏳ 生成中…';
+      refreshAiStatus(true);
+      try {
+        const sys = `你是「卿卿我我」創角助理。根據使用者的描述，生成一個完整的角色，輸出嚴格 JSON（不要 markdown code block，不要額外文字）。
+JSON 格式必須包含以下 key（值都是字串，繁體中文；若某欄位不適用則填空字串）：
+{
+  "charName": "角色姓名（2-5 字）",
+  "charAge": "年齡（15字內，可含描述，例如「看似20歲」）",
+  "charJob": "職業（15字內）",
+  "charCategory": "分類（現代/古代/奇幻等）",
+  "charQuote": "一句話介紹（80字內）",
+  "charDesc": "外貌敘述（400-600字）",
+  "gender": "性別（男性/女性/無性別）",
+  "basicInfo": "基本資訊含世界觀背景（600-700字）",
+  "personality": "性格特質（600-700字）",
+  "speechStyle": "說話風格含稱呼自稱口頭禪（600-700字）",
+  "firstScene": "第一次聊天場景（400-600字）",
+  "sampleDialogue": "角色開場首句（100-200字）",
+  "likes": "喜歡的東西（50字內）",
+  "dislikes": "討厭的東西（50字內）",
+  "charTags": "標籤用空格分隔不含井號（如：古代 權臣 冰山）",
+  "creatorNote": "創作者筆記（100-150字）"
+}
+
+要求：
+- 內容精簡不重複，每個欄位盡量寫到接近字數上限
+- 各欄位互相不矛盾、維持一致調性
+- 直接輸出 JSON，不要 code fence、不要解釋`;
+        const raw = await callClaude([{ role: 'user', content: desc }], { system: sys, maxTokens: 8000 });
+        const data = extractJson(raw);
+        if (!data) throw new Error('AI 回傳非 JSON：' + raw.slice(0, 100));
+        applyFullGenData(data);
+        closeFullGenModal();
+        showToast('✨ 已生成完整角色，請檢查各欄位');
+      } catch (e) {
+        showToast('生成失敗：' + e.message);
+      } finally {
+        btn.disabled = false; btn.textContent = '✨ 開始生成';
+        refreshAiStatus();
+      }
+    }
+    function extractJson(s) {
+      try { return JSON.parse(s); } catch {}
+      const m = s.match(/\{[\s\S]*\}/);
+      if (m) { try { return JSON.parse(m[0]); } catch {} }
+      return null;
+    }
+    function applyFullGenData(data) {
+      Object.entries(data).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const max = Number(el.getAttribute('data-maxlength') || 0);
+          el.value = max ? String(val).slice(0, max) : String(val);
+        }
+      });
+      // 標籤需要重新渲染 pills
+      if (data.charTags) initTagInput();
+      saveCurrentChar();
+      updateProgress();
+      updateChatPreview();
+      document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
+        if (el.nextElementSibling?.classList.contains('field-utils')) updateFieldCounter(el);
+      });
+    }
+
+    /* --- 聊天輸入框自動 resize + Enter 送出 --- */
+    function setupChatInput() {
+      const t = document.getElementById('chatInput');
+      if (!t) return;
+      t.addEventListener('input', () => {
+        t.style.height = 'auto';
+        t.style.height = Math.min(120, t.scrollHeight) + 'px';
+      });
+      t.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendChat();
+        }
+      });
+      // modal Esc 關閉
+      document.getElementById('fullGenModal').addEventListener('click', e => {
+        if (e.target.id === 'fullGenModal') closeFullGenModal();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('fullGenModal').classList.contains('on')) closeFullGenModal();
+          else if (aiState.chatOpen) toggleChat();
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        setupAiFieldButtons();
+        refreshAiStatus();
+        setupChatInput();
+        // 在動態新增 extra/event 時，也幫新增的 textarea 掃按鈕（這些欄位沒列在 AI_FIELDS 裡，略過）
+      }, 200);
+    });
   </script>
 </body>
 </html>
