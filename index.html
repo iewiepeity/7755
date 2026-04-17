@@ -1484,9 +1484,237 @@
       h2 { font-size: 1.15rem !important; }
       #chatFab { min-width: 72px; padding: 0 16px !important; font-size: 0.7rem !important; letter-spacing: 0.25em !important; }
     }
+
+    /* ==========================================================
+     * 文青 / 淡墨風格層（最後覆寫，最高優先級）
+     * 設計語彙：米白紙張、墨色、細邊、明體字、疏朗留白
+     * ========================================================== */
+
+    /* --- 1. 新增「淡墨」主題 --- */
+    :root {
+      --bg-ink: #f5efe4;
+      --accent-ink: #6b5a4e;
+      --focus-rgb-ink: 107, 90, 78;
+      --paper: #fbf7ef;
+      --paper-2: #f2ece0;
+      --ink-text: #3a3530;
+      --ink-sub: #8b7f72;
+      --ink-line: rgba(58, 53, 48, 0.14);
+    }
+    body.theme-ink {
+      --page-bg: var(--bg-ink);
+      --card-bg: rgba(251, 247, 239, 0.88);
+      --sidebar-bg: rgba(251, 247, 239, 0.92);
+      --text-main: var(--ink-text);
+      --text-sub: var(--ink-sub);
+      --border-color: var(--ink-line);
+      --focus-color: var(--accent-ink);
+      --focus-rgb: var(--focus-rgb-ink);
+      --btn-bg: var(--accent-ink);
+      --btn-text: #fdfaf3;
+      --chat-bg: var(--paper);
+      --chat-bubble-sys: #eae1d1;
+    }
+    body.theme-ink {
+      background-image:
+        radial-gradient(ellipse 700px 500px at 15% 10%, rgba(107, 90, 78, 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 500px 400px at 85% 90%, rgba(139, 127, 114, 0.07) 0%, transparent 55%);
+    }
+    /* 淡墨主題下的標題不要漸層彩字 */
+    body.theme-ink h1 {
+      background: none !important;
+      -webkit-background-clip: initial !important;
+      -webkit-text-fill-color: var(--ink-text) !important;
+      color: var(--ink-text) !important;
+      filter: none !important;
+      font-weight: 700;
+    }
+    body.theme-ink .section::before { display: none; }
+    body.theme-ink button.main-btn {
+      background: var(--accent-ink) !important;
+      box-shadow: 0 2px 8px rgba(58, 53, 48, 0.12);
+    }
+    body.theme-ink button.main-btn:hover { filter: brightness(1.08); }
+    body.theme-ink .progress-bar {
+      background: var(--accent-ink) !important;
+      animation: none !important;
+      box-shadow: none;
+    }
+
+    /* --- 2. 全域文青化：Toast（米白紙卡） --- */
+    .toast {
+      background: #fbf7ef !important;
+      color: #3a3530 !important;
+      padding: 10px 22px !important;
+      border-radius: 2px !important;
+      border: 1px solid rgba(58, 53, 48, 0.18);
+      border-left: 3px solid var(--focus-color);
+      box-shadow: 0 8px 24px rgba(58, 53, 48, 0.1), 0 2px 4px rgba(58, 53, 48, 0.05);
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.88rem !important;
+      letter-spacing: 0.06em;
+    }
+    body.theme-black .toast {
+      background: #2d2b28 !important;
+      color: #e8e2d6 !important;
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    /* --- 3. 全域文青化：Modal（紙張質感） --- */
+    .modal-bg { background: rgba(40, 35, 30, 0.45) !important; }
+    .modal-box {
+      background: #fbf7ef !important;
+      backdrop-filter: none !important;
+      border: 1px solid rgba(58, 53, 48, 0.14);
+      border-radius: 4px !important;
+      box-shadow: 0 24px 60px rgba(40, 35, 30, 0.25), 0 2px 6px rgba(40, 35, 30, 0.08) !important;
+      padding: 32px !important;
+      position: relative;
+    }
+    .modal-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--focus-color), transparent);
+      opacity: 0.5;
+    }
+    .modal-box h3 {
+      font-family: "Noto Serif TC", serif !important;
+      font-weight: 700 !important;
+      font-size: 1.25rem !important;
+      color: #3a3530 !important;
+      letter-spacing: 0.1em !important;
+      margin-bottom: 10px !important;
+    }
+    .modal-box p {
+      font-family: "Noto Serif TC", serif !important;
+      font-size: 0.88rem !important;
+      line-height: 1.85 !important;
+      color: #6b5f52 !important;
+    }
+    .modal-box textarea {
+      background: #fefcf6 !important;
+      border: 1px solid rgba(58, 53, 48, 0.15) !important;
+      border-radius: 2px !important;
+      font-family: "Noto Serif TC", "Noto Sans TC", serif !important;
+      line-height: 1.85 !important;
+    }
+    body.theme-black .modal-box {
+      background: #2d2b28 !important;
+      border-color: rgba(255,255,255,0.1);
+    }
+    body.theme-black .modal-box h3, body.theme-black .modal-box p { color: #e8e2d6 !important; }
+    body.theme-black .modal-box textarea { background: #25231f !important; color: #e8e2d6 !important; }
+
+    /* --- 4. 全域文青化：聊天面板（紙本對談） --- */
+    #chatPanel {
+      background: #fbf7ef !important;
+      backdrop-filter: none !important;
+      border: 1px solid rgba(58, 53, 48, 0.14) !important;
+      border-radius: 4px !important;
+      box-shadow: 0 18px 50px rgba(40, 35, 30, 0.2), 0 2px 6px rgba(40, 35, 30, 0.06) !important;
+    }
+    body.theme-black #chatPanel { background: #2d2b28 !important; border-color: rgba(255,255,255,0.1) !important; }
+
+    .chat-panel-head {
+      background: linear-gradient(180deg, rgba(107, 90, 78, 0.04), transparent) !important;
+      border-bottom: 1px solid rgba(58, 53, 48, 0.12) !important;
+      padding: 14px 18px !important;
+    }
+    .chat-panel-head .title {
+      font-family: "Noto Serif TC", serif !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.12em !important;
+      font-size: 0.95rem !important;
+      color: #3a3530 !important;
+    }
+    body.theme-black .chat-panel-head .title { color: #e8e2d6 !important; }
+
+    /* 欄位同步 chip：細線、小明體 */
+    .field-sync-chip {
+      font-family: "Noto Serif TC", serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-sub);
+      background: transparent;
+      border: 1px dashed rgba(58, 53, 48, 0.22);
+      padding: 2px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .field-sync-chip:hover {
+      color: var(--focus-color);
+      border-color: var(--focus-color);
+      border-style: solid;
+    }
+    .field-sync-chip.empty { opacity: 0.5; }
+    body.theme-black .field-sync-chip { color: #a8a096; border-color: rgba(255,255,255,0.2); }
+
+    /* 聊天訊息泡泡 — 紙本感 */
+    .cmsg {
+      font-family: "Noto Serif TC", "Noto Sans TC", serif !important;
+      line-height: 1.85 !important;
+      letter-spacing: 0.02em;
+    }
+    .cmsg.assistant {
+      background: #f2ece0 !important;
+      color: #3a3530 !important;
+      border: 1px solid rgba(58, 53, 48, 0.08);
+    }
+    body.theme-black .cmsg.assistant { background: #3a3834 !important; color: #e8e2d6 !important; border-color: rgba(255,255,255,0.06); }
+    .cmsg.sys {
+      border: 1px dashed rgba(58, 53, 48, 0.2) !important;
+      color: #8b7f72 !important;
+      font-size: 0.75rem !important;
+      padding: 6px 14px !important;
+      letter-spacing: 0.05em;
+    }
+    body.theme-black .cmsg.sys { color: #a8a096 !important; border-color: rgba(255,255,255,0.18) !important; }
+
+    .chat-panel-foot {
+      background: rgba(242, 236, 224, 0.4);
+      border-top: 1px solid rgba(58, 53, 48, 0.12) !important;
+    }
+    body.theme-black .chat-panel-foot { background: rgba(255,255,255,0.02); }
+    .chat-panel-foot textarea {
+      background: #fefcf6 !important;
+      border: 1px solid rgba(58, 53, 48, 0.14) !important;
+      border-radius: 2px !important;
+      font-family: "Noto Serif TC", "Noto Sans TC", serif !important;
+    }
+    body.theme-black .chat-panel-foot textarea { background: #25231f !important; color: #e8e2d6 !important; }
+    .chat-panel-foot .send {
+      border-radius: 2px !important;
+      font-family: "Noto Serif TC", serif !important;
+      letter-spacing: 0.15em !important;
+      padding: 8px 16px !important;
+    }
+
+    .chat-quick button {
+      font-family: "Noto Serif TC", serif !important;
+      border-radius: 2px !important;
+      letter-spacing: 0.08em;
+      font-size: 0.73rem !important;
+      padding: 4px 12px !important;
+      border: 1px solid rgba(var(--focus-rgb), 0.2) !important;
+    }
+
+    /* --- 5. 浮動 FAB 改紙扇感 --- */
+    body.theme-ink #chatFab {
+      box-shadow: 0 8px 20px rgba(58, 53, 48, 0.2) !important;
+    }
+
+    /* --- 6. AI 設定面板內部質感（淡墨主題下） --- */
+    body.theme-ink .ai-warn {
+      background: rgba(107, 90, 78, 0.06);
+      border-left-color: var(--accent-ink);
+      font-family: "Noto Serif TC", serif;
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
-<body class="theme-pink layout-desktop">
+<body class="theme-ink layout-desktop">
 
   <div class="progress-header">
     <div class="progress-container">
@@ -1509,7 +1737,8 @@
       <button class="sec-btn" onclick="copyForExternalAi()" title="複製角色快照 + 提示詞，貼到 Claude Code / ChatGPT 討論">複製給外部 AI</button>
       <div class="theme-select">
         <select onchange="changeTheme(this.value)" style="padding:6px 10px; border-radius:99px; border:1px solid var(--border-color); cursor:pointer;">
-          <option value="pink" selected>櫻花粉</option>
+          <option value="ink" selected>淡墨（文青）</option>
+          <option value="pink">櫻花粉</option>
           <option value="cream">奶油白</option>
           <option value="mint">薄荷綠</option>
           <option value="lavender">薰衣草</option>
@@ -1905,7 +2134,10 @@
   <!-- 聊天面板 -->
   <div id="chatPanel">
     <div class="chat-panel-head">
-      <div class="title" id="chatTitleText">AI 創角助理</div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;">
+        <div class="title" id="chatTitleText">AI 創角助理</div>
+        <span class="field-sync-chip" id="fieldSyncChip" onclick="showSnapshotPreview()" title="AI 已讀取這些欄位；點擊查看內容">✎ 同步 0 欄</span>
+      </div>
       <div class="actions">
         <button onclick="clearChat()" title="清空對話"></button>
         <button onclick="toggleChat()" title="關閉">✕</button>
@@ -1928,7 +2160,7 @@
   <div class="modal-bg" id="fullGenModal">
     <div class="modal-box">
       <h3>全角一鍵生成</h3>
-      <p>描述你想要的角色方向，Claude 會自動填入所有欄位（基本資訊、性格、說話風格、開場對話等），你再逐欄微調。</p>
+      <p id="fullGenDesc">描述你想要的角色方向，AI 會自動填入所有欄位（基本資訊、性格、說話風格、開場對話等），你再逐欄微調。</p>
       <textarea id="fullGenPrompt" placeholder="例：一個古代朝廷的年輕權臣，表面冷峻話少、對玩家有佔有慾但不說出口；世界觀是北宋架空朝堂；想要虐戀主調、慢熱線。"></textarea>
       <div class="mactions">
         <button class="sec-btn" onclick="closeFullGenModal()">取消</button>
@@ -2523,9 +2755,17 @@
       const provName = aiState.provider === 'gemini' ? 'Gemini' : 'Claude';
       if (k) { el.classList.add('connected'); txt.textContent = `${provName} 已連線`; }
       else { txt.textContent = `${provName} 未連線`; }
-      // 同步更新聊天面板標題
+      // 同步更新所有顯示 provider 名稱的 UI
       const chatTitle = document.getElementById('chatTitleText');
-      if (chatTitle) chatTitle.textContent = `${provName.toUpperCase()} 創角助理`;
+      if (chatTitle) chatTitle.textContent = `${provName} 創角助理`;
+      const chatFab = document.getElementById('chatFab');
+      if (chatFab) chatFab.title = `跟 ${provName} 討論角色設定`;
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) chatInput.placeholder = `跟 ${provName} 討論角色設定…（Enter 送出、Shift+Enter 換行）`;
+      const fullGenDesc = document.getElementById('fullGenDesc');
+      if (fullGenDesc) fullGenDesc.textContent = `描述你想要的角色方向,${provName} 會自動填入所有欄位(基本資訊、性格、說話風格、開場對話等),你再逐欄微調。`;
+      // 同步欄位同步指示器
+      refreshFieldSyncIndicator();
     }
     async function testAiConnection() {
       if (!currentKey()) { showToast('請先填 API Key'); return; }
@@ -2616,6 +2856,7 @@
           addSysMsg('嗨我是創角助理。我能看到你目前填在頁面上的所有欄位——可以請我：想名字、檢查矛盾、腦力激盪事件、擴寫性格段落，或任何關於這個角色的問題。');
         }
         renderChatHistory();
+        refreshFieldSyncIndicator();
         document.getElementById('chatInput').focus();
       }
     }
@@ -2723,6 +2964,63 @@ ${JSON.stringify(snapshot, null, 2)}
       });
       return s;
     }
+
+    /* --- 欄位同步指示器（讓使用者知道 AI 能看到多少欄位） --- */
+    function countFilledFields(snap) {
+      let n = 0;
+      Object.keys(snap || {}).forEach(k => {
+        const v = snap[k];
+        if (Array.isArray(v)) { n += v.length; }
+        else if (typeof v === 'string' && v.trim()) { n += 1; }
+      });
+      return n;
+    }
+    function refreshFieldSyncIndicator() {
+      const chip = document.getElementById('fieldSyncChip');
+      if (!chip) return;
+      const snap = getCharSnapshot();
+      const n = countFilledFields(snap);
+      chip.textContent = `✎ 同步 ${n} 欄`;
+      chip.classList.toggle('empty', n === 0);
+    }
+    function showSnapshotPreview() {
+      const snap = getCharSnapshot();
+      const lines = [];
+      Object.keys(snap).forEach(k => {
+        const v = snap[k];
+        if (Array.isArray(v)) {
+          if (v.length) lines.push({ k, preview: `(${v.length} 筆)` });
+        } else if (typeof v === 'string' && v.trim()) {
+          const preview = v.length > 60 ? v.slice(0, 60) + '…' : v;
+          lines.push({ k, preview });
+        }
+      });
+      const body = lines.length
+        ? lines.map(l => `<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed rgba(58,53,48,0.12);"><span style="font-family:'Noto Serif TC',serif; color:var(--focus-color); font-weight:700; letter-spacing:0.08em;">${l.k}</span><br><span style="color:var(--text-sub); font-size:0.85rem; line-height:1.8;">${l.preview.replace(/</g,'&lt;')}</span></div>`).join('')
+        : '<p style="color:var(--text-sub); text-align:center; padding:16px 0;">目前所有欄位都是空的，AI 只能純憑空發想。</p>';
+      const html = `
+        <div class="modal-bg on" id="snapshotModal" onclick="if(event.target===this)closeSnapshotModal()">
+          <div class="modal-box" style="max-width:520px; max-height:70vh; display:flex; flex-direction:column;">
+            <h3>AI 能讀到的欄位 <span style="font-size:0.75rem; color:var(--text-sub); font-weight:400; letter-spacing:0.05em;">共 ${lines.length} 項</span></h3>
+            <p style="margin-bottom:14px;">以下內容會作為 AI 對話的背景脈絡一起送出。</p>
+            <div style="overflow-y:auto; padding-right:8px; flex:1;">${body}</div>
+            <div class="mactions"><button class="sec-btn" onclick="closeSnapshotModal()">關閉</button></div>
+          </div>
+        </div>`;
+      const wrap = document.createElement('div');
+      wrap.innerHTML = html;
+      document.body.appendChild(wrap.firstElementChild);
+    }
+    function closeSnapshotModal() {
+      const m = document.getElementById('snapshotModal');
+      if (m) m.remove();
+    }
+    // 欄位變動時即時更新同步指示器
+    document.addEventListener('input', (e) => {
+      if (e.target && (e.target.matches('input, textarea, select'))) {
+        if (document.getElementById('fieldSyncChip')) refreshFieldSyncIndicator();
+      }
+    });
 
     /* --- 欄位AI 生成按鈕 --- */
     /* 哪些欄位要加按鈕：文字量較大的 textarea */
