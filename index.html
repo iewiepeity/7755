@@ -3057,9 +3057,17 @@ ${JSON.stringify(snapshot, null, 2)}
         btn.type = 'button';
         btn.className = 'ai-field-btn';
         btn.innerHTML = 'AI 生成';
-        btn.title = 'AI 幫你生成這一欄';
+        btn.title = 'AI 幫你生成這一欄（會覆蓋現有內容）';
         btn.onclick = () => generateField(id);
         labelRow.appendChild(btn);
+
+        const expandBtn = document.createElement('button');
+        expandBtn.type = 'button';
+        expandBtn.className = 'ai-field-btn ai-expand-btn';
+        expandBtn.innerHTML = '擴寫';
+        expandBtn.title = '讀目前內容，接著往下寫（附加在後面）';
+        expandBtn.onclick = () => expandField(id);
+        labelRow.appendChild(expandBtn);
       });
     }
 
@@ -3078,15 +3086,23 @@ ${JSON.stringify(snapshot, null, 2)}
       refreshAiStatus(true);
       try {
         const snapshot = getCharSnapshot();
-        const sys = `你是「卿卿我我」創角助理。回答一律繁體中文。
+        const isLongField = ['charDesc','basicInfo','personality','speechStyle','firstScene','sampleDialogue','promptRole','promptGuideline'].includes(id);
+        const isImagePrompt = id === 'imagePrompt';
+        const formatRule = isImagePrompt
+          ? '格式：純英文、逗號分隔的 tag，不用 Markdown、不換行、不要解釋。'
+          : isLongField
+            ? `格式：使用 Markdown，第一行用 # 大標題（該欄位主題），分段用 ##，細節用 - 開頭的 bullet。絕對不使用 **粗體** 或 *斜體*。換行直接用 \\n。`
+            : '格式：純文字，不要 Markdown，不要標題符號。';
+        const sys = `你是「卿卿我我」創角助理。${isImagePrompt ? '' : '回答一律繁體中文。'}
 使用者在網頁上填了以下角色資料（JSON）：
 ${JSON.stringify(snapshot, null, 2)}
 
 現在使用者要你生成「${cfg.label}」欄位的內容。
 重要：
-1. 直接輸出該欄位的最終文字，不要加「好的，以下是…」、不要加標題、不要用引號包裹
+1. 直接輸出該欄位的最終文字，不要加「好的，以下是…」、不要加引號包裹、不要用 \`\`\` code fence
 2. 不要超過該欄位的字數上限（${el.getAttribute('data-maxlength') || '無'}字）
-3. 與其他已填欄位保持一致，不要矛盾`;
+3. 與其他已填欄位保持一致，不要矛盾
+4. ${formatRule}`;
         const text = await callAi([{ role: 'user', content: userMsg }], { system: sys, maxTokens: 2048 });
         const max = Number(el.getAttribute('data-maxlength') || 0);
         el.value = max ? text.slice(0, max) : text;
@@ -3096,6 +3112,69 @@ ${JSON.stringify(snapshot, null, 2)}
         showToast('生成失敗：' + e.message);
       } finally {
         btn.disabled = false; btn.innerHTML = 'AI 生成';
+        refreshAiStatus();
+      }
+    }
+
+    /* --- 欄位擴寫：讀目前內容後接著往下寫 --- */
+    async function expandField(id) {
+      if (!currentKey()) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
+      const cfg = AI_FIELDS[id];
+      if (!cfg) return;
+      const el = document.getElementById(id);
+      const existing = (el.value || '').trim();
+      if (!existing) { showToast('這欄是空的，請先用「AI 生成」或手動寫點東西'); return; }
+
+      const max = Number(el.getAttribute('data-maxlength') || 0);
+      const remaining = max ? max - existing.length : 1000;
+      if (max && remaining < 30) { showToast('欄位剩餘空間太少（<30 字），不進行擴寫'); return; }
+
+      const btn = el.closest('.field-group').querySelector('.ai-expand-btn');
+      const extra = prompt('想補充什麼方向？（可留空讓 AI 自由接續）', '');
+      if (extra === null) return;
+
+      btn.disabled = true; btn.innerHTML = '⏳ 擴寫中…';
+      refreshAiStatus(true);
+      try {
+        const snapshot = getCharSnapshot();
+        const isLongField = ['charDesc','basicInfo','personality','speechStyle','firstScene','sampleDialogue','promptRole','promptGuideline'].includes(id);
+        const isImagePrompt = id === 'imagePrompt';
+        const formatRule = isImagePrompt
+          ? '格式：純英文、逗號分隔的 tag，只輸出要新增的 tag、不要重複已存在的、不要換行、不要解釋。'
+          : isLongField
+            ? '格式：使用 Markdown，層級與現有內容一致（# 大標題不要重複、改用 ## 副標題或 - bullet 接續）。絕對不使用 **粗體** 或 *斜體*。'
+            : '格式：純文字銜接，不要 Markdown。';
+        const sys = `你是「卿卿我我」創角助理。${isImagePrompt ? '' : '回答一律繁體中文。'}
+使用者目前在「${cfg.label}」欄位已經寫了內容，現在要你**接著往下寫**，不要重複、不要重寫、不要做總結開頭。
+
+目前已填寫內容（不要重複）：
+<<<
+${existing}
+>>>
+
+其他欄位的上下文（用於保持一致）：
+${JSON.stringify(snapshot, null, 2)}
+
+【擴寫規則】
+1. 直接從新的段落開始，像接著打下一段字一樣，**不要寫「以下是補充…」、不要重述上文**
+2. 風格、語氣、世界觀與上方內容一致
+3. 不要超過 ${remaining} 字（欄位剩餘空間）
+4. ${formatRule}
+5. ${extra ? '使用者想補充方向：' + extra : '自由選擇合理的下一段主題（例如上面還沒寫到的子段落）'}`;
+
+        const appended = await callAi(
+          [{ role: 'user', content: '請接著擴寫' }],
+          { system: sys, maxTokens: 2048 }
+        );
+        const joiner = (existing.endsWith('\n') ? '' : '\n\n');
+        const merged = (existing + joiner + appended.trim());
+        el.value = max ? merged.slice(0, max) : merged;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        showToast(`已擴寫 +${appended.trim().length} 字`);
+      } catch (e) {
+        showToast('擴寫失敗：' + e.message);
+      } finally {
+        btn.disabled = false; btn.innerHTML = '擴寫';
         refreshAiStatus();
       }
     }
@@ -3122,10 +3201,11 @@ ${JSON.stringify(snapshot, null, 2)}
 【核心原則】
 1. 這個角色檔是要餵給 AI 扮演用的，**資訊必須具體可演繹**,不能只寫抽象形容詞。
    例:不要只寫「個性冷淡」,要寫「習慣沉默、被問到三次才回第一次；語尾常停頓；不主動關心他人但會默默記得對方的飲食偏好」。
-2. **每個長文本欄位(charDesc / basicInfo / personality / speechStyle / firstScene / sampleDialogue / promptRole / promptGuideline)的值,內部請使用 Markdown 格式**:
-   - 用 \`##\` 或 \`###\` 分子標題
-   - 用 \`-\` bullet 條列具體項目
-   - 關鍵詞可用 \`**粗體**\` 強調
+2. **每個長文本欄位(charDesc / basicInfo / personality / speechStyle / firstScene / sampleDialogue / promptRole / promptGuideline)的值,內部請使用以下 Markdown 格式**:
+   - \`#\` 大標題(整個欄位只有一個 \`#\`,寫該欄位的核心主題)
+   - \`##\` 副標題(用來分段、分子主題)
+   - \`-\` bullet 條列具體項目,直接接文字,例:\`-這是一條內文\`
+   - **絕對不要使用 \`**粗體**\` 或 \`*斜體*\` 語法,完全純淨**
    - 字串裡的換行直接用 \`\\n\`
 3. 各欄位保持一致的世界觀、年齡、調性,彼此不矛盾。
 4. 內容要塞滿、逼近字數上限(中文字計算,Markdown 符號不計)。
@@ -3144,40 +3224,42 @@ ${JSON.stringify(snapshot, null, 2)}
   "charQuote": "一句話介紹 80 字內,要抓住角色靈魂,不要寫成履歷",
   "charTags": "5-8 個標籤,空格分隔、不含井號,例:古代 權臣 冰山 佔有慾",
 
-  "charDesc": "**外貌與氣質**(上限 700 字,內部用 Markdown)。必須涵蓋:\\n- ## 身高體型(公分、體格、骨架)\\n- ## 五官長相(髮型髮色、瞳色、眉眼、鼻唇、皮膚、特殊記號如痣/疤/酒窩)\\n- ## 穿著風格(日常/正式,代表性的幾套搭配)\\n- ## 氣質印象(第一眼看到他的感受,聲音特徵,動作節奏)",
+  "charDesc": "外貌與氣質(上限 700 字,內部用 Markdown,第一行是 # 外貌與氣質)。必須涵蓋下列子段落,每個用 ## 開頭:\\n## 身高體型(公分、體格、骨架)\\n## 五官長相(髮型髮色、瞳色、眉眼、鼻唇、皮膚、特殊記號如痣/疤/酒窩)\\n## 穿著風格(日常/正式,代表性的幾套搭配)\\n## 氣質印象(第一眼看到他的感受,聲音特徵,動作節奏)\\n每個子段落下用 - 條列具體細節",
 
-  "imagePrompt": "**英文算圖 prompt**(上限 1000 字),根據 charDesc 的外貌產生,適用 Stable Diffusion / NovelAI / Midjourney。格式:純英文、逗號分隔的 tag,不要換行不要解釋。必須依序包含:\\n1. 主體 (1boy/1girl/solo)\\n2. 髮色髮型 (e.g. long black hair, ponytail)\\n3. 瞳色 (red eyes, golden eyes...)\\n4. 外觀年齡 (young man, mature woman...)\\n5. 服裝 (ancient chinese robe, modern suit, hanfu, kimono...)\\n6. 體態特徵 (tall, slender, muscular...)\\n7. 表情氣質 (cold expression, gentle smile, mysterious...)\\n8. 場景/氛圍 (moonlight, palace, rainy night...)\\n9. 品質詞結尾: masterpiece, best quality, detailed face, 8k",
+  "imagePrompt": "英文算圖 prompt(上限 1000 字,純英文、逗號分隔的 tag,不用 Markdown、不用換行、不要解釋)。根據 charDesc 的外貌產生,適用 Stable Diffusion / NovelAI / Midjourney。依序包含:主體 (1boy/1girl/solo)、髮色髮型、瞳色、外觀年齡、服裝、體態特徵、表情氣質、場景氛圍,結尾加品質詞 masterpiece, best quality, detailed face, 8k",
 
-  "basicInfo": "**背景與世界觀**(上限 700 字,Markdown)。必須涵蓋:\\n- ## 世界觀設定(時代/地點/社會結構,用 2-3 句話點出)\\n- ## 家世出身(父母/家族/童年關鍵事件 2-3 件)\\n- ## 現況與職業(做什麼、為何做、在該領域的位階)\\n- ## 資產狀況(住哪、經濟水平、持有的代表性物品或不動產)\\n- ## 人際網絡(最親近的人 / 宿敵 / 盟友,各 1-2 位)",
+  "basicInfo": "背景與世界觀(上限 700 字,Markdown,第一行 # 背景與世界觀)。子段落用 ##:\\n## 世界觀設定(時代/地點/社會結構,用 2-3 句話點出)\\n## 家世出身(父母/家族/童年關鍵事件 2-3 件)\\n## 現況與職業(做什麼、為何做、在該領域的位階)\\n## 資產狀況(住哪、經濟水平、持有的代表性物品或不動產)\\n## 人際網絡(最親近的人 / 宿敵 / 盟友,各 1-2 位)\\n每個子段落下用 - 條列具體內容",
 
-  "personality": "**性格與內在**(上限 700 字,Markdown)。必須涵蓋:\\n- ## 表層印象(別人看他的第一印象)\\n- ## 真實性格(表裡差距、內在動機)\\n- ## 日常習慣(起床/睡眠時間、固定的小儀式、3-5 條生活怪癖)\\n- ## 興趣嗜好(具體活動,例:收集古董鋼筆、凌晨 3 點慢跑)\\n- ## 三觀與禁忌(絕不妥協的原則、不能碰的逆鱗)\\n- ## 對玩家的態度(預設關係/好感初值/會如何互動)",
+  "personality": "性格與內在(上限 700 字,Markdown,第一行 # 性格與內在)。子段落用 ##:\\n## 表層印象(別人看他的第一印象)\\n## 真實性格(表裡差距、內在動機)\\n## 日常習慣(起床/睡眠時間、固定的小儀式、3-5 條生活怪癖)\\n## 興趣嗜好(具體活動,例:收集古董鋼筆、凌晨 3 點慢跑)\\n## 三觀與禁忌(絕不妥協的原則、不能碰的逆鱗)\\n## 對玩家的態度(預設關係/好感初值/會如何互動)\\n每個子段落下用 - 條列具體內容",
 
-  "speechStyle": "**說話風格**(上限 700 字,Markdown)。必須涵蓋:\\n- ## 自稱與稱呼(對玩家/對長輩/對下屬如何稱呼)\\n- ## 語氣基調(冷/暖/戲謔/正經,具體程度)\\n- ## 用詞特徵(常用字、避用字、是否用文言/方言/網路用語)\\n- ## 句式習慣(長句/短句、愛用反問/陳述、是否常停頓)\\n- ## 口頭禪 3-5 句(直接寫出原句)\\n- ## 情緒變化(生氣/害羞/撒嬌時語言怎麼變,附例句)",
+  "speechStyle": "說話風格(上限 700 字,Markdown,第一行 # 說話風格)。子段落用 ##:\\n## 自稱與稱呼(對玩家/對長輩/對下屬如何稱呼)\\n## 語氣基調(冷/暖/戲謔/正經,具體程度)\\n## 用詞特徵(常用字、避用字、是否用文言/方言/網路用語)\\n## 句式習慣(長句/短句、愛用反問/陳述、是否常停頓)\\n## 口頭禪 3-5 句(直接寫出原句)\\n## 情緒變化(生氣/害羞/撒嬌時語言怎麼變,附例句)\\n每個子段落下用 - 條列具體內容",
 
-  "firstScene": "**初次見面場景**(上限 800 字,Markdown)。分段描寫:\\n- ## 場景(時間、地點、天氣、感官細節)\\n- ## 角色當下的狀態(在做什麼、心情)\\n- ## 玩家出現的契機\\n- ## 第一個互動(角色會如何看玩家、第一個動作)\\n要寫成有畫面感的敘事段落,不要條列式流水帳。",
+  "firstScene": "初次見面場景(上限 800 字,Markdown,第一行 # 初次見面)。子段落用 ##:\\n## 場景(時間、地點、天氣、感官細節)\\n## 角色當下的狀態(在做什麼、心情)\\n## 玩家出現的契機\\n## 第一個互動(角色會如何看玩家、第一個動作)\\n子段落內容要寫成有畫面感的敘事段落,不要條列式流水帳。",
 
-  "sampleDialogue": "**角色開場第一句對白**(上限 800 字)。格式:\\n先一段簡短動作/神態描寫,再寫角色說出的第一句話(用「」包住),可以多段。要符合 speechStyle 設定。",
+  "sampleDialogue": "角色開場第一句對白(上限 800 字,Markdown,第一行 # 開場對白)。格式:\\n先一段簡短動作/神態描寫,再寫角色說出的第一句話(用「」包住),可以多段。要符合 speechStyle 設定。",
 
   "likes": "3-5 項具體喜好,逗號分隔,50 字內(例:下雨天的氣味, 手沖咖啡, 老舊書店)",
   "dislikes": "3-5 項具體討厭,逗號分隔,50 字內",
 
-  "promptRole": "**系統指令/角色扮演指令**(上限 2000 字,Markdown,給卿卿我我的 AI 使用)。必須包含:\\n- ## 角色身分定位(一句話我是誰)\\n- ## 必須遵守的扮演守則(不拆穿第四面牆、不脫離人設、用第一人稱等)\\n- ## 回應格式偏好(動作用*星號*、對白用「」、可用括號描寫心理活動等)\\n- ## 世界觀邊界(哪些事這個世界不會發生)\\n- ## 禁止事項(例:不要過度說教、不要代替玩家行動)",
+  "promptRole": "系統指令/角色扮演指令(上限 2000 字,Markdown,第一行 # 角色扮演指令,給卿卿我我的 AI 使用)。子段落用 ##:\\n## 角色身分定位(一句話我是誰)\\n## 扮演守則(不拆穿第四面牆、不脫離人設、用第一人稱等)\\n## 回應格式偏好(動作、對白、心理活動的寫法)\\n## 世界觀邊界(哪些事這個世界不會發生)\\n## 禁止事項(例:不要過度說教、不要代替玩家行動)\\n每個子段落下用 - 條列具體規則",
 
-  "promptGuideline": "**回應規則/對話風格守則**(上限 3000 字,Markdown)。詳細約定 AI 每次回覆時該怎麼做:\\n- ## 長度控制(每次約幾段、幾句)\\n- ## 語言風格(與 speechStyle 呼應的具體規則)\\n- ## 情節推動(是否主動推劇情、還是等玩家帶)\\n- ## 情緒表現(內心獨白頻率、肢體描寫密度)\\n- ## 特殊狀況處理(玩家冷場時怎麼辦、玩家 OOC 時怎麼回、18+ 情節處理原則)\\n- ## 一致性提醒(記住前文提過的資訊)",
+  "promptGuideline": "回應規則/對話風格守則(上限 3000 字,Markdown,第一行 # 對話風格守則)。子段落用 ##:\\n## 長度控制(每次約幾段、幾句)\\n## 語言風格(與 speechStyle 呼應的具體規則)\\n## 情節推動(是否主動推劇情、還是等玩家帶)\\n## 情緒表現(內心獨白頻率、肢體描寫密度)\\n## 特殊狀況處理(玩家冷場時怎麼辦、玩家 OOC 時怎麼回、18+ 情節處理原則)\\n## 一致性提醒(記住前文提過的資訊)\\n每個子段落下用 - 條列具體規則",
 
-  "gameTitle": "遊戲/劇本標題,**30 字內**,有氛圍感、點出角色或故事調性,例:月下問卿、霜刃藏情、北宋風雨錄",
+  "gameTitle": "遊戲/劇本標題,30 字內,純文字不用 Markdown,有氛圍感、點出角色或故事調性,例:月下問卿、霜刃藏情、北宋風雨錄",
 
-  "gameIntro": "遊戲/劇本簡介,**30 字內**(嚴格),吸睛的一句話描述,例:他是北宋最年輕的權臣,也是最冷的一把刀",
+  "gameIntro": "遊戲/劇本簡介,30 字內(嚴格),純文字,吸睛的一句話描述,例:他是北宋最年輕的權臣,也是最冷的一把刀",
 
   "creatorNote": "創作者筆記 150-200 字,提醒 AI 扮演時要特別注意什麼:\\n- 哪些設定是核心不可變\\n- 哪些情境角色會出格反應\\n- 建議的劇情走向或忌諱"
 }
 
 【再次提醒】
-- 整個回覆就是 JSON,**第一個字元是 \`{\`,最後一個字元是 \`}\`**。
-- JSON 字串內部可含 Markdown(##、-、**、\\n),但外層不能用 \`\`\` code fence 包起來。
-- 所有內容使用繁體中文(imagePrompt 除外,**一律英文**)。
+- 整個回覆就是 JSON,第一個字元是 \`{\`,最後一個字元是 \`}\`。
+- JSON 字串內部的 Markdown 只能用 \`#\`、\`##\`、\`-\`、\`\\n\`。
+- **絕對不使用 \`**粗體**\` 或 \`*斜體*\`**。整份輸出搜尋 \`**\` 應為 0 次。
+- 外層不能用 \`\`\` code fence 包起來。
+- 所有內容使用繁體中文(imagePrompt 除外,一律英文)。
 - 世界觀若是古代,用詞避免現代語;奇幻則可加入該世界特有名詞。
-- **上述所有 key 都必須出現且有內容,不可空字串**。產生前先自我檢查每個欄位都填了。`;
+- 上述所有 key 都必須出現且有內容,不可空字串。產生前先自我檢查每個欄位都填了。`;
         const raw = await callAi([{ role: 'user', content: desc }], { system: sys, maxTokens: 16000, jsonMode: true });
         const data = extractJson(raw);
         if (!data) throw new Error('AI 回傳非 JSON：' + raw.slice(0, 100));
