@@ -2653,7 +2653,7 @@
       const input = document.getElementById('chatInput');
       const msg = input.value.trim();
       if (!msg) return;
-      if (!aiState.apiKey) {
+      if (!currentKey()) {
         showToast('請先設定 API Key');
         toggleAiSettings();
         return;
@@ -2756,7 +2756,7 @@ ${JSON.stringify(snapshot, null, 2)}
     }
 
     async function generateField(id) {
-      if (!aiState.apiKey) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
+      if (!currentKey()) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
       const cfg = AI_FIELDS[id];
       if (!cfg) return;
       const el = document.getElementById(id);
@@ -2794,7 +2794,7 @@ ${JSON.stringify(snapshot, null, 2)}
 
     /* --- 全角一鍵生成 --- */
     function openFullGenModal() {
-      if (!aiState.apiKey) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
+      if (!currentKey()) { showToast('請先設定 API Key'); toggleAiSettings(); return; }
       document.getElementById('fullGenModal').classList.add('on');
       document.getElementById('fullGenPrompt').focus();
     }
